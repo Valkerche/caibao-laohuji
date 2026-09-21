@@ -101,6 +101,17 @@
   .corner:active { transform: scale(.94); }
   #auraBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); }
   #helpBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+  /* 氪金按钮：夹在 ❓ 与 💥 中间（用 margin-left 定位，避开 .corner:active 的 transform） */
+  #payBtn { left: 50%; margin-left: -27px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+
+  /* 氪金面板 */
+  .payRow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+  .payBtn {
+    padding: 12px 8px; border-radius: 10px; border: 1px solid #3a3220; background: #1a160e;
+    color: #fbbf24; font-family: inherit; font-size: 15px; line-height: 1.35; touch-action: manipulation;
+  }
+  .payBtn small { display: block; font-size: 11px; color: #8b8577; }
+  .payBtn:active { transform: scale(.97); }
 
   /* 弹层 */
   .sheet {
@@ -252,6 +263,7 @@
 </div>
 
 <button class="corner" id="helpBtn">❓</button>
+<button class="corner" id="payBtn">💰</button>
 <button class="corner" id="auraBtn">💥</button>
 <div id="toast"></div>
 
@@ -322,7 +334,7 @@
 
       <h3>金币</h3>
       · 起手 10 金币；赢的钱 = 本局下注 × 符号倍率<br>
-      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（60 秒冷却）<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
       · 所有进度自动保存在本机
 
       <h3>💥 光环（附加玩法，不花金币）</h3>
@@ -335,6 +347,20 @@
       <div id="tierLegend" class="pay"></div>
       <small>抽奖幸运是光环抽取用的，老虎机幸运由佩戴光环提供，两者互不影响。</small>
       <div><a id="reset" href="#">重置全部进度</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- 氪金弹层 -->
+<div class="sheet" id="paySheet">
+  <div class="panel">
+    <span class="close" data-close="paySheet">×</span>
+    <h2>💰 氪金</h2>
+    <div class="payRow">
+      <button class="payBtn" data-pay="10">1 元<small>10 金币</small></button>
+      <button class="payBtn" data-pay="600">60 元<small>600 金币</small></button>
+      <button class="payBtn" data-pay="1000">100 元<small>1000 金币</small></button>
+      <button class="payBtn" data-pay="5200">520 元<small>5200 金币</small></button>
     </div>
   </div>
 </div>
@@ -447,13 +473,13 @@
   var CLAIM_GOLD = 100;     // 救济金金额（与起手金币无关）
   var GOLD_MAX = 1e15;
   var NUM_MAX = 1e12;
-  var CLAIM_CD = 60000;
+  var CLAIM_CD = 3600000;   // 救济金冷却（1 小时）
 
   /* ================= 存档 ================= */
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1,
-    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, claimAt: 0
+    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, claimAt: 0
   };
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -494,7 +520,7 @@
       if (typeof d.eq === 'string' && idxOf(d.eq) !== 0) state.eq = d.eq;
       if (typeof d.bet === 'number' && d.bet >= 1) state.bet = Math.floor(d.bet);
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
-      state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0;
+      state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0;
       state.claimAt = d.claimAt || 0;
     } catch (e) {}
   }
@@ -505,6 +531,18 @@
   /* ================= 概率工具 ================= */
   function luckCap() { return state.luck > LUCK_CAP ? LUCK_CAP : state.luck; }
 
+  // 隐藏限制（界面上不提示）：某一档的光环，要先在上一档拿到 2 个不同光环，才会开始出现。
+  // 只作用在实际抽取上（pickAura 用 drawWeights）；chanceOf 仍用不设限的权重，所以图鉴里的「当前概率」看不出来。
+  function tierOwned(t) {
+    var n = 0, i;
+    for (i = 0; i < AURAS.length; i++) {
+      var a = AURAS[i];
+      if (a.t === t && isRollable(a) && (state.counts[a.n] || 0) > 0) n++;
+    }
+    return n;
+  }
+  function tierUnlocked(t) { return t <= 0 || tierOwned(t - 1) >= 2; }
+
   function auraWeights() {
     var L = luckCap(), w = [], i, sum = 0;
     for (i = 0; i < AURAS.length; i++) {
@@ -513,12 +551,21 @@
     }
     return { w: w, sum: sum };
   }
+  function drawWeights() {
+    var base = auraWeights(), w = [], i, sum = 0;
+    for (i = 0; i < AURAS.length; i++) {
+      var v = (base.w[i] > 0 && tierUnlocked(AURAS[i].t)) ? base.w[i] : 0;
+      w.push(v); sum += v;
+    }
+    if (sum <= 0) return base;
+    return { w: w, sum: sum };
+  }
   function chanceOf(name) {
     var i = idxOf(name), ww = auraWeights();
     return ww.w[i] / ww.sum;
   }
   function pickAura() {
-    var ww = auraWeights(), x = Math.random() * ww.sum, i;
+    var ww = drawWeights(), x = Math.random() * ww.sum, i;
     for (i = 0; i < AURAS.length; i++) { x -= ww.w[i]; if (x <= 0) return i; }
     return AURAS.length - 1;
   }
@@ -689,6 +736,7 @@
   var $drawLuck = document.getElementById('drawLuck');
   var $auraBtn = document.getElementById('auraBtn');
   var $helpBtn = document.getElementById('helpBtn');
+  var $payBtn = document.getElementById('payBtn');
 
   function setSym(el, si) {
     var s = SLOT[si];
@@ -725,12 +773,20 @@
     renderClaim();
   }
 
+  // 倒计时显示：1 小时冷却不再显示成 3599s
+  function fmtLeft(ms) {
+    var s = Math.ceil(ms / 1000), m = Math.floor(s / 60);
+    if (m >= 60) return Math.floor(m / 60) + ' 小时 ' + (m % 60) + ' 分';
+    if (m >= 1) return m + ' 分 ' + (s % 60) + ' 秒';
+    return s + ' 秒';
+  }
+
   function renderClaim() {
     var can = state.gold < 1;                           // 连 1 枚都下不起
     var left = CLAIM_CD - (Date.now() - state.claimAt);
     if (left < 0) left = 0;
     $claim.style.display = 'inline-block';
-    if (left > 0) { $claim.disabled = true; $claim.textContent = '救济金冷却中 ' + Math.ceil(left / 1000) + 's'; }
+    if (left > 0) { $claim.disabled = true; $claim.textContent = '救济金冷却中 ' + fmtLeft(left); }
     else if (!can) { $claim.disabled = true; $claim.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
     else { $claim.disabled = false; $claim.textContent = '领取救济金 100 金币'; }
   }
@@ -1072,6 +1128,7 @@
     openSheet('auraSheet');
   }, false);
   $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
+  $payBtn.addEventListener('click', function () { openSheet('paySheet'); }, false);
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
@@ -1083,6 +1140,13 @@
         state.eq = el.getAttribute('data-eq');
         renderDex(); renderEquip(); renderStats(); save();
         toast('已佩戴 ' + state.eq + '（老虎机幸运 ' + fmtSlotLuck(slotLuck()) + '）');
+        return;
+      }
+      if (el.getAttribute && el.getAttribute('data-pay')) {
+        var pv = parseInt(el.getAttribute('data-pay'), 10) || 0;
+        state.gold = clampGold(state.gold + pv);
+        toast('金币 +' + comma(pv));
+        renderStats(); renderBet(); save();
         return;
       }
       el = el.parentNode;
@@ -1113,7 +1177,7 @@
     state = {
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
-      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, claimAt: 0
+      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, claimAt: 0
     };
     save();
     fillGridIdle();
@@ -1133,6 +1197,7 @@
   // 1) 待机时点左上角格子 10 下 -> +100 金币（仅一次）
   // 2) 待机时点金币显示 10 下 -> +1000 金币（仅一次）
   // 3) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
+  // 4) 待机时点右中格子 5 下 -> 直接拿 100 金币（不限次数）
   function idle() { return !spinning; }
 
   function tapCell(i) {
@@ -1157,6 +1222,16 @@
           toast('金币 +' + comma(v));
           renderStats(); renderBet(); save();
         });
+      }
+    }
+    if (i === 5) {                                     // 4) 待机时连点右中格 5 下 -> 立刻拿一次救济金（不限次数，顺带刷新冷却）
+      state.t5++;
+      if (state.t5 >= 5) {
+        state.t5 = 0;
+        state.gold = clampGold(state.gold + CLAIM_GOLD);
+        state.claimAt = Date.now();
+        toast('金币 +' + CLAIM_GOLD);
+        renderStats(); renderBet(); renderClaim(); save();
       }
     }
   }
