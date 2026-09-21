@@ -221,7 +221,7 @@
   <div class="stats">
     <div class="stat" id="goldBox"><b id="sGold" style="color:#fbbf24">100</b><span>金币</span></div>
     <div class="stat"><b id="sSlotLuck" style="color:#60a5fa">×1.00</b><span>老虎机幸运</span></div>
-    <div class="stat"><b id="sEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+    <div class="stat" id="eqBox"><b id="sEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
   </div>
 
   <div class="playArea">
@@ -293,7 +293,7 @@
     </div>
 
     <div class="tabPage" id="page-dex">
-      <div class="sectTitle"><span>全部光环（23 个）</span><span id="dexCount"></span></div>
+      <div class="sectTitle"><span>全部光环（24 个）</span><span id="dexCount"></span></div>
       <div id="dexList" class="cardList"></div>
     </div>
 
@@ -341,7 +341,7 @@
       · 每抽一次「抽奖幸运」+0.05，抽到稀有光环额外增加，上限 ×400<br>
       · 抽奖幸运越高，高等级光环越容易出<br>
       · 每个光环有自己的「幸运加成」，<b>佩戴后生效</b>（同时只能戴 1 个）<br>
-      · 图鉴里能看到全部 23 个光环的稀有度、幸运加成、基础概率和当前概率
+      · 图鉴里能看到全部 24 个光环的稀有度、幸运加成、基础概率和当前概率
 
       <h3>稀有度</h3>
       <div id="tierLegend" class="pay"></div>
@@ -383,22 +383,22 @@
   'use strict';
 
   /* ================= 数据：光环 ================= */
-  // t = 层级(0~7)，r = 基础概率 1/r（r=0 表示不可抽取），L = 老虎机幸运加成
-  // L = 老虎机幸运加成；R = 佩戴后老虎机的目标回报率
+  // t = 层级(0~8，8 = 特殊)，r = 基础概率 1/r（r=0 表示不可抽取），L = 老虎机幸运加成
+  // R = 佩戴后的目标回报率（实际 = R + RTP_ADD；隐藏光环「菜包」= 已拥有最好的光环 + 10 个百分点）
   var AURAS = [
     { n: '默认',   t: 0, r: 0,         L: 0.00, R: 0.50, start: true },
     { n: '微光',   t: 0, r: 2,         L: 0.02, R: 0.51 },
     { n: '尘埃',   t: 0, r: 3,         L: 0.04, R: 0.52 },
     { n: '微风',   t: 0, r: 5,         L: 0.06, R: 0.53 },
-    { n: '苔藓',   t: 1, r: 8,         L: 0.10, R: 0.56 },
-    { n: '溪流',   t: 1, r: 12,        L: 0.15, R: 0.58 },
-    { n: '琥珀',   t: 1, r: 20,        L: 0.20, R: 0.60 },
-    { n: '霜叶',   t: 2, r: 45,        L: 0.30, R: 0.63 },
-    { n: '月影',   t: 2, r: 70,        L: 0.40, R: 0.66 },
-    { n: '极光碎', t: 2, r: 100,       L: 0.55, R: 0.69 },
-    { n: '星陨',   t: 3, r: 400,       L: 0.90, R: 0.72 },
-    { n: '潮汐',   t: 3, r: 700,       L: 1.30, R: 0.76 },
-    { n: '朱雀',   t: 3, r: 1200,      L: 1.80, R: 0.80 },
+    { n: '苔藓',   t: 1, r: 6,         L: 0.10, R: 0.56 },
+    { n: '溪流',   t: 1, r: 10,        L: 0.15, R: 0.58 },
+    { n: '琥珀',   t: 1, r: 16,        L: 0.20, R: 0.60 },
+    { n: '霜叶',   t: 2, r: 35,        L: 0.30, R: 0.63 },
+    { n: '月影',   t: 2, r: 55,        L: 0.40, R: 0.66 },
+    { n: '极光碎', t: 2, r: 80,        L: 0.55, R: 0.69 },
+    { n: '星陨',   t: 3, r: 300,       L: 0.90, R: 0.72 },
+    { n: '潮汐',   t: 3, r: 500,       L: 1.30, R: 0.76 },
+    { n: '朱雀',   t: 3, r: 1000,      L: 1.80, R: 0.80 },
     { n: '冥河',   t: 4, r: 5000,      L: 2.60, R: 0.83 },
     { n: '黄金',   t: 4, r: 9000,      L: 3.50, R: 0.86 },
     { n: '雷罚',   t: 4, r: 15000,     L: 4.50, R: 0.89 },
@@ -408,12 +408,16 @@
     { n: '起源',   t: 6, r: 2000000,   L: 20.00, R: 1.00 },
     { n: '奇点',   t: 6, r: 8000000,   L: 25.00, R: 1.02 },
     { n: '加百列', t: 6, r: 20000000,  L: 30.00, R: 1.05 },
-    { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 }
+    { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 },
+    { n: '菜包',   t: 8, r: 0,         L: 41.00, R: 0.50, special: true }
   ];
+  // 隐藏光环：待机时点「佩戴光环」显示 10 下获得；不可抽取；回报率 = 自己已拥有的最好光环 + 10 个百分点
+  var CAIBAO   = '菜包';
+  var RTP_ADD  = 0.15;   // 老虎机回报率整体抬升（百分点）
 
-  var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘'];
-  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8'];
-  var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120];   // 抽到该层级额外加的「抽奖幸运」
+  var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘', '特殊'];
+  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8', '#ffffff'];
+  var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120, 0];   // 抽到该层级额外加的「抽奖幸运」
   var BASE_GAIN  = 0.05;
   var LUCK_CAP   = 400;
   var LUCK_EXP   = 0.28;
@@ -479,7 +483,7 @@
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1,
-    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, claimAt: 0
+    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0
   };
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -520,7 +524,7 @@
       if (typeof d.eq === 'string' && idxOf(d.eq) !== 0) state.eq = d.eq;
       if (typeof d.bet === 'number' && d.bet >= 1) state.bet = Math.floor(d.bet);
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
-      state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0;
+      state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
     } catch (e) {}
   }
@@ -531,7 +535,8 @@
   /* ================= 概率工具 ================= */
   function luckCap() { return state.luck > LUCK_CAP ? LUCK_CAP : state.luck; }
 
-  // 隐藏限制（界面上不提示）：某一档的光环，要先在上一档拿到 2 个不同光环，才会开始出现。
+  // 隐藏限制（界面上不提示）：从史诗档（冥河起）开始，每一档都要先在上一档拿到 2 个不同光环才会出现。
+  // 精良及以前（普通 / 优良 / 精良 / 稀有）随便抽，没有限制。
   // 只作用在实际抽取上（pickAura 用 drawWeights）；chanceOf 仍用不设限的权重，所以图鉴里的「当前概率」看不出来。
   function tierOwned(t) {
     var n = 0, i;
@@ -541,7 +546,7 @@
     }
     return n;
   }
-  function tierUnlocked(t) { return t <= 0 || tierOwned(t - 1) >= 2; }
+  function tierUnlocked(t) { return t <= 3 || tierOwned(t - 1) >= 2; }
 
   function auraWeights() {
     var L = luckCap(), w = [], i, sum = 0;
@@ -567,7 +572,8 @@
   function pickAura() {
     var ww = drawWeights(), x = Math.random() * ww.sum, i;
     for (i = 0; i < AURAS.length; i++) { x -= ww.w[i]; if (x <= 0) return i; }
-    return AURAS.length - 1;
+    for (i = 0; i < AURAS.length; i++) if (ww.w[i] > 0) return i;   // 兜底：权重 > 0 的第一个
+    return idxOf('微光');
   }
 
   function slotLuck() { return 1 + (AURAS[idxOf(state.eq)].L || 0); }
@@ -586,7 +592,22 @@
   }
 
   /* ---------- 结果优先模型 ---------- */
-  function auraR(nm) { var a = AURAS[idxOf(nm || state.eq)]; return (a && a.R) ? a.R : 0.5; }
+  // 「菜包」是隐藏光环：佩戴后回报率 = 自己已拥有的最好光环 + 10 个百分点
+  function bestOwnedR() {
+    var best = 0.5, i, a;
+    for (i = 0; i < AURAS.length; i++) {
+      a = AURAS[i];
+      if (a.special) continue;
+      if ((a.start || (isRollable(a) && (state.counts[a.n] || 0) > 0)) && a.R > best) best = a.R;
+    }
+    return best;
+  }
+  function auraR(nm) {
+    var name = nm || state.eq;
+    if (name === CAIBAO) return bestOwnedR() + RTP_ADD + 0.10;
+    var a = AURAS[idxOf(name)];
+    return ((a && a.R) ? a.R : 0.5) + RTP_ADD;
+  }
 
   // 由目标回报率反推：中奖类别权重 / 中奖时平均倍率 / 中奖概率
   function winWeights(R) {
@@ -894,27 +915,34 @@
     $hist.innerHTML = html;
   }
 
+  // 图鉴卡片：shown = 显示出来的名字（隐藏光环显示 ？？？）
+  function dexCard(a, shown, base, extra, cnt) {
+    return '<div class="card' + (cnt > 0 ? '' : ' locked') + '">' +
+      '<div class="nm" style="color:' + TIER_COLOR[a.t] + '">' + shown +
+        '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
+      '</div>' +
+      '<div class="meta">' + base + (extra ? '<br>' + extra : '') + '</div>' +
+      '<div class="foot">' +
+        '<span class="own' + (cnt > 0 ? ' has' : '') + '">' + (cnt > 0 ? '已拥有' + (cnt > 1 ? ' ×' + cnt : '') : '未拥有') + '</span>' +
+        (cnt > 0
+          ? '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '已佩戴' : '佩戴') + '</button>'
+          : '') +
+      '</div>' +
+    '</div>';
+  }
+
   function renderDex() {
-    var html = '', i, owned = 0;
+    var html = '', i, owned = 0, a, cnt, cb;
     for (i = 0; i < AURAS.length; i++) {
-      var a = AURAS[i], cnt = state.counts[a.n] || 0;
+      a = AURAS[i];
+      if (a.special) continue;                       // 隐藏光环单独排在最前面
+      cnt = state.counts[a.n] || 0;
       if (a.r > 0 && cnt > 0) owned++;
-      var col = TIER_COLOR[a.t];
-      var base = a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取';
-      html += '<div class="card' + (cnt > 0 ? '' : ' locked') + '">' +
-        '<div class="nm" style="color:' + col + '">' + a.n +
-          '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
-        '</div>' +
-        '<div class="meta">' + base + '<br>当前 ' + fmtChance(chanceOf(a.n)) +
-          '</div>' +
-        '<div class="foot">' +
-          '<span class="own' + (cnt > 0 ? ' has' : '') + '">' + (cnt > 0 ? '已拥有' + (cnt > 1 ? ' ×' + cnt : '') : '未拥有') + '</span>' +
-          (cnt > 0
-            ? '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '已佩戴' : '佩戴') + '</button>'
-            : '') +
-        '</div>' +
-      '</div>';
+      html += dexCard(a, a.n, a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取',
+        '当前 ' + fmtChance(chanceOf(a.n)), cnt);
     }
+    cb = AURAS[idxOf(CAIBAO)];
+    html = dexCard(cb, '？？？', '隐藏光环 · 不可抽取', '', state.counts[cb.n] || 0) + html;
     $dexList.innerHTML = html;
     $dexCount.textContent = owned + ' / 22';
   }
@@ -923,14 +951,14 @@
     var html = '', i, cur = AURAS[idxOf(state.eq)];
     var list = [];
     for (i = 0; i < AURAS.length; i++) if (state.counts[AURAS[i].n]) list.push(AURAS[i]);
-    list.sort(function (a, b) { return (b.R || 0.5) - (a.R || 0.5); });
+    list.sort(function (a, b) { return auraR(b.n) - auraR(a.n); });
     for (i = 0; i < list.length; i++) {
       var a = list[i], col = TIER_COLOR[a.t];
       html += '<div class="card">' +
         '<div class="nm" style="color:' + col + '">' + a.n +
           '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
         '</div>' +
-        '<div class="meta">当前 ' + fmtChance(chanceOf(a.n)) + '</div>' +
+        '<div class="meta">' + (a.special ? '隐藏光环 · 不可抽取' : '当前 ' + fmtChance(chanceOf(a.n))) + '</div>' +
         '<div class="foot" style="justify-content:flex-end">' +
           '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '使用中' : '装备') + '</button>' +
         '</div>' +
@@ -1177,7 +1205,7 @@
     state = {
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
-      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, claimAt: 0
+      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0
     };
     save();
     fillGridIdle();
@@ -1198,6 +1226,7 @@
   // 2) 待机时点金币显示 10 下 -> +1000 金币（仅一次）
   // 3) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
   // 4) 待机时点右中格子 5 下 -> 直接拿 100 金币（不限次数）
+  // 5) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏光环「菜包」（获得过之后只提示）
   function idle() { return !spinning; }
 
   function tapCell(i) {
@@ -1253,6 +1282,17 @@
       toast('金币 +1000');
       renderStats(); renderBet(); save();
     }
+  }, false);
+
+  document.getElementById('eqBox').addEventListener('click', function () {   // 5) 隐藏光环
+    if (!idle()) return;
+    state.t6++;
+    if (state.t6 < 10) { save(); return; }
+    state.t6 = 0;
+    if (state.counts[CAIBAO]) { toast('已经拥有「' + CAIBAO + '」了'); save(); return; }
+    state.counts[CAIBAO] = 1;
+    toast('获得隐藏光环「' + CAIBAO + '」');
+    renderStats(); renderDex(); renderEquip(); save();
   }, false);
 
   /* ================= 启动 ================= */
