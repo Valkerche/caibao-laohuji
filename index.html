@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0b0f">
+<meta name="apple-mobile-web-app-title" content="给菜包的老虎机">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>给菜包的老虎机</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    background: #0b0b0f; color: #e8ecf2;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    font-size: 16px; line-height: 1.5; -webkit-text-size-adjust: 100%; overflow-x: hidden;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 14px calc(96px + env(safe-area-inset-bottom)); }
+
+  /* 顶部数据条 */
+  .stats { display: flex; border: 1px solid #23252e; border-radius: 10px; overflow: hidden; }
+  .stat { flex: 1; padding: 8px 4px; text-align: center; border-right: 1px solid #23252e; min-width: 0; }
+  .stat:last-child { border-right: 0; }
+  .stat b { display: block; font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat span { font-size: 11px; color: #6b7280; }
+  #goldBox { cursor: default; }
+  #goldBox:active { background: #14151c; }
+
+  /* 九宫格 */
+  .grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .cell {
+    position: relative; aspect-ratio: 1 / 1; border: 1px solid #23252e; border-radius: 12px;
+    background: #111219; display: flex; align-items: center; justify-content: center;
+    font-size: 34px; line-height: 1; overflow: hidden; transition: border-color .12s, background .12s;
+  }
+  .cell .sym { font-size: 34px; font-weight: 700; }
+  .cell .sym.txt { font-size: 20px; letter-spacing: 1px; }
+  .cell.spin { opacity: .55; }
+  .cell.win { border-color: #fbbf24; background: #1b1a12; box-shadow: 0 0 14px #fbbf2455 inset; }
+  .cell.stop { animation: pop .18s ease-out; }
+  @keyframes pop { 0% { transform: scale(.86); opacity: .55; } 100% { transform: scale(1); opacity: 1; } }
+  /* 老版微信 X5 / iOS 14 不支持 aspect-ratio 时的兜底，保证格子有高度 */
+  @supports not (aspect-ratio: 1 / 1) { .cell { min-height: 92px; } }
+
+  /* 中奖提示 */
+  #result { margin-top: 12px; min-height: 44px; text-align: center; }
+  #resultMain { font-size: 17px; font-weight: 700; }
+  #resultSub { margin-top: 4px; font-size: 11px; color: #6b7280; word-break: break-all; }
+  #lineList { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  #lineList span { font-size: 11px; padding: 2px 6px; border: 1px solid #2b2d38; border-radius: 5px; color: #9aa3b2; }
+
+  /* 下注 */
+  .betTitle { margin-top: 14px; font-size: 11px; color: #6b7280; }
+  .betRow { margin-top: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .betBtn {
+    height: 42px; border: 1px solid #262835; border-radius: 9px; background: #14151d; color: #cfd6e2;
+    font-size: 15px; font-weight: 700; font-family: inherit; touch-action: manipulation;
+  }
+  .betBtn.on { border-color: #fbbf24; color: #fbbf24; background: #1c1a12; }
+  .betBtn:disabled { opacity: .3; }
+  #betInfo { margin-top: 8px; font-size: 12px; color: #8b93a3; text-align: center; }
+  #betInfo b { color: #fbbf24; }
+
+  /* 九宫格 + 右侧真拉杆 */
+  .playArea { margin-top: 14px; display: flex; align-items: stretch; gap: 10px; }
+  .playArea .grid { margin-top: 0; flex: 1 1 auto; min-width: 0; }
+  #leverCol { flex: 0 0 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #lever {
+    position: relative; width: 46px; height: 150px; padding: 0; border: 1px solid #2a2d38;
+    border-radius: 23px; background: linear-gradient(#15161e, #0e0f15); font-family: inherit;
+    touch-action: none; -webkit-user-select: none; user-select: none; overflow: hidden;
+    transition: opacity .15s, border-color .15s;
+  }
+  #lever::before {
+    content: ''; position: absolute; left: 50%; top: 34px; bottom: 10px; width: 9px; margin-left: -4px;
+    border-radius: 5px; background: #23263a;
+  }
+  #leverKnob {
+    position: absolute; left: 50%; top: 8px; width: 34px; height: 34px; margin-left: -17px;
+    border-radius: 50%; background: radial-gradient(circle at 34% 28%, #fff6d8, #fbbf24 58%, #a15c07);
+    box-shadow: 0 0 10px #fbbf2466, 0 2px 6px #0008; transition: transform .22s cubic-bezier(.3,1.4,.6,1);
+  }
+  #lever:disabled { opacity: .35; }
+  .leverTip { margin-top: 6px; font-size: 11px; color: #6b7280; letter-spacing: 1px; }
+  #claimWrap { margin-top: 8px; text-align: center; }
+  #claim {
+    padding: 7px 14px; border: 1px solid #3d3320; border-radius: 8px; background: #1a160e;
+    color: #fbbf24; font-size: 12px; font-family: inherit; touch-action: manipulation;
+  }
+  #claim:disabled { opacity: .35; color: #6b7280; border-color: #262835; background: #14151d; }
+  .hint { margin-top: 10px; font-size: 11px; color: #4b5563; line-height: 1.7; text-align: center; }
+
+  /* 角落按钮 */
+  .corner {
+    position: fixed; z-index: 40; width: 54px; height: 54px; border-radius: 50%;
+    border: 1px solid #2b2d38; background: #16171f; color: #e8ecf2; font-size: 24px;
+    font-family: inherit; touch-action: manipulation; box-shadow: 0 4px 16px #0009;
+  }
+  .corner:active { transform: scale(.94); }
+  #auraBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); }
+  #helpBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+
+  /* 弹层 */
+  .sheet {
+    position: fixed; inset: 0; z-index: 60; display: none;
+    background: #000a; padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
+    align-items: flex-end;
+  }
+  .sheet.open { display: flex; }
+  .panel {
+    width: 100%; max-width: 520px; margin: 0 auto; max-height: 86vh; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #0f1016; border: 1px solid #262835; border-radius: 14px; padding: 14px;
+  }
+  .panel h2 { font-size: 16px; margin-bottom: 4px; }
+  .panel .close { float: right; margin-top: -30px; color: #6b7280; font-size: 22px; line-height: 1; }
+  .tabs { display: flex; gap: 6px; margin: 10px 0 12px; }
+  .tab {
+    flex: 1; height: 38px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
+    color: #8b93a3; font-size: 13px; font-family: inherit; touch-action: manipulation;
+  }
+  .tab.on { border-color: #60a5fa; color: #60a5fa; background: #111826; }
+  .tabPage { display: none; }
+  .tabPage.on { display: block; }
+
+  /* 抽奖区 */
+  .stage {
+    min-height: 150px; padding: 16px 10px; border: 1px solid #23252e; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  }
+  #auraName { font-size: 30px; font-weight: 800; letter-spacing: 2px; line-height: 1.2; word-break: break-all; }
+  #auraName.pulse { animation: pulse .12s linear infinite alternate; }
+  @keyframes pulse { from { opacity: .55 } to { opacity: 1 } }
+  #auraName.rare { animation: rareflip .25s linear infinite alternate; }
+  @keyframes rareflip { from { opacity: .3; transform: scale(.97) } to { opacity: 1; transform: scale(1.03) } }
+  .tierLine { margin-top: 8px; font-size: 13px; letter-spacing: 1px; }
+  .odds { margin-top: 3px; font-size: 12px; color: #6b7280; }
+  .gain { margin-top: 6px; font-size: 13px; color: #4ade80; }
+  .newTag { margin-top: 6px; font-size: 12px; font-weight: 700; color: #0b0b0f; background: #fbbf24; border-radius: 4px; padding: 1px 7px; display: inline-block; }
+  .idle { font-size: 14px; color: #4b5563; }
+  #rollBtn {
+    margin-top: 12px; width: 100%; height: 54px; border: 0; border-radius: 12px;
+    background: #e8ecf2; color: #0b0b0f; font-size: 19px; font-weight: 800; letter-spacing: 3px;
+    font-family: inherit; touch-action: manipulation;
+  }
+  #rollBtn:disabled { opacity: .45; }
+
+  /* 通用列表 */
+  .sectTitle { margin: 16px 0 8px; font-size: 12px; color: #6b7280; display: flex; justify-content: space-between; }
+  .hist { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 12px; padding: 3px 8px; border: 1px solid #23252e; border-radius: 6px; }
+  .empty { font-size: 12px; color: #374151; }
+
+  /* 图鉴 / 佩戴：网格卡片 */
+  .cardList { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .card {
+    border: 1px solid #23252e; border-radius: 10px; background: #101118; padding: 9px 10px;
+    display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  }
+  .card .nm { font-weight: 700; font-size: 14px; line-height: 1.3; }
+  .card .tag { display: block; font-size: 10px; color: #6b7280; font-weight: 400; }
+  .card .meta { font-size: 10px; color: #6b7280; line-height: 1.55; word-break: break-all; }
+  .card .meta b { color: #9aa3b2; font-weight: 400; }
+  .card.locked .nm { opacity: .38; }
+  .card .foot { margin-top: 3px; display: flex; align-items: center; justify-content: space-between; gap: 4px; min-height: 22px; }
+  .card .own { font-size: 11px; color: #4b5563; }
+  .card .own.has { color: #4ade80; }
+  .eq {
+    flex: 0 0 auto; padding: 4px 9px; border: 1px solid #2b6cb0; border-radius: 7px; background: #0e1626;
+    color: #60a5fa; font-size: 11px; font-family: inherit; touch-action: manipulation;
+  }
+  .eq.on { border-color: #4ade80; color: #4ade80; background: #0e1a12; }
+
+  /* 规则 */
+  .rules { font-size: 13px; color: #c3cad6; line-height: 1.8; }
+  .rules h3 { font-size: 13px; color: #fbbf24; margin: 14px 0 4px; }
+  .rules .pay { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .rules .pay span { font-size: 12px; padding: 4px 8px; border: 1px solid #262835; border-radius: 6px; }
+  .rules small { color: #6b7280; }
+  #reset { display: inline-block; margin-top: 16px; font-size: 11px; color: #374151; text-decoration: underline; }
+
+  /* 输入弹层 */
+  .promptRow { display: flex; gap: 8px; margin-top: 12px; }
+  .promptRow input {
+    flex: 1; height: 48px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
+    color: #e8ecf2; font-size: 18px; font-family: inherit; padding: 0 12px; text-align: center;
+  }
+  .promptRow button {
+    flex: 0 0 88px; height: 48px; border: 0; border-radius: 9px; background: #e8ecf2; color: #0b0b0f;
+    font-size: 16px; font-weight: 700; font-family: inherit; touch-action: manipulation;
+  }
+  .promptRow button.ghost { background: #14151d; color: #8b93a3; border: 1px solid #262835; }
+  .promptTip { margin-top: 8px; font-size: 11px; color: #6b7280; }
+
+  /* toast */
+  #toast {
+    position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+    z-index: 80; padding: 8px 16px; border-radius: 20px; background: #e8ecf2; color: #0b0b0f;
+    font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity .2s;
+    white-space: nowrap;
+  }
+  #toast.on { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="stats">
+    <div class="stat" id="goldBox"><b id="sGold" style="color:#fbbf24">100</b><span>金币</span></div>
+    <div class="stat"><b id="sSlotLuck" style="color:#60a5fa">×1.00</b><span>老虎机幸运</span></div>
+    <div class="stat"><b id="sEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+  </div>
+
+  <div class="playArea">
+  <div class="grid" id="grid">
+    <div class="cell" data-i="0"><span class="sym"></span></div>
+    <div class="cell" data-i="1"><span class="sym"></span></div>
+    <div class="cell" data-i="2"><span class="sym"></span></div>
+    <div class="cell" data-i="3"><span class="sym"></span></div>
+    <div class="cell" data-i="4"><span class="sym"></span></div>
+    <div class="cell" data-i="5"><span class="sym"></span></div>
+    <div class="cell" data-i="6"><span class="sym"></span></div>
+    <div class="cell" data-i="7"><span class="sym"></span></div>
+    <div class="cell" data-i="8"><span class="sym"></span></div>
+  </div>
+  <div id="leverCol">
+    <button id="lever" title="拉杆" aria-label="拉杆"><span id="leverKnob"></span></button>
+    <span class="leverTip">拉</span>
+  </div>
+  </div>
+
+  <div id="result">
+    <div id="resultMain" style="color:#4b5563">选好下注，拉右边的拉杆开始</div>
+    <div id="resultSub"></div>
+    <div id="lineList"></div>
+  </div>
+
+  <div class="betTitle">本局下注（中奖线按 下注 × 符号倍率 全额赔）</div>
+  <div class="betRow" id="betRow">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+  <div id="betInfo"></div>
+
+  <div id="claimWrap"><button id="claim">领取救济金 100</button></div>
+</div>
+
+<button class="corner" id="helpBtn">❓</button>
+<button class="corner" id="auraBtn">💥</button>
+<div id="toast"></div>
+
+<!-- 光环面板 -->
+<div class="sheet" id="auraSheet">
+  <div class="panel">
+    <span class="close" data-close="auraSheet">×</span>
+    <h2>💥 光环抽取 <small style="font-size:11px;color:#6b7280">（不花金币）</small></h2>
+    <div class="tabs">
+      <button class="tab on" data-tab="draw">抽取</button>
+      <button class="tab" data-tab="dex">图鉴</button>
+      <button class="tab" data-tab="equip">佩戴</button>
+    </div>
+
+    <div class="tabPage on" id="page-draw">
+      <div class="stage">
+        <div id="auraName" class="idle">点下方按钮开始</div>
+        <div class="tierLine" id="tierLine"></div>
+        <div class="odds" id="oddsLine"></div>
+        <div id="newSlot"></div>
+        <div id="gainSlot"></div>
+      </div>
+      <button id="rollBtn">抽 奖</button>
+      <div class="hint">抽奖幸运影响的是「抽光环」的概率，与老虎机幸运是两套<br>每抽 +0.05，抽到高稀有度额外增加，上限 ×400</div>
+      <div class="sectTitle"><span>最近获得</span><span id="drawLuck"></span></div>
+      <div class="hist" id="hist"><span class="empty">还没有记录</span></div>
+    </div>
+
+    <div class="tabPage" id="page-dex">
+      <div class="sectTitle"><span>全部光环（23 个）</span><span id="dexCount"></span></div>
+      <div id="dexList" class="cardList"></div>
+    </div>
+
+    <div class="tabPage" id="page-equip">
+      <div class="sectTitle"><span>已拥有（点卡片右下角装备）</span><span id="eqInfo"></span></div>
+      <div id="eqList" class="cardList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 规则面板 -->
+<div class="sheet" id="helpSheet">
+  <div class="panel">
+    <span class="close" data-close="helpSheet">×</span>
+    <h2>❓ 玩法与规则</h2>
+    <div class="rules">
+      <h3>九宫格老虎机</h3>
+      · 3×3 九宫格，共 <b>8 条中奖线</b>：3 横 + 3 竖 + 2 条对角<br>
+      · 同一条线上出现 3 个相同符号即中奖；<b>🃏Wild 可以替代任意符号</b><br>
+      · 中奖奖金 = <b>本局下注 × 符号倍率</b>（不是 1/8 的份额）<br>
+      · 拉一次杆只扣 <b>本局下注</b> 这么多金币<br>
+      · 一局最多只会中 <b>一条线</b>（不会出现两条线同时中奖）<br>
+      · 🍒樱桃特殊：<b>2 个樱桃</b>在同一线上也赔 ×2（3 个赔 ×3）
+
+      <h3>赔率表</h3>
+      <div class="pay">
+        <span style="color:#ff6b81">🍒 ×2（2个）／×3（3个）</span>
+        <span style="color:#ffe066">🍋 柠檬 ×5</span>
+        <span style="color:#ffa94d">🍊 橙子 ×5</span>
+        <span style="color:#7aa2ff">🫐 李子 ×5</span>
+        <span style="color:#ffd43b">🔔 铃铛 ×8</span>
+        <span style="color:#b197fc">🍇 葡萄 ×10</span>
+        <span style="color:#f1f3f5">BAR ×15</span>
+        <span style="color:#ff6b6b">7️⃣ 幸运七 ×20</span>
+        <span style="color:#66d9e8">💎 钻石 ×50</span>
+        <span style="color:#ff9ff3">🃏🃏🃏 三个Wild ×100</span>
+      </div>
+
+      <h3>金币</h3>
+      · 起手 100 金币；赢的钱 = 本局下注 × 符号倍率<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（60 秒冷却）<br>
+      · 所有进度自动保存在本机
+
+      <h3>💥 光环（附加玩法，不花金币）</h3>
+      · 每抽一次「抽奖幸运」+0.05，抽到稀有光环额外增加，上限 ×400<br>
+      · 抽奖幸运越高，高等级光环越容易出<br>
+      · 每个光环有自己的「幸运加成」，<b>佩戴后生效</b>（同时只能戴 1 个）<br>
+      · 图鉴里能看到全部 23 个光环的稀有度、幸运加成、基础概率和当前概率
+
+      <h3>稀有度</h3>
+      <div id="tierLegend" class="pay"></div>
+      <small>抽奖幸运是光环抽取用的，老虎机幸运由佩戴光环提供，两者互不影响。</small>
+      <div><a id="reset" href="#">重置全部进度</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- 数字输入弹层 -->
+<div class="sheet" id="promptSheet">
+  <div class="panel">
+    <h2 id="promptTitle">输入数字</h2>
+    <div class="promptRow">
+      <input id="promptInput" type="tel" inputmode="numeric" autocomplete="off">
+      <button id="promptOk">确定</button>
+    </div>
+    <div class="promptRow"><button class="ghost" id="promptCancel" style="flex:1">取消</button></div>
+    <div class="promptTip" id="promptTip"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================= 数据：光环 ================= */
+  // t = 层级(0~7)，r = 基础概率 1/r（r=0 表示不可抽取），L = 老虎机幸运加成
+  // L = 老虎机幸运加成；R = 佩戴后老虎机的目标回报率
+  var AURAS = [
+    { n: '默认',   t: 0, r: 0,         L: 0.00, R: 0.50, start: true },
+    { n: '微光',   t: 0, r: 2,         L: 0.02, R: 0.51 },
+    { n: '尘埃',   t: 0, r: 3,         L: 0.04, R: 0.52 },
+    { n: '微风',   t: 0, r: 5,         L: 0.06, R: 0.53 },
+    { n: '苔藓',   t: 1, r: 8,         L: 0.10, R: 0.56 },
+    { n: '溪流',   t: 1, r: 12,        L: 0.15, R: 0.58 },
+    { n: '琥珀',   t: 1, r: 20,        L: 0.20, R: 0.60 },
+    { n: '霜叶',   t: 2, r: 45,        L: 0.30, R: 0.63 },
+    { n: '月影',   t: 2, r: 70,        L: 0.40, R: 0.66 },
+    { n: '极光碎', t: 2, r: 100,       L: 0.55, R: 0.69 },
+    { n: '星陨',   t: 3, r: 400,       L: 0.90, R: 0.72 },
+    { n: '潮汐',   t: 3, r: 700,       L: 1.30, R: 0.76 },
+    { n: '朱雀',   t: 3, r: 1200,      L: 1.80, R: 0.80 },
+    { n: '冥河',   t: 4, r: 5000,      L: 2.60, R: 0.83 },
+    { n: '黄金',   t: 4, r: 9000,      L: 3.50, R: 0.86 },
+    { n: '雷罚',   t: 4, r: 15000,     L: 4.50, R: 0.89 },
+    { n: '苍穹',   t: 5, r: 80000,     L: 7.00, R: 0.92 },
+    { n: '无相',   t: 5, r: 200000,    L: 10.00, R: 0.95 },
+    { n: '逆光',   t: 5, r: 500000,    L: 14.00, R: 0.98 },
+    { n: '起源',   t: 6, r: 2000000,   L: 20.00, R: 1.00 },
+    { n: '奇点',   t: 6, r: 8000000,   L: 25.00, R: 1.02 },
+    { n: '加百列', t: 6, r: 20000000,  L: 30.00, R: 1.05 },
+    { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 }
+  ];
+
+  var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘'];
+  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8'];
+  var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120];   // 抽到该层级额外加的「抽奖幸运」
+  var BASE_GAIN  = 0.05;
+  var LUCK_CAP   = 400;
+  var LUCK_EXP   = 0.28;
+  var KEY = 'solrng_lite_v1';
+
+  function idxOf(name) { for (var i = 0; i < AURAS.length; i++) if (AURAS[i].n === name) return i; return 0; }
+  function isRollable(a) { return a.r > 0; }
+
+  /* ================= 数据：老虎机 ================= */
+  // m = 3 个连线倍率；wild = 万能符；pair = 2 个樱桃的倍率
+  var SLOT = [
+    { k: 'cherry', g: '🍒',       c: '#ff6b81', m: 3   },
+    { k: 'lemon',  g: '🍋',       c: '#ffe066', m: 5   },
+    { k: 'orange', g: '🍊',       c: '#ffa94d', m: 5   },
+    { k: 'plum',   g: '🫐',       c: '#7aa2ff', m: 5   },
+    { k: 'bell',   g: '🔔',       c: '#ffd43b', m: 8   },
+    { k: 'grape',  g: '🍇',       c: '#b197fc', m: 10  },
+    { k: 'bar',    g: 'BAR',      c: '#f1f3f5', m: 15, txt: true },
+    { k: 'seven',  g: '7️⃣',       c: '#ff6b6b', m: 20  },
+    { k: 'dia',    g: '💎',       c: '#66d9e8', m: 50  },
+    { k: 'wild',   g: '🃏',       c: '#ff9ff3', m: 100, wild: true }
+  ];
+  var W_TAG = 9;                       // SLOT 里 wild 的下标
+  var SLOT_LUCK_MAX = 41;              // 1 + 最大光环加成(无限 +40)
+  var NLINE = 8;
+
+  /* 「结果优先」模型：每局先决定结果（不中 / 中哪一条线 / 中的是哪个符号），再按结果摆九宫格，
+     所以永远不会出现两条线同时中奖。赔付 = 本局下注 × 该符号倍率。 */
+  var WINS = [
+    { k: 'pair',   m: 2,   w: 55   },   // 两个🍒（第三个不是🍒也不是Wild）
+    { k: 'cherry', m: 3,   w: 32   },
+    { k: 'lemon',  m: 5,   w: 2    },
+    { k: 'orange', m: 5,   w: 2    },
+    { k: 'plum',   m: 5,   w: 2    },
+    { k: 'bell',   m: 8,   w: 1.2  },
+    { k: 'grape',  m: 10,  w: 1    },
+    { k: 'bar',    m: 15,  w: 0.8  },
+    { k: 'seven',  m: 20,  w: 0.6  },
+    { k: 'dia',    m: 50,  w: 0.35 },
+    { k: 'wild',   m: 100, w: 0.05 }
+  ];
+  var TILT   = 0.5;                    // 光环越好，中奖权重往高倍率偏的强度（0=不偏，1=偏得最狠）
+  var FILL_P = [22, 13, 13, 13, 10, 8, 7, 6, 5, 3];   // 九宫格展示用符号分布（与 SLOT 同序，会自动归一化）
+  var LINES = [
+    { name: '第1行', cells: [0, 1, 2] },
+    { name: '第2行', cells: [3, 4, 5] },
+    { name: '第3行', cells: [6, 7, 8] },
+    { name: '第1列', cells: [0, 3, 6] },
+    { name: '第2列', cells: [1, 4, 7] },
+    { name: '第3列', cells: [2, 5, 8] },
+    { name: '斜↘',   cells: [0, 4, 8] },
+    { name: '斜↙',   cells: [2, 4, 6] }
+  ];
+
+  var BET_PRESETS = [1, 10, 50, 100, 1000];
+  var GOLD_START = 100;
+  var GOLD_MAX = 1e15;
+  var NUM_MAX = 1e12;
+  var CLAIM_CD = 60000;
+
+  /* ================= 存档 ================= */
+  var state = {
+    luck: 1, rolls: 0, counts: {}, hist: [],
+    gold: GOLD_START, eq: '默认', bet: 1,
+    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, claimAt: 0
+  };
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var d = JSON.parse(raw);
+      if (!d || typeof d !== 'object') return;
+      if (typeof d.luck === 'number') state.luck = d.luck;
+      if (typeof d.rolls === 'number') state.rolls = d.rolls;
+
+      // 旧版 counts 是按下标存的，名字化迁移
+      var c = {}, k, i;
+      if (d.counts) {
+        for (k in d.counts) {
+          if (!Object.prototype.hasOwnProperty.call(d.counts, k)) continue;
+          if (/^\d+$/.test(k)) {
+            i = parseInt(k, 10) + 1;                    // 旧表第 i 个 = 新表 i+1（新表开头多了「默认」）
+            if (AURAS[i]) c[AURAS[i].n] = d.counts[k];
+          } else {
+            c[k] = d.counts[k];
+          }
+        }
+      }
+      state.counts = c;
+      if (d.hist && d.hist.length) {
+        var h = [];
+        for (i = 0; i < d.hist.length; i++) {
+          var hh = d.hist[i];
+          if (typeof hh === 'string' && idxOf(hh) !== 0) h.push(hh);
+          else if (typeof hh === 'number' && AURAS[hh + 1]) h.push(AURAS[hh + 1].n);
+        }
+        state.hist = h.slice(0, 12);
+      }
+      if (typeof d.gold === 'number') state.gold = d.gold;
+      if (typeof d.eq === 'string' && idxOf(d.eq) !== 0) state.eq = d.eq;
+      if (typeof d.bet === 'number' && d.bet >= 1) state.bet = Math.floor(d.bet);
+      state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
+      state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0;
+      state.claimAt = d.claimAt || 0;
+    } catch (e) {}
+  }
+
+  state.counts['默认'] = 1;                       // 初始光环永远拥有
+  if (!state.eq) state.eq = '默认';
+
+  /* ================= 概率工具 ================= */
+  function luckCap() { return state.luck > LUCK_CAP ? LUCK_CAP : state.luck; }
+
+  function auraWeights() {
+    var L = luckCap(), w = [], i, sum = 0;
+    for (i = 0; i < AURAS.length; i++) {
+      var v = isRollable(AURAS[i]) ? (1 / AURAS[i].r) * Math.pow(L, AURAS[i].t * LUCK_EXP) : 0;
+      w.push(v); sum += v;
+    }
+    return { w: w, sum: sum };
+  }
+  function chanceOf(name) {
+    var i = idxOf(name), ww = auraWeights();
+    return ww.w[i] / ww.sum;
+  }
+  function pickAura() {
+    var ww = auraWeights(), x = Math.random() * ww.sum, i;
+    for (i = 0; i < AURAS.length; i++) { x -= ww.w[i]; if (x <= 0) return i; }
+    return AURAS.length - 1;
+  }
+
+  function slotLuck() { return 1 + (AURAS[idxOf(state.eq)].L || 0); }
+
+  // 九宫格的展示分布（只决定"看起来像什么"，与输赢无关）
+  function fillProbs() {
+    var raw = [], i, s = 0;
+    for (i = 0; i < FILL_P.length; i++) { raw[i] = FILL_P[i]; s += raw[i]; }
+    for (i = 0; i < raw.length; i++) raw[i] /= s;
+    return raw;
+  }
+  function pickSym(p) {
+    var x = Math.random(), acc = 0, i;
+    for (i = 0; i < p.length; i++) { acc += p[i]; if (x <= acc) return i; }
+    return p.length - 1;
+  }
+
+  /* ---------- 结果优先模型 ---------- */
+  function auraR(nm) { var a = AURAS[idxOf(nm || state.eq)]; return (a && a.R) ? a.R : 0.5; }
+
+  // 由目标回报率反推：中奖类别权重 / 中奖时平均倍率 / 中奖概率
+  function winWeights(R) {
+    var x = (R - 0.5) / 0.70, k, i, tot = 0, w = [], em = 0;
+    if (x < 0) x = 0;
+    if (x > 1) x = 1;
+    k = TILT * x;
+    for (i = 0; i < WINS.length; i++) { w[i] = WINS[i].w * Math.pow(WINS[i].m, k); tot += w[i]; }
+    for (i = 0; i < w.length; i++) { w[i] /= tot; em += w[i] * WINS[i].m; }
+    return { p: w, em: em, pwin: Math.min(1, R / em) };
+  }
+  function keySym(k) { for (var i = 0; i < SLOT.length; i++) if (SLOT[i].k === k) return i; return 0; }
+  function lineOf(syms, L) {
+    var c = LINES[L].cells;
+    return lineMult([syms[c[0]], syms[c[1]], syms[c[2]]]);
+  }
+  function winnersOf(syms) {
+    var out = [], L;
+    for (L = 0; L < LINES.length; L++) if (lineOf(syms, L) > 0) out.push(L);
+    return out;
+  }
+  function noWinGrid() {                       // 兜底：5 个符号循环，8 条线都不可能中
+    var g = [], i;
+    for (i = 0; i < 9; i++) g[i] = 1 + (i % 5);
+    return g;
+  }
+
+  // 中奖的九宫格：中奖线放好图案，剩下 6 格从 1~8 里随机挑 6 个互不相同的符号。
+  // 互不相同 + 不含🍒(0)/🃏(9) → 其余 7 条线必然不中奖，于是「中奖类别分布」精确等于 winWeights，
+  // 回报率 = 中奖率 × 平均赔率 才能被精确控制（用拒绝采样会按各线接受率重新加权，把回报率整体抬高）。
+  function winGrid(line, pat) {
+    var cl = LINES[line].cells, pool = [1, 2, 3, 4, 5, 6, 7, 8], idx = [], g = [], i, j, t;
+    for (i = 0; i < 9; i++) if (i !== cl[0] && i !== cl[1] && i !== cl[2]) idx.push(i);
+    for (i = pool.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    for (i = 0; i < 9; i++) g[i] = 0;
+    g[cl[0]] = pat[0]; g[cl[1]] = pat[1]; g[cl[2]] = pat[2];
+    for (i = 0; i < idx.length; i++) g[idx[i]] = pool[i];
+    return g;
+  }
+
+  // 先定结果，再摆符号；一局最多只有一条中奖线
+  function drawOutcome() {
+    var ww = winWeights(auraR());
+    var isWin = Math.random() < ww.pwin, wi = -1, line = -1, t, i, syms, win, z, s, cl, pat;
+    if (isWin) {
+      line = Math.floor(Math.random() * LINES.length);
+      wi = pickSym(ww.p);
+      cl = LINES[line].cells;
+      if (WINS[wi].k === 'pair') {
+        z = pickSym(fillProbs());
+        while (z === 0 || z === W_TAG) z = pickSym(fillProbs());
+        pat = [0, 0, z];
+      } else {
+        s = keySym(WINS[wi].k);
+        pat = [s, s, s];
+      }
+      syms = winGrid(line, pat);
+      win = winnersOf(syms);
+      if (win.length === 1 && win[0] === line) {
+        return { syms: syms, line: line, m: WINS[wi].m, kind: WINS[wi].k };
+      }
+      return { syms: noWinGrid(), line: -1, m: 0, kind: '' };   // 理论上不会走到
+    }
+    // 不中奖：按展示分布随机摆，直到一条线都不中（不中奖时怎么摆都不影响回报率）
+    var fp = fillProbs();
+    for (t = 0; t < 200; t++) {
+      syms = [];
+      for (i = 0; i < 9; i++) syms[i] = pickSym(fp);
+      if (winnersOf(syms).length === 0) return { syms: syms, line: -1, m: 0, kind: '' };
+    }
+    return { syms: noWinGrid(), line: -1, m: 0, kind: '' };
+  }
+
+  // 一条线（3 个符号下标）的赔付倍数
+  function lineMult(c) {
+    var w = 0, non = [], i;
+    for (i = 0; i < 3; i++) { if (c[i] === W_TAG) w++; else non.push(c[i]); }
+    if (w === 3) return 100;                                  // 三个 Wild
+    if (non.length === 3) {
+      if (non[0] === non[1] && non[1] === non[2]) return SLOT[non[0]].m;
+      var ch = 0;
+      for (i = 0; i < 3; i++) if (non[i] === 0) ch++;
+      return ch === 2 ? 2 : 0;                                // 2 个樱桃 + 1 个别的
+    }
+    if (non.length === 2) {
+      if (non[0] === non[1]) return SLOT[non[0]].m;           // 1 Wild + 2 个相同
+      var ch2 = 0;
+      for (i = 0; i < 2; i++) if (non[i] === 0) ch2++;
+      return ch2 === 1 ? 2 : 0;                               // Wild + 樱桃 + 别的 = 2 个樱桃
+    }
+    if (non.length === 1) return SLOT[non[0]].m;              // 2 Wild + 1 个
+    return 0;
+  }
+
+  /* ================= 工具 ================= */
+  function comma(n) {
+    if (n > NUM_MAX * 1000) return n.toExponential(2);
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function clampGold(v) {
+    if (!isFinite(v) || v < 0) v = 0;
+    if (v > GOLD_MAX) v = GOLD_MAX;
+    return Math.floor(v);
+  }
+  function fmtSlotLuck(v) { return '×' + (v < 10 ? v.toFixed(2) : v.toFixed(1)); }
+  function fmtAuraLuck(v) { return '×' + (v < 100 ? v.toFixed(1) : String(Math.floor(v))); }
+  function fmtChance(p) {
+    if (p >= 0.01) return (p * 100).toFixed(2) + '%';
+    return '1 / ' + comma(Math.round(1 / p));
+  }
+  function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+
+  var toastTimer = null;
+  var $toast = document.getElementById('toast');
+  function toast(msg) {
+    $toast.textContent = msg;
+    $toast.className = 'on';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { $toast.className = ''; }, 1700);
+  }
+
+  /* ================= DOM ================= */
+  var $grid = document.getElementById('grid');
+  var CELLS = $grid.getElementsByClassName('cell');
+  var $sGold = document.getElementById('sGold');
+  var $sSlotLuck = document.getElementById('sSlotLuck');
+  var $sEq = document.getElementById('sEq');
+  var $betRow = document.getElementById('betRow');
+  var $betInfo = document.getElementById('betInfo');
+  var $lever = document.getElementById('lever');
+  var $leverKnob = document.getElementById('leverKnob');
+  var $resultMain = document.getElementById('resultMain');
+  var $resultSub = document.getElementById('resultSub');
+  var $lineList = document.getElementById('lineList');
+  var $claim = document.getElementById('claim');
+  var $auraName = document.getElementById('auraName');
+  var $tierLine = document.getElementById('tierLine');
+  var $oddsLine = document.getElementById('oddsLine');
+  var $newSlot = document.getElementById('newSlot');
+  var $gainSlot = document.getElementById('gainSlot');
+  var $rollBtn = document.getElementById('rollBtn');
+  var $hist = document.getElementById('hist');
+  var $dexList = document.getElementById('dexList');
+  var $dexCount = document.getElementById('dexCount');
+  var $eqList = document.getElementById('eqList');
+  var $eqInfo = document.getElementById('eqInfo');
+  var $drawLuck = document.getElementById('drawLuck');
+  var $auraBtn = document.getElementById('auraBtn');
+  var $helpBtn = document.getElementById('helpBtn');
+
+  function setSym(el, si) {
+    var s = SLOT[si];
+    el.className = 'sym' + (s.txt ? ' txt' : '');
+    el.textContent = s.g;
+    el.style.color = s.c;
+  }
+  function cellSym(i) { return CELLS[i].getElementsByClassName('sym')[0]; }
+  function fillGridIdle() {
+    for (var i = 0; i < 9; i++) { CELLS[i].className = 'cell'; cellSym(i).textContent = '·'; cellSym(i).className = 'sym'; cellSym(i).style.color = '#23252e'; }
+  }
+
+  /* ================= 渲染：顶部 / 下注 ================= */
+  function afford(bet) { return state.gold >= bet; }
+
+  function renderStats() {
+    $sGold.textContent = comma(state.gold);
+    $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
+    $sEq.textContent = state.eq;
+    $sEq.style.color = TIER_COLOR[AURAS[idxOf(state.eq)].t];
+  }
+
+  function renderBet() {
+    var btns = $betRow.getElementsByClassName('betBtn'), i, b;
+    for (i = 0; i < btns.length; i++) {
+      b = parseInt(btns[i].getAttribute('data-bet'), 10);
+      var sel = (b === 0) ? (BET_PRESETS.indexOf(state.bet) < 0) : (state.bet === b);
+      btns[i].className = 'betBtn' + (sel ? ' on' : '');
+      if (b > 0) btns[i].disabled = !afford(b);
+      else btns[i].disabled = false;
+    }
+    $betInfo.innerHTML = '本局下注 <b>' + comma(state.bet) + '</b> 金币　中奖线按 本局下注 × 符号倍率 全额赔';
+    $lever.disabled = spinning || !afford(state.bet);
+    renderClaim();
+  }
+
+  function renderClaim() {
+    var can = state.gold < 1;                           // 连 1 枚都下不起
+    var left = CLAIM_CD - (Date.now() - state.claimAt);
+    if (left < 0) left = 0;
+    $claim.style.display = 'inline-block';
+    if (left > 0) { $claim.disabled = true; $claim.textContent = '救济金冷却中 ' + Math.ceil(left / 1000) + 's'; }
+    else if (!can) { $claim.disabled = true; $claim.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
+    else { $claim.disabled = false; $claim.textContent = '领取救济金 100 金币'; }
+  }
+
+  /* ================= 老虎机主逻辑 ================= */
+  var spinning = false;
+
+  function doSpin() {
+    if (spinning) return;
+    if (!afford(state.bet)) { toast('金币不足'); return; }
+
+    spinning = true;
+    var bet = state.bet, cost = bet;
+    state.gold = clampGold(state.gold - cost);
+    renderStats(); renderBet();
+    $resultMain.textContent = '转动中…';
+    $resultMain.style.color = '#6b7280';
+    $resultSub.textContent = '';
+    $lineList.innerHTML = '';
+    for (var i = 0; i < 9; i++) { CELLS[i].className = 'cell spin'; }
+
+    var probs = fillProbs();
+    var final = drawOutcome().syms;
+
+    /* 三列依次停下：第一列最快，第二列慢些，第三列最慢；每列内部由快逐渐变慢 */
+    var COL_STOP = [1000, 1900, 2850];
+    var TICK_FAST = 85, TICK_SLOW = 330;
+    var doneCols = 0;
+
+    function spinCol(c) {
+      var t0 = Date.now();
+      function tick() {
+        if (!spinning) return;
+        var prog = (Date.now() - t0) / COL_STOP[c];
+        if (prog >= 1) {
+          for (var k = 0; k < 3; k++) {
+            var q = c + k * 3;
+            CELLS[q].className = 'cell stop';
+            setSym(cellSym(q), final[q]);
+          }
+          buzz(c === 2 ? 18 : 8);
+          if (++doneCols === 3) setTimeout(function () { if (spinning) settle(final, bet); }, 150);
+          return;
+        }
+        for (var k2 = 0; k2 < 3; k2++) setSym(cellSym(c + k2 * 3), pickSym(probs));
+        setTimeout(tick, TICK_FAST + (TICK_SLOW - TICK_FAST) * prog * prog);
+      }
+      tick();
+    }
+    for (var c = 0; c < 3; c++) spinCol(c);
+  }
+
+  function settle(syms, bet) {
+    var total = 0, won = [], L, line, c, m;
+    for (L = 0; L < LINES.length; L++) {
+      line = LINES[L];
+      c = [syms[line.cells[0]], syms[line.cells[1]], syms[line.cells[2]]];
+      m = lineMult(c);
+      if (m > 0) {
+        total += m * bet;
+        won.push({ line: line, c: c, m: m });
+        for (var k = 0; k < 3; k++) CELLS[line.cells[k]].className = 'cell win';
+      }
+    }
+
+    state.gold = clampGold(state.gold + total);
+    renderStats(); renderBet(); save();
+
+    if (total > 0) {
+      var big = total >= bet * 50;
+      $resultMain.textContent = '🎉 中奖 ' + won.length + ' 条线　+' + comma(total) + ' 金币';
+      $resultMain.style.color = big ? '#fbbf24' : '#4ade80';
+      buzz(big ? 90 : 25);
+      var html = '';
+      for (var i = 0; i < won.length; i++) {
+        var w = won[i], g = '';
+        for (var t = 0; t < 3; t++) g += SLOT[w.c[t]].g;
+        var nm = (w.c[0] === W_TAG && w.c[1] === W_TAG && w.c[2] === W_TAG) ? '　Wild×3' : '';
+        html += '<span>' + w.line.name + ' ' + g + ' ×' + w.m + ' → +' + comma(w.m * bet) + nm + '</span>';
+      }
+      $lineList.innerHTML = html;
+      $resultSub.textContent = '本局下注 ' + comma(bet) + '　净赢 ' + comma(total - bet);
+    } else {
+      $resultMain.textContent = '未中奖　-' + comma(bet) + ' 金币';
+      $resultMain.style.color = '#6b7280';
+      $lineList.innerHTML = '';
+      $resultSub.textContent = '本局下注 ' + comma(bet) + '（8 条线都没中）';
+    }
+
+    spinning = false;
+    renderBet();
+  }
+
+  /* ================= 抽光环 ================= */
+  var rolling = false;
+
+  function renderHist() {
+    if (!state.hist.length) { $hist.innerHTML = '<span class="empty">还没有记录</span>'; return; }
+    var html = '', i;
+    for (i = 0; i < state.hist.length; i++) {
+      var a = AURAS[idxOf(state.hist[i])];
+      var col = TIER_COLOR[a.t];
+      html += '<span class="chip" style="color:' + col + ';border-color:' + col + '33">' + a.n + '</span>';
+    }
+    $hist.innerHTML = html;
+  }
+
+  function renderDex() {
+    var html = '', i, owned = 0;
+    for (i = 0; i < AURAS.length; i++) {
+      var a = AURAS[i], cnt = state.counts[a.n] || 0;
+      if (a.r > 0 && cnt > 0) owned++;
+      var col = TIER_COLOR[a.t];
+      var base = a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取';
+      html += '<div class="card' + (cnt > 0 ? '' : ' locked') + '">' +
+        '<div class="nm" style="color:' + col + '">' + a.n +
+          '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
+        '</div>' +
+        '<div class="meta">' + base + '<br>当前 ' + fmtChance(chanceOf(a.n)) +
+          '</div>' +
+        '<div class="foot">' +
+          '<span class="own' + (cnt > 0 ? ' has' : '') + '">' + (cnt > 0 ? '已拥有' + (cnt > 1 ? ' ×' + cnt : '') : '未拥有') + '</span>' +
+          (cnt > 0
+            ? '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '已佩戴' : '佩戴') + '</button>'
+            : '') +
+        '</div>' +
+      '</div>';
+    }
+    $dexList.innerHTML = html;
+    $dexCount.textContent = owned + ' / 22';
+  }
+
+  function renderEquip() {
+    var html = '', i, cur = AURAS[idxOf(state.eq)];
+    var list = [];
+    for (i = 0; i < AURAS.length; i++) if (state.counts[AURAS[i].n]) list.push(AURAS[i]);
+    list.sort(function (a, b) { return (b.R || 0.5) - (a.R || 0.5); });
+    for (i = 0; i < list.length; i++) {
+      var a = list[i], col = TIER_COLOR[a.t];
+      html += '<div class="card">' +
+        '<div class="nm" style="color:' + col + '">' + a.n +
+          '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
+        '</div>' +
+        '<div class="meta">当前 ' + fmtChance(chanceOf(a.n)) + '</div>' +
+        '<div class="foot" style="justify-content:flex-end">' +
+          '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '使用中' : '装备') + '</button>' +
+        '</div>' +
+      '</div>';
+    }
+    if (!list.length) html = '<div class="empty">还没有任何光环</div>';
+    $eqList.innerHTML = html;
+    // 当前佩戴
+    $eqInfo.innerHTML = '当前：<span style="color:' + TIER_COLOR[cur.t] + '">' + cur.n + '</span>　幸运 +' + cur.L.toFixed(2);
+  }
+
+  // 兼容旧接口：现在回报率直接由佩戴光环决定
+  function rtpOf() { return auraR(); }
+
+  function renderDrawLuck() {
+    $drawLuck.innerHTML = '抽奖幸运 <b style="color:#fbbf24">' + fmtAuraLuck(state.luck) + '</b>';
+  }
+
+  function rollAura() {
+    if (rolling) return;
+    rolling = true;
+    $rollBtn.disabled = true;
+
+    var idx = pickAura(), a = AURAS[idx], tier = a.t;
+    if (tier >= 5) buzz(90); else if (tier >= 3) buzz(35);
+
+    /* 时长：普通约 1.7 秒，越稀有越久，最稀有约 3.5 秒；转速由快逐渐变慢 */
+    var dur = 1700 + Math.min(tier, 7) * 260;
+    var t0 = Date.now();
+    var pool = [];
+    for (var i = 0; i < AURAS.length; i++) if (isRollable(AURAS[i])) pool.push(AURAS[i]);
+
+    $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
+    $tierLine.textContent = ''; $oddsLine.textContent = '';
+    $auraName.className = (tier >= 3 ? 'rare' : 'pulse');
+
+    var TICK_START = 95, TICK_END = 340;
+    function tick() {
+      var prog = (Date.now() - t0) / dur;
+      if (prog >= 1) { finishRoll(idx); return; }
+      var ja = pool[Math.floor(Math.random() * pool.length)];
+      $auraName.textContent = ja.n;
+      $auraName.style.color = TIER_COLOR[ja.t];
+      $auraName.style.textShadow = 'none';
+      setTimeout(tick, TICK_START + (TICK_END - TICK_START) * prog * prog);
+    }
+    tick();
+  }
+
+  function finishRoll(idx) {
+    var a = AURAS[idx];
+    var gain = BASE_GAIN + TIER_BONUS[a.t];
+    var isNew = !state.counts[a.n];
+
+    state.counts[a.n] = (state.counts[a.n] || 0) + 1;
+    state.rolls += 1;
+    state.luck = Math.min(LUCK_CAP, state.luck + gain);
+    state.hist.unshift(a.n);
+    if (state.hist.length > 12) state.hist.pop();
+
+    var col = TIER_COLOR[a.t];
+    $auraName.className = '';
+    $auraName.textContent = a.n;
+    $auraName.style.color = col;
+    $auraName.style.textShadow = '0 0 ' + (a.t >= 5 ? 26 : a.t >= 3 ? 16 : 8) + 'px ' + col + '99';
+    $tierLine.textContent = TIER_NAME[a.t];
+    $tierLine.style.color = col;
+    $oddsLine.textContent = a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取';
+    $newSlot.innerHTML = isNew ? '<div class="newTag">NEW 新光环</div>' : '';
+    $gainSlot.innerHTML = '<div class="gain">抽奖幸运 +' + gain.toFixed(2) + '</div>';
+
+    renderHist(); renderDex(); renderEquip(); renderDrawLuck(); save();
+
+    var wait = a.t >= 5 ? 220 : 90;
+    setTimeout(function () { rolling = false; $rollBtn.disabled = false; }, wait);
+  }
+
+  /* ================= 弹层 ================= */
+  function openSheet(id) { document.getElementById(id).className = 'sheet open'; }
+  function closeSheet(id) { document.getElementById(id).className = 'sheet'; }
+
+  var tabBtns = document.getElementsByClassName('tab');
+  function selectTab(name) {
+    var i;
+    for (i = 0; i < tabBtns.length; i++) tabBtns[i].className = 'tab' + (tabBtns[i].getAttribute('data-tab') === name ? ' on' : '');
+    var pages = ['draw', 'dex', 'equip'];
+    for (i = 0; i < pages.length; i++) document.getElementById('page-' + pages[i]).className = 'tabPage' + (pages[i] === name ? ' on' : '');
+    if (name === 'dex') renderDex();
+    if (name === 'equip') renderEquip();
+  }
+
+  /* ================= 数字输入 ================= */
+  var promptCb = null;
+  function askNumber(title, tip, def, cb) {
+    promptCb = cb;
+    document.getElementById('promptTitle').textContent = title;
+    document.getElementById('promptTip').textContent = tip;
+    var inp = document.getElementById('promptInput');
+    inp.value = def;
+    openSheet('promptSheet');
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 80);
+  }
+  document.getElementById('promptOk').addEventListener('click', function () {
+    var v = parseInt(document.getElementById('promptInput').value, 10);
+    if (!isFinite(v) || v < 1) { toast('请输入不小于 1 的整数'); return; }
+    if (v > NUM_MAX) { toast('最大 ' + comma(NUM_MAX)); return; }
+    closeSheet('promptSheet');
+    var cb = promptCb; promptCb = null;
+    if (cb) cb(v);
+  }, false);
+  document.getElementById('promptCancel').addEventListener('click', function () {
+    promptCb = null; closeSheet('promptSheet');
+  }, false);
+
+  /* ================= 事件 ================= */
+  /* ================= 拉杆（能真的拉下去） ================= */
+  var PULL_MAX = 46, PULL_TRIGGER = 22;
+  var pullDy = 0, pulling = false, pullStartY = 0, pullMovedAt = 0;
+
+  function pullSet(dy, spring) {
+    $leverKnob.style.transition = spring ? 'transform .24s cubic-bezier(.3,1.5,.6,1)' : 'transform .04s linear';
+    $leverKnob.style.transform = 'translateY(' + dy + 'px)';
+  }
+  function pullStart(y) {
+    if (spinning || !afford(state.bet)) return;
+    pulling = true; pullStartY = y; pullMovedAt = 0;
+  }
+  function pullMove(y) {
+    if (!pulling) return;
+    var dy = y - pullStartY;
+    if (dy < 0) dy = 0;
+    if (dy > PULL_MAX) dy = PULL_MAX;
+    if (dy > 3) pullMovedAt = Date.now();
+    pullDy = dy; pullSet(dy, false);
+  }
+  function pullFire() {
+    pullDy = 0;
+    pullSet(PULL_MAX, false);
+    setTimeout(function () { doSpin(); pullSet(0, true); }, 100);
+  }
+  function pullEnd() {
+    if (!pulling) return;
+    pulling = false;
+    if (pullDy >= PULL_TRIGGER) { pullMovedAt = Date.now(); pullFire(); }
+    else { pullDy = 0; pullSet(0, true); }
+  }
+  $lever.addEventListener('touchstart', function (e) {
+    var t = e.touches && e.touches[0];
+    if (t) pullStart(t.clientY);
+  }, false);
+  $lever.addEventListener('touchmove', function (e) {
+    var t = e.touches && e.touches[0];
+    if (!t) return;
+    pullMove(t.clientY);
+    if (e.preventDefault) e.preventDefault();
+  }, false);
+  $lever.addEventListener('touchend', function () { pullEnd(); }, false);
+  $lever.addEventListener('touchcancel', function () { pullEnd(); }, false);
+  $lever.addEventListener('mousedown', function (e) {
+    pullStart(e.clientY);
+    if (e.preventDefault) e.preventDefault();
+  }, false);
+  document.addEventListener('mousemove', function (e) { pullMove(e.clientY); }, false);
+  document.addEventListener('mouseup', function () { pullEnd(); }, false);
+  $lever.addEventListener('click', function () {
+    if (Date.now() - pullMovedAt < 600) return;        // 刚才是拖动，已在松手时触发
+    if (spinning || !afford(state.bet)) return;
+    pullFire();
+  }, false);
+
+  $betRow.addEventListener('click', function (e) {
+    var el = e.target;
+    if (!el || el.className.indexOf('betBtn') < 0) return;
+    var b = parseInt(el.getAttribute('data-bet'), 10);
+    if (b === 0) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + comma(NUM_MAX) + '（不能超过当前金币）', String(state.bet), function (v) {
+        state.bet = v; renderBet(); save();
+      });
+      return;
+    }
+    state.bet = b; renderBet(); save();
+  }, false);
+
+  $claim.addEventListener('click', function () {
+    if (Date.now() - state.claimAt < CLAIM_CD) return;
+    if (state.gold >= 1) return;
+    state.claimAt = Date.now();
+    state.gold = clampGold(state.gold + GOLD_START);
+    toast('领取了 100 金币');
+    renderStats(); renderBet(); save();
+  }, false);
+
+  $auraBtn.addEventListener('click', function () {
+    renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+    openSheet('auraSheet');
+  }, false);
+  $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
+  document.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (el.className && String(el.className).indexOf('close') >= 0 && el.getAttribute('data-close')) {
+        closeSheet(el.getAttribute('data-close'));
+        return;
+      }
+      if (el.getAttribute && el.getAttribute('data-eq')) {
+        state.eq = el.getAttribute('data-eq');
+        renderDex(); renderEquip(); renderStats(); save();
+        toast('已佩戴 ' + state.eq + '（老虎机幸运 ' + fmtSlotLuck(slotLuck()) + '）');
+        return;
+      }
+      el = el.parentNode;
+    }
+  }, false);
+
+  // 点击遮罩关闭弹层
+  var sheets = document.getElementsByClassName('sheet');
+  for (var si = 0; si < sheets.length; si++) {
+    (function (sh) {
+      sh.addEventListener('click', function (e) {
+        if (e.target === sh && sh.id !== 'promptSheet') sh.className = 'sheet';
+      }, false);
+    })(sheets[si]);
+  }
+
+  for (var ti = 0; ti < tabBtns.length; ti++) {
+    (function (b) {
+      b.addEventListener('click', function () { selectTab(b.getAttribute('data-tab')); }, false);
+    })(tabBtns[ti]);
+  }
+
+  $rollBtn.addEventListener('click', rollAura, false);
+
+  document.getElementById('reset').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!confirm('确定清空全部进度（金币、光环、图鉴、幸运）？')) return;
+    state = {
+      luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
+      gold: GOLD_START, eq: '默认', bet: 1,
+      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, claimAt: 0
+    };
+    save();
+    fillGridIdle();
+    $resultMain.textContent = '选好下注，拉右边的拉杆开始';
+    $resultMain.style.color = '#4b5563';
+    $resultSub.textContent = ''; $lineList.innerHTML = '';
+    $auraName.className = 'idle'; $auraName.textContent = '点下方按钮开始';
+    $auraName.style.color = '#4b5563'; $auraName.style.textShadow = 'none';
+    $tierLine.textContent = ''; $oddsLine.textContent = '';
+    $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
+    renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+    closeSheet('helpSheet');
+    toast('已重置');
+  }, false);
+
+  /* ================= 后门（隐藏） ================= */
+  // 1) 待机时点左上角格子 10 下 -> +100 金币（仅一次）
+  // 2) 待机时点金币显示 10 下 -> +1000 金币（仅一次）
+  // 3) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
+  function idle() { return !spinning; }
+
+  function tapCell(i) {
+    if (!idle()) return;
+    if (i === 0) {
+      if (state.bd1) return;
+      state.t1++;
+      if (state.t1 >= 10) {
+        state.t1 = 0; state.bd1 = true;
+        state.gold = clampGold(state.gold + 100);
+        toast('金币 +100');
+        renderStats(); renderBet(); save();
+      }
+      return;
+    }
+    if (i === 4) {
+      state.t3++;
+      if (state.t3 >= 20) {
+        state.t3 = 0; save();
+        askNumber('想加多少金币？', '整数，1 ~ ' + comma(NUM_MAX) + '，可以重复使用', '', function (v) {
+          state.gold = clampGold(state.gold + v);
+          toast('金币 +' + comma(v));
+          renderStats(); renderBet(); save();
+        });
+      }
+    }
+  }
+
+  $grid.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== $grid && !el.getAttribute('data-i')) el = el.parentNode;
+    if (!el || el === $grid) return;
+    tapCell(parseInt(el.getAttribute('data-i'), 10));
+  }, false);
+
+  document.getElementById('goldBox').addEventListener('click', function () {
+    if (!idle()) return;
+    if (state.bd2) return;
+    state.t2++;
+    if (state.t2 >= 10) {
+      state.t2 = 0; state.bd2 = true;
+      state.gold = clampGold(state.gold + 1000);
+      toast('金币 +1000');
+      renderStats(); renderBet(); save();
+    }
+  }, false);
+
+  /* ================= 启动 ================= */
+  var legend = '';
+  for (var li = 0; li < TIER_NAME.length; li++) {
+    legend += '<span style="color:' + TIER_COLOR[li] + '">' + TIER_NAME[li] + '</span>';
+  }
+  document.getElementById('tierLegend').innerHTML = legend;
+
+  load();
+  state.counts['默认'] = 1;
+  if (idxOf(state.eq) === 0 && state.eq !== '默认') state.eq = '默认';
+  fillGridIdle();
+  renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+  setInterval(renderClaim, 1000);
+
+  /* ================= 离线支持 ================= */
+  // sw.js 用「联网时优先网络、断网时回退缓存」的策略；file:// 打开时不需要也不注册。
+  // 注意：Service Worker 只在这个页面处于安全来源（https 或 localhost）时才生效。
+  try {
+    if (window.isSecureContext && typeof navigator !== 'undefined' && navigator.serviceWorker) {
+      navigator.serviceWorker.register('sw.js')['catch'](function () {});
+    }
+    window.addEventListener('offline', function () { toast('已断网 · 离线也能继续玩'); });
+    window.addEventListener('online', function () { toast('已恢复联网'); });
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
