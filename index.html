@@ -6,10 +6,10 @@
 <meta name="format-detection" content="telephone=no,email=no,address=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b0b0f">
-<meta name="apple-mobile-web-app-title" content="给菜包的老虎机">
+<meta name="apple-mobile-web-app-title" content="赛博赌场">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>给菜包的老虎机</title>
+<title>赛博赌场</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -18,6 +18,28 @@
     font-size: 16px; line-height: 1.5; -webkit-text-size-adjust: 100%; overflow-x: hidden;
   }
   .wrap { max-width: 520px; margin: 0 auto; padding: 14px 14px calc(96px + env(safe-area-inset-bottom)); }
+
+  /* 首页（大厅） */
+  #homePage { max-width: 520px; margin: 0 auto; padding: 40px 14px calc(96px + env(safe-area-inset-bottom)); }
+  .lobbyTitle { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 5px; margin-bottom: 6px; }
+  .lobbySub { text-align: center; font-size: 12px; color: #6b7280; letter-spacing: 1px; margin-bottom: 30px; }
+  .lobbySub b { font-size: 14px; }
+  .gameBtn {
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 18px; margin-bottom: 12px;
+    border: 1px solid #262835; border-radius: 14px; background: #111219; color: #e8ecf2;
+    font-family: inherit; font-size: 20px; font-weight: 700; text-align: left;
+    touch-action: manipulation; transition: background .15s, border-color .15s;
+  }
+  .gameBtn:active { background: #171923; border-color: #3b82f6; }
+  .gameBtn .ico { font-size: 30px; line-height: 1; }
+  .gameBtn .nm { flex: 1; }
+  .gameBtn .go { font-size: 13px; color: #6b7280; font-weight: 600; letter-spacing: 0; }
+  #backBtn {
+    display: inline-block; margin-bottom: 10px; padding: 6px 13px; border: 1px solid #23252e;
+    border-radius: 20px; background: #111219; color: #8b93a3; font-family: inherit;
+    font-size: 13px; font-weight: 700; touch-action: manipulation;
+  }
+  #backBtn:active { background: #171923; }
 
   /* 顶部数据条 */
   .stats { display: flex; border: 1px solid #23252e; border-radius: 10px; overflow: hidden; }
@@ -216,7 +238,19 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- 首页（大厅）：以后要加别的游戏，就在这里再放一个 .gameBtn -->
+<div id="homePage">
+  <div class="lobbyTitle">赛博赌场</div>
+  <div class="lobbySub">金币 <b id="lobbyGold" style="color:#fbbf24">10</b></div>
+  <button class="gameBtn" id="gameSlot">
+    <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
+  </button>
+</div>
+
+<!-- 老虎机 -->
+<div class="wrap" id="gamePage" style="display:none">
+  <button id="backBtn">‹ 返回大厅</button>
 
   <div class="stats">
     <div class="stat" id="goldBox"><b id="sGold" style="color:#fbbf24">100</b><span>金币</span></div>
@@ -293,7 +327,7 @@
     </div>
 
     <div class="tabPage" id="page-dex">
-      <div class="sectTitle"><span>全部光环（24 个）</span><span id="dexCount"></span></div>
+      <div class="sectTitle"><span>全部光环（23 个） · 词条（1）</span><span id="dexCount"></span></div>
       <div id="dexList" class="cardList"></div>
     </div>
 
@@ -341,7 +375,7 @@
       · 每抽一次「抽奖幸运」+0.05，抽到稀有光环额外增加，上限 ×400<br>
       · 抽奖幸运越高，高等级光环越容易出<br>
       · 每个光环有自己的「幸运加成」，<b>佩戴后生效</b>（同时只能戴 1 个）<br>
-      · 图鉴里能看到全部 24 个光环的稀有度、幸运加成、基础概率和当前概率
+      · 图鉴里能看到全部 23 个光环的稀有度、幸运加成、基础概率和当前概率，另外还有 1 个隐藏词条（不是光环、不占佩戴位，获得后自动加成在当前佩戴的光环上）
 
       <h3>稀有度</h3>
       <div id="tierLegend" class="pay"></div>
@@ -383,8 +417,8 @@
   'use strict';
 
   /* ================= 数据：光环 ================= */
-  // t = 层级(0~8，8 = 特殊)，r = 基础概率 1/r（r=0 表示不可抽取），L = 老虎机幸运加成
-  // R = 佩戴后的目标回报率（实际 = R + RTP_ADD；隐藏光环「菜包」= 已拥有最好的光环 + 10 个百分点）
+  // t = 层级(0~7)，r = 基础概率 1/r（r=0 表示不可抽取），L = 老虎机幸运加成
+  // R = 佩戴后的目标回报率（实际 = R + RTP_ADD；拿到隐藏词条「菜包」再 +10 个百分点）
   var AURAS = [
     { n: '默认',   t: 0, r: 0,         L: 0.00, R: 0.50, start: true },
     { n: '微光',   t: 0, r: 2,         L: 0.02, R: 0.51 },
@@ -408,16 +442,18 @@
     { n: '起源',   t: 6, r: 2000000,   L: 20.00, R: 1.00 },
     { n: '奇点',   t: 6, r: 8000000,   L: 25.00, R: 1.02 },
     { n: '加百列', t: 6, r: 20000000,  L: 30.00, R: 1.05 },
-    { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 },
-    { n: '菜包',   t: 8, r: 0,         L: 41.00, R: 0.50, special: true }
+    { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 }
   ];
-  // 隐藏光环：待机时点「佩戴光环」显示 10 下获得；不可抽取；回报率 = 自己已拥有的最好光环 + 10 个百分点
-  var CAIBAO   = '菜包';
-  var RTP_ADD  = 0.30;   // 老虎机回报率整体抬升（百分点）
+  // 隐藏「词条」：待机时点顶部「佩戴光环」显示 10 下获得。
+  // 它不是光环：不可抽取、不出现在佩戴列表里、不占佩戴位；
+  // 获得后自动生效在当前佩戴的那个光环上，给那个光环的回报率 +10 个百分点。
+  var CAIBAO     = '菜包';
+  var CAIBAO_ADD = 0.10;
+  var RTP_ADD    = 1.50;   // 老虎机回报率整体抬升（百分点）：默认光环 50% + 150% = 200%
 
-  var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘', '特殊'];
-  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8', '#ffffff'];
-  var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120, 0];   // 抽到该层级额外加的「抽奖幸运」
+  var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘'];
+  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8'];
+  var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120];   // 抽到该层级额外加的「抽奖幸运」
   var BASE_GAIN  = 0.05;
   var LUCK_CAP   = 400;
   var LUCK_EXP   = 0.28;
@@ -446,20 +482,23 @@
 
   /* 「结果优先」模型：每局先决定结果（不中 / 中哪一条线 / 中的是哪个符号），再按结果摆九宫格，
      所以永远不会出现两条线同时中奖。赔付 = 本局下注 × 该符号倍率。 */
+  /* 中奖「形状」固定：各奖项的相对比例永远不变（只由这里的 w 决定），
+     光环好坏只调「中奖率」一个旋钮 —— 中奖概率 = 回报率 ÷ 中奖时平均赔率。
+     这组 w 对应的每局形状（归一化前的相对值）：🍒两个 10.5 / 🍒三个 1.5 /
+     🍋🍊🫐 各 2（合计 6）/ 🔔 3 / 🍇 1.5 / BAR 0.75 / 7️⃣ 0.3 / 💎 0.15 / 🃏🃏🃏 0.015 */
   var WINS = [
-    { k: 'pair',   m: 2,   w: 55   },   // 两个🍒（第三个不是🍒也不是Wild）
-    { k: 'cherry', m: 3,   w: 32   },
-    { k: 'lemon',  m: 5,   w: 2    },
-    { k: 'orange', m: 5,   w: 2    },
-    { k: 'plum',   m: 5,   w: 2    },
-    { k: 'bell',   m: 8,   w: 1.2  },
-    { k: 'grape',  m: 10,  w: 1    },
-    { k: 'bar',    m: 15,  w: 0.8  },
-    { k: 'seven',  m: 20,  w: 0.6  },
-    { k: 'dia',    m: 50,  w: 0.35 },
-    { k: 'wild',   m: 100, w: 0.05 }
+    { k: 'pair',   m: 2,   w: 10.5   },   // 两个🍒（第三个不是🍒也不是Wild）
+    { k: 'cherry', m: 3,   w: 1.5    },
+    { k: 'lemon',  m: 5,   w: 2      },
+    { k: 'orange', m: 5,   w: 2      },
+    { k: 'plum',   m: 5,   w: 2      },
+    { k: 'bell',   m: 8,   w: 3      },
+    { k: 'grape',  m: 10,  w: 1.5    },
+    { k: 'bar',    m: 15,  w: 0.75   },
+    { k: 'seven',  m: 20,  w: 0.3    },
+    { k: 'dia',    m: 50,  w: 0.15   },
+    { k: 'wild',   m: 100, w: 0.015  }
   ];
-  var TILT   = 0.5;                    // 光环越好，中奖权重往高倍率偏的强度（0=不偏，1=偏得最狠）
   var FILL_P = [22, 13, 13, 13, 10, 8, 7, 6, 5, 3];   // 九宫格展示用符号分布（与 SLOT 同序，会自动归一化）
   var LINES = [
     { name: '第1行', cells: [0, 1, 2] },
@@ -483,7 +522,7 @@
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1,
-    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0
+    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false
   };
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -511,6 +550,8 @@
         }
       }
       state.counts = c;
+      state.cb = !!(d.cb || c[CAIBAO]);            // 旧存档里词条是靠 counts['菜包'] 记的
+      delete c[CAIBAO];
       if (d.hist && d.hist.length) {
         var h = [];
         for (i = 0; i < d.hist.length; i++) {
@@ -566,7 +607,9 @@
     return { w: w, sum: sum };
   }
   function chanceOf(name) {
-    var i = idxOf(name), ww = auraWeights();
+    var i = idxOf(name);
+    if (!AURAS[i] || AURAS[i].n !== name) return 0;    // 词条「菜包」不是光环，概率恒为 0
+    var ww = auraWeights();
     return ww.w[i] / ww.sum;
   }
   function pickAura() {
@@ -592,32 +635,25 @@
   }
 
   /* ---------- 结果优先模型 ---------- */
-  // 「菜包」是隐藏光环：佩戴后回报率 = 自己已拥有的最好光环 + 10 个百分点
-  function bestOwnedR() {
-    var best = 0.5, i, a;
-    for (i = 0; i < AURAS.length; i++) {
-      a = AURAS[i];
-      if (a.special) continue;
-      if ((a.start || (isRollable(a) && (state.counts[a.n] || 0) > 0)) && a.R > best) best = a.R;
-    }
-    return best;
-  }
+  // 回报率 = 当前佩戴光环的原始 R + 整体抬升；拥有词条「菜包」再 +10 个百分点（加在佩戴的那个光环上）
   function auraR(nm) {
     var name = nm || state.eq;
-    if (name === CAIBAO) return bestOwnedR() + RTP_ADD + 0.10;
     var a = AURAS[idxOf(name)];
-    return ((a && a.R) ? a.R : 0.5) + RTP_ADD;
+    return ((a && a.n === name && a.R) ? a.R : 0.5) + RTP_ADD + (state.cb ? CAIBAO_ADD : 0);
   }
 
-  // 由目标回报率反推：中奖类别权重 / 中奖时平均倍率 / 中奖概率
+  // 形状固定：权重只归一化一次（与佩戴光环无关）
+  var WIN_P = (function () {
+    var i, tot = 0, p = [], em = 0;
+    for (i = 0; i < WINS.length; i++) tot += WINS[i].w;
+    for (i = 0; i < WINS.length; i++) p[i] = WINS[i].w / tot;
+    for (i = 0; i < WINS.length; i++) em += p[i] * WINS[i].m;
+    return { p: p, em: em };
+  })();
+
+  // 由目标回报率反推中奖率：中奖类别权重与平均倍率恒定，只有中奖概率随光环变
   function winWeights(R) {
-    var x = (R - 0.5) / 0.70, k, i, tot = 0, w = [], em = 0;
-    if (x < 0) x = 0;
-    if (x > 1) x = 1;
-    k = TILT * x;
-    for (i = 0; i < WINS.length; i++) { w[i] = WINS[i].w * Math.pow(WINS[i].m, k); tot += w[i]; }
-    for (i = 0; i < w.length; i++) { w[i] /= tot; em += w[i] * WINS[i].m; }
-    return { p: w, em: em, pwin: Math.min(1, R / em) };
+    return { p: WIN_P.p, em: WIN_P.em, pwin: Math.min(1, R / WIN_P.em) };
   }
   function keySym(k) { for (var i = 0; i < SLOT.length; i++) if (SLOT[i].k === k) return i; return 0; }
   function lineOf(syms, L) {
@@ -758,6 +794,20 @@
   var $auraBtn = document.getElementById('auraBtn');
   var $helpBtn = document.getElementById('helpBtn');
   var $payBtn = document.getElementById('payBtn');
+  var $homePage = document.getElementById('homePage');
+  var $gamePage = document.getElementById('gamePage');
+  var $lobbyGold = document.getElementById('lobbyGold');
+  var $backBtn = document.getElementById('backBtn');
+  var $gameSlot = document.getElementById('gameSlot');
+  var atHome = true;                        // 一进来是「赛博赌场」大厅
+
+  // 大厅 ⇄ 老虎机：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
+  function setPage(home) {
+    atHome = !!home;
+    $homePage.style.display = atHome ? '' : 'none';
+    $gamePage.style.display = atHome ? 'none' : '';
+    $helpBtn.style.display = atHome ? 'none' : '';
+  }
 
   function setSym(el, si) {
     var s = SLOT[si];
@@ -775,6 +825,7 @@
 
   function renderStats() {
     $sGold.textContent = comma(state.gold);
+    $lobbyGold.textContent = comma(state.gold);
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
     $sEq.style.color = TIER_COLOR[AURAS[idxOf(state.eq)].t];
@@ -915,7 +966,7 @@
     $hist.innerHTML = html;
   }
 
-  // 图鉴卡片：shown = 显示出来的名字（隐藏光环显示 ？？？）
+  // 图鉴卡片：shown = 显示出来的名字
   function dexCard(a, shown, base, extra, cnt) {
     return '<div class="card' + (cnt > 0 ? '' : ' locked') + '">' +
       '<div class="nm" style="color:' + TIER_COLOR[a.t] + '">' + shown +
@@ -931,18 +982,32 @@
     '</div>';
   }
 
+  // 词条卡片：不是光环、没有佩戴按钮，获得后自动加成在当前佩戴的光环上
+  function caibaoCard() {
+    var has = !!state.cb;
+    return '<div class="card' + (has ? '' : ' locked') + '">' +
+      '<div class="nm" style="color:#ffffff">' + (has ? CAIBAO : '？？？') +
+        '<span class="tag">词条　不占佩戴位</span>' +
+      '</div>' +
+      '<div class="meta">' + (has
+        ? '生效中：自动加成在当前佩戴的光环上'
+        : '隐藏词条 · 不可抽取') + '</div>' +
+      '<div class="foot">' +
+        '<span class="own' + (has ? ' has' : '') + '">' + (has ? '已获得' : '未获得') + '</span>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderDex() {
-    var html = '', i, owned = 0, a, cnt, cb;
+    var html = '', i, owned = 0, a, cnt;
     for (i = 0; i < AURAS.length; i++) {
       a = AURAS[i];
-      if (a.special) continue;                       // 隐藏光环单独排在最前面
       cnt = state.counts[a.n] || 0;
       if (a.r > 0 && cnt > 0) owned++;
       html += dexCard(a, a.n, a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取',
         '当前 ' + fmtChance(chanceOf(a.n)), cnt);
     }
-    cb = AURAS[idxOf(CAIBAO)];
-    html = dexCard(cb, '？？？', '隐藏光环 · 不可抽取', '', state.counts[cb.n] || 0) + html;
+    html = html + caibaoCard();                      // 词条排在整个图鉴最后面
     $dexList.innerHTML = html;
     $dexCount.textContent = owned + ' / 22';
   }
@@ -958,7 +1023,7 @@
         '<div class="nm" style="color:' + col + '">' + a.n +
           '<span class="tag">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + '</span>' +
         '</div>' +
-        '<div class="meta">' + (a.special ? '隐藏光环 · 不可抽取' : '当前 ' + fmtChance(chanceOf(a.n))) + '</div>' +
+        '<div class="meta">当前 ' + fmtChance(chanceOf(a.n)) + '</div>' +
         '<div class="foot" style="justify-content:flex-end">' +
           '<button class="eq' + (state.eq === a.n ? ' on' : '') + '" data-eq="' + a.n + '">' + (state.eq === a.n ? '使用中' : '装备') + '</button>' +
         '</div>' +
@@ -967,7 +1032,8 @@
     if (!list.length) html = '<div class="empty">还没有任何光环</div>';
     $eqList.innerHTML = html;
     // 当前佩戴
-    $eqInfo.innerHTML = '当前：<span style="color:' + TIER_COLOR[cur.t] + '">' + cur.n + '</span>　幸运 +' + cur.L.toFixed(2);
+    $eqInfo.innerHTML = '当前：<span style="color:' + TIER_COLOR[cur.t] + '">' + cur.n + '</span>　幸运 +' + cur.L.toFixed(2) +
+      (state.cb ? '　｜　词条「' + CAIBAO + '」生效中' : '');
   }
 
   // 兼容旧接口：现在回报率直接由佩戴光环决定
@@ -1157,6 +1223,8 @@
   }, false);
   $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
   $payBtn.addEventListener('click', function () { openSheet('paySheet'); }, false);
+  $gameSlot.addEventListener('click', function () { setPage(false); }, false);   // 进老虎机
+  $backBtn.addEventListener('click', function () { setPage(true); }, false);     // 回大厅
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
@@ -1205,7 +1273,7 @@
     state = {
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
-      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0
+      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false
     };
     save();
     fillGridIdle();
@@ -1226,7 +1294,7 @@
   // 2) 待机时点金币显示 10 下 -> +1000 金币（仅一次）
   // 3) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
   // 4) 待机时点右中格子 5 下 -> 直接拿 100 金币（不限次数）
-  // 5) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏光环「菜包」（获得过之后只提示）
+  // 5) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏词条「菜包」（获得过之后只提示）
   function idle() { return !spinning; }
 
   function tapCell(i) {
@@ -1284,14 +1352,14 @@
     }
   }, false);
 
-  document.getElementById('eqBox').addEventListener('click', function () {   // 5) 隐藏光环
+  document.getElementById('eqBox').addEventListener('click', function () {   // 5) 隐藏词条
     if (!idle()) return;
     state.t6++;
     if (state.t6 < 10) { save(); return; }
     state.t6 = 0;
-    if (state.counts[CAIBAO]) { toast('已经拥有「' + CAIBAO + '」了'); save(); return; }
-    state.counts[CAIBAO] = 1;
-    toast('获得隐藏光环「' + CAIBAO + '」');
+    if (state.cb) { toast('已经拥有词条「' + CAIBAO + '」了'); save(); return; }
+    state.cb = true;
+    toast('获得隐藏词条「' + CAIBAO + '」：佩戴的光环 回报率 +10 个百分点');
     renderStats(); renderDex(); renderEquip(); save();
   }, false);
 
@@ -1307,6 +1375,7 @@
   if (idxOf(state.eq) === 0 && state.eq !== '默认') state.eq = '默认';
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+  setPage(true);                                  // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
 
   /* ================= 离线支持 ================= */
