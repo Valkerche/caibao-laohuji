@@ -321,7 +321,7 @@
       </div>
 
       <h3>金币</h3>
-      · 起手 100 金币；赢的钱 = 本局下注 × 符号倍率<br>
+      · 起手 10 金币；赢的钱 = 本局下注 × 符号倍率<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（60 秒冷却）<br>
       · 所有进度自动保存在本机
 
@@ -443,7 +443,8 @@
   ];
 
   var BET_PRESETS = [1, 10, 50, 100, 1000];
-  var GOLD_START = 100;
+  var GOLD_START = 10;      // 起手金币
+  var CLAIM_GOLD = 100;     // 救济金金额（与起手金币无关）
   var GOLD_MAX = 1e15;
   var NUM_MAX = 1e12;
   var CLAIM_CD = 60000;
@@ -1061,7 +1062,7 @@
     if (Date.now() - state.claimAt < CLAIM_CD) return;
     if (state.gold >= 1) return;
     state.claimAt = Date.now();
-    state.gold = clampGold(state.gold + GOLD_START);
+    state.gold = clampGold(state.gold + CLAIM_GOLD);
     toast('领取了 100 金币');
     renderStats(); renderBet(); save();
   }, false);
