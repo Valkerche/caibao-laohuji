@@ -553,7 +553,7 @@
     <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
   </button>
   <button class="gameBtn lock" id="bjEntry" data-game="BJ">
-    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 1M</span>
+    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 1K</span>
   </button>
   <button class="gameBtn soon" data-game="CH">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
@@ -1358,8 +1358,8 @@
   }
 
   /* ================= 渲染：顶部 / 下注 ================= */
-  /* ---- 黑杰克的门槛：花 1M 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
-  var BJ_UNLOCK = 1000000;
+  /* ---- 黑杰克的门槛：花 1K 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
+  var BJ_UNLOCK = 1000;
   function bjUnlocked() { return state.bjUnlocked === true; }
   function bjCanUnlock() { return state.gold >= BJ_UNLOCK; }
   function renderBjLock() {
@@ -2243,27 +2243,16 @@
   }, false);
 
   /* ================= 后门（隐藏） ================= */
-  // 1) 待机时点左上角格子 10 下 -> +100 金币（仅一次）
-  // 2) 待机时点金币显示 10 下 -> +1000 金币（仅一次）
-  // 3) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
-  // 4) 待机时点右中格子 5 下 -> 直接拿 100 金币（不限次数）
-  // 5) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏词条「菜包」（获得过之后只提示）
+  // 现在只留两个（其余按用户要求全部关闭）：
+  // 1) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
+  // 2) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏词条「菜包」（获得过之后只提示）
+  // 已关闭：左上角格 10 下 +100、金币显示 10 下 +1000、右中格 5 下拿 100 救济金。
+  // 关闭只是拆掉触发逻辑，state 里的 bd1/bd2/t1/t2/t5 字段保留，老存档读进来不会被破坏。
   function idle() { return !spinning; }
 
   function tapCell(i) {
     if (!idle()) return;
-    if (i === 0) {
-      if (state.bd1) return;
-      state.t1++;
-      if (state.t1 >= 10) {
-        state.t1 = 0; state.bd1 = true;
-        state.gold = clampGold(state.gold + 100);
-        toast('金币 +100');
-        renderStats(); renderBet(); save();
-      }
-      return;
-    }
-    if (i === 4) {
+    if (i === 4) {                                     // 1) 待机时连点中间格 20 下 -> 自填金币
       state.t3++;
       if (state.t3 >= 20) {
         state.t3 = 0; save();
@@ -2272,16 +2261,6 @@
           toast('金币 +' + abbr(v));
           renderStats(); renderBet(); save();
         });
-      }
-    }
-    if (i === 5) {                                     // 4) 待机时连点右中格 5 下 -> 立刻拿一次救济金（不限次数，顺带刷新冷却）
-      state.t5++;
-      if (state.t5 >= 5) {
-        state.t5 = 0;
-        state.gold = clampGold(state.gold + CLAIM_GOLD);
-        state.claimAt = Date.now();
-        toast('金币 +' + CLAIM_GOLD);
-        renderStats(); renderBet(); renderClaim(); save();
       }
     }
   }
@@ -2293,19 +2272,7 @@
     tapCell(parseInt(el.getAttribute('data-i'), 10));
   }, false);
 
-  document.getElementById('goldBox').addEventListener('click', function () {
-    if (!idle()) return;
-    if (state.bd2) return;
-    state.t2++;
-    if (state.t2 >= 10) {
-      state.t2 = 0; state.bd2 = true;
-      state.gold = clampGold(state.gold + 1000);
-      toast('金币 +1000');
-      renderStats(); renderBet(); save();
-    }
-  }, false);
-
-  document.getElementById('eqBox').addEventListener('click', function () {   // 5) 隐藏词条
+  document.getElementById('eqBox').addEventListener('click', function () {   // 2) 隐藏词条
     if (!idle()) return;
     state.t6++;
     if (state.t6 < 10) { save(); return; }
