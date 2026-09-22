@@ -1551,6 +1551,17 @@
     paintClaim($bjClaim);
   }
 
+  // 发牌节奏：整局的快慢都在这几个数上，想再快/再慢只改这里（毫秒）
+  var BJ_T = {
+    deal: 560,      // 每发一张牌之间的停顿
+    look: 480,      // 牌发完 -> 亮结果 / 开操作前的停顿
+    hit: 420,       // 我要牌以后，让新牌先落定
+    bust: 460,      // 爆牌亮出来 -> 出结算的停顿
+    toDealer: 620,  // 我这边结束 -> 庄家开始补牌
+    dealer: 700,    // 庄家每补一张之间的停顿
+    settle: 620     // 庄家停牌 -> 出结果的停顿
+  };
+
   // 依次执行（每步之间留出翻牌动画的时间）
   function bjSteps(list, done) {
     var i = 0;
@@ -1558,7 +1569,7 @@
       if (i >= list.length) { done(); return; }
       list[i]();
       i++;
-      setTimeout(next, 300);
+      setTimeout(next, BJ_T.deal);
     })();
   }
 
@@ -1591,10 +1602,13 @@
     ], function () {
       var pBJ = isBlackjack(BJ.player), dBJ = isBlackjack(BJ.dealer);
       if (pBJ || dBJ) {
-        BJ.hole = false; renderBj();
-        if (pBJ && dBJ) { bjEnd(1, '双方黑杰克 · 平局', 'push'); return; }
-        if (pBJ) { bjEnd(BJ_BJ_PAY, '黑杰克！赔 3 : 2', 'win'); return; }
-        bjEnd(0, '庄家黑杰克 · 你输了', 'lose');
+        BJ.hole = false; renderBj(); buzz(12);
+        // 先让暗牌翻过来给玩家看一眼，再报结果
+        setTimeout(function () {
+          if (pBJ && dBJ) { bjEnd(1, '双方黑杰克 · 平局', 'push'); return; }
+          if (pBJ) { bjEnd(BJ_BJ_PAY, '黑杰克！赔 3 : 2', 'win'); return; }
+          bjEnd(0, '庄家黑杰克 · 你输了', 'lose');
+        }, BJ_T.look);
         return;
       }
       // 明牌不是 A/10 时庄家不偷看，但结果一样：暗牌不是黑杰克就继续
@@ -1612,12 +1626,12 @@
     if (v > 21) {
       BJ.hole = false; BJ.phase = 'pause';
       renderBj(); renderBjBet();
-      setTimeout(function () { bjEnd(0, '爆牌 · 你输了', 'lose'); }, 240);
+      setTimeout(function () { bjEnd(0, '爆牌 · 你输了', 'lose'); }, BJ_T.bust);
       return;
     }
     if (v === 21) {
       BJ.phase = 'pause'; renderBjBet();
-      setTimeout(bjDealerPlay, 300);
+      setTimeout(bjDealerPlay, BJ_T.toDealer);
       return;
     }
     renderBjBet();
@@ -1625,7 +1639,8 @@
 
   function bjStand() {
     if (BJ.phase !== 'player') return;
-    bjDealerPlay();
+    BJ.phase = 'pause'; renderBjBet();                 // 先停一下，让玩家看清自己的牌再轮到庄家
+    setTimeout(bjDealerPlay, BJ_T.hit);
   }
 
   function bjDouble() {
@@ -1641,11 +1656,11 @@
     if (handInfo(BJ.player).v > 21) {
       BJ.hole = false; BJ.phase = 'pause';
       renderBj(); renderBjBet();
-      setTimeout(function () { bjEnd(0, '加倍后爆牌 · 你输了', 'lose'); }, 240);
+      setTimeout(function () { bjEnd(0, '加倍后爆牌 · 你输了', 'lose'); }, BJ_T.bust);
       return;
     }
     BJ.phase = 'pause'; renderBjBet();
-    setTimeout(bjDealerPlay, 320);
+    setTimeout(bjDealerPlay, BJ_T.toDealer);
   }
 
   function bjDealerPlay() {
@@ -1653,10 +1668,10 @@
     renderBj(); renderBjBet();
     bjMsg('庄家补牌…', '');
     (function step() {
-      if (handInfo(BJ.dealer).v >= 17) { setTimeout(bjSettle, 380); return; }   // S17：软 17 也停
+      if (handInfo(BJ.dealer).v >= 17) { setTimeout(bjSettle, BJ_T.settle); return; }   // S17：软 17 也停
       BJ.dealer.push(dealerDraw(BJ.dealer));
       buzz(6); renderBj();
-      setTimeout(step, 400);
+      setTimeout(step, BJ_T.dealer);
     })();
   }
 
