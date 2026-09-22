@@ -140,20 +140,42 @@
   .payBtn small { display: block; font-size: 11px; color: #8b8577; }
   .payBtn:active { transform: scale(.97); }
 
-  /* 杂项（🎁）：竖排功能列表 */
-  .miscTitle { margin: 14px 0 6px; font-size: 11px; color: #6b7280; letter-spacing: 1px; }
-  .miscTitle:first-of-type { margin-top: 4px; }
-  .miscList { display: flex; flex-direction: column; gap: 8px; }
+  /* 光环面板标题右侧的 ❓：外观跟左下角规则按钮同一套，只是小一号放在面板里 */
+  #auraHelpBtn {
+    float: right; width: 40px; height: 40px; margin: 0 0 0 8px; font-size: 19px;
+    position: relative; z-index: 70;
+  }
+
+  /* 礼物（🎁）悬浮小列表：点开后贴在 🎁 上方、右对齐；只有 emoji + 名字两列 */
+  #miscPop {
+    position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 45;
+    display: none; flex-direction: column; gap: 7px; width: 138px;
+    background: #0f1016; border: 1px solid #2b2d38; border-radius: 13px; padding: 7px;
+    box-shadow: 0 10px 30px #000b;
+  }
+  #miscPop.show { display: flex; }
   .miscItem {
-    display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 13px; text-align: left;
-    border: 1px solid #262835; border-radius: 10px; background: #14151d; color: #e8ecf2;
-    font-family: inherit; font-size: 16px; font-weight: 700; touch-action: manipulation;
+    display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%;
+    padding: 9px 10px; text-align: left; border: 1px solid #262835; border-radius: 9px;
+    background: #14151d; color: #e8ecf2; font-family: inherit; font-size: 14px; font-weight: 600;
+    touch-action: manipulation;
   }
   .miscItem:active { background: #171923; border-color: #3b82f6; }
-  .miscItem .ico { font-size: 24px; line-height: 1; }
+  .miscItem .ico { font-size: 18px; line-height: 1; }
   .miscItem .tx { flex: 1; min-width: 0; }
-  .miscItem .tx i { display: block; font-style: normal; font-size: 11px; font-weight: 400; color: #6b7280; margin-top: 2px; }
-  .miscItem .go { font-size: 13px; color: #6b7280; font-weight: 600; }
+  .miscItem .tx i { display: none; }            /* 一行小字注释全部不显示 */
+  .miscItem .go { display: none; }              /* 只要 emoji + 名字 */
+  /* 设置 / 兑换码小弹窗（从 🎁 列表里点开） */
+  .miniRow.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .miniRow.top h3 { font-size: 15px; }
+  .miniClose { border: 0; background: none; color: #6b7280; font-size: 20px; line-height: 1; font-family: inherit; padding: 0 4px; }
+  .acctBtn {
+    width: 100%; margin-top: 10px; padding: 11px; border: 1px solid #5b2230; border-radius: 10px;
+    background: #1b1013; color: #ff8fa3; font-size: 15px; font-weight: 700; font-family: inherit;
+    touch-action: manipulation;
+  }
+  .acctBtn:active { transform: scale(.98); }
+  .acctTip { margin-top: 12px; font-size: 11px; color: #c58b96; opacity: .75; text-align: center; }
   /* 兑换码 */
   .codeRow { display: flex; gap: 8px; }
   .codeRow input {
@@ -348,7 +370,7 @@
 <div class="sheet" id="auraSheet">
   <div class="panel">
     <span class="close" data-close="auraSheet">×</span>
-    <h2>💥 光环抽取 <small style="font-size:11px;color:#6b7280">（不花金币）</small></h2>
+    <h2>💥 光环抽取 <small style="font-size:11px;color:#6b7280">（不花金币）</small><button class="corner" id="auraHelpBtn">❓</button></h2>
     <div class="tabs">
       <button class="tab on" data-tab="draw">抽取</button>
       <button class="tab" data-tab="dex">图鉴</button>
@@ -412,18 +434,17 @@
       <h3>金币</h3>
       · 起手 10 金币；赢的钱 = 本局下注 × 符号倍率<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
-      · 金币数字按 <b>K / M / B / T</b> 缩写显示（每 1000 进一位：1.23K = 1230、1.23M = 123 万）<br>
       · 所有进度自动保存在本机
+    </div>
+  </div>
+</div>
 
-      <h3>🎁 杂项（右下角礼物按钮）</h3>
-      · 氪金、光环、兑换码、商城 都在这里进<br>
-      · <b>兑换码</b>：在输入框里填码点「兑换」，不区分大小写，每个码只能兑换一次<br>
-      · <b>商城</b>：敬请期待，以后可以用金币买道具
-
-      <h3>⏳ 敬请期待</h3>
-      · 黑杰克、养鸡场、幸运转盘 三个入口已经摆在首页了，玩法还在做<br>
-      · 现在点它们只会弹一句「敬请期待」，进不去
-
+<!-- 光环规则面板（从光环面板里的 ❓ 进） -->
+<div class="sheet" id="auraRulesSheet">
+  <div class="panel">
+    <span class="close" data-close="auraRulesSheet" data-back="auraSheet">×</span>
+    <h2>❓ 光环规则</h2>
+    <div class="rules">
       <h3>💥 光环（附加玩法，不花金币）</h3>
       · 每抽一次「抽奖幸运」+0.05，抽到稀有光环额外增加，上限 ×400<br>
       · 抽奖幸运越高，高等级光环越容易出<br>
@@ -433,7 +454,6 @@
       <h3>稀有度</h3>
       <div id="tierLegend" class="pay"></div>
       <small>抽奖幸运是光环抽取用的，老虎机幸运由佩戴光环提供，两者互不影响。</small>
-      <div><a id="reset" href="#">重置全部进度</a></div>
     </div>
   </div>
 </div>
@@ -441,7 +461,7 @@
 <!-- 氪金弹层（从 🎁 杂项列表进） -->
 <div class="sheet" id="paySheet">
   <div class="panel">
-    <span class="close" data-close="paySheet" data-back="miscSheet">×</span>
+    <span class="close" data-close="paySheet" data-back="miscPop">×</span>
     <h2>💰 氪金</h2>
     <div class="payRow">
       <button class="payBtn" data-pay="10">1 元<small>10 金币</small></button>
@@ -452,44 +472,47 @@
   </div>
 </div>
 
-<!-- 杂项弹层（🎁）：氪金 / 光环 / 兑换码 / 商城 都从这里进 -->
-<div class="sheet" id="miscSheet">
-  <div class="panel">
-    <span class="close" data-close="miscSheet">×</span>
-    <h2>🎁 杂项</h2>
-    <div class="miscTitle">功能</div>
-    <div class="miscList">
-      <button class="miscItem" id="miscPay">
-        <span class="ico">💰</span>
-        <span class="tx">氪金<i>1 / 60 / 100 / 520 元档</i></span>
-        <span class="go">进入 ›</span>
-      </button>
-      <button class="miscItem" id="miscAura">
-        <span class="ico">💥</span>
-        <span class="tx">光环<i>抽取 · 图鉴 · 佩戴</i></span>
-        <span class="go">进入 ›</span>
-      </button>
-      <button class="miscItem" id="miscShop">
-        <span class="ico">🛒</span>
-        <span class="tx">商城<i>用金币买道具</i></span>
-        <span class="go soon">敬请期待 ›</span>
-      </button>
-    </div>
+<!-- 🎁 悬浮小列表（点右下角礼物按钮弹出，贴在按钮上方） -->
+<div id="miscPop">
+  <button class="miscItem" id="miscPay"><span class="ico">💰</span><span class="tx">氪金</span></button>
+  <button class="miscItem" id="miscAura"><span class="ico">💥</span><span class="tx">光环</span></button>
+  <button class="miscItem" id="miscShop"><span class="ico">🛒</span><span class="tx">商城</span></button>
+  <button class="miscItem" id="miscCode"><span class="ico">🎟️</span><span class="tx">兑换码</span></button>
+  <button class="miscItem" id="miscSet"><span class="ico">⚙️</span><span class="tx">设置</span></button>
+</div>
 
-    <div class="miscTitle">兑换码</div>
+<!-- 兑换码小弹窗 -->
+<div class="sheet" id="codePop">
+  <div class="panel">
+    <div class="miniRow top">
+      <h3>🎟️ 兑换码</h3>
+      <button class="miniClose" id="codeClose">×</button>
+    </div>
     <div class="codeRow">
       <input id="codeInput" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="输入兑换码">
       <button id="codeBtn">兑换</button>
     </div>
     <div class="promptTip" id="codeTip">兑换码不区分大小写，每个码只能兑换一次。</div>
-    <div class="miscList" id="codeHist" style="margin-top:8px"></div>
+    <div id="codeHist" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px"></div>
+  </div>
+</div>
+
+<!-- 设置小弹窗 -->
+<div class="sheet" id="setPop">
+  <div class="panel">
+    <div class="miniRow top">
+      <h3>⚙️ 设置</h3>
+      <button class="miniClose" id="setClose">×</button>
+    </div>
+    <button class="acctBtn" id="reset">重置全部进度</button>
+    <div class="acctTip">清空金币、光环、图鉴与幸运，重新开始</div>
   </div>
 </div>
 
 <!-- 商城弹层（占位） -->
 <div class="sheet" id="shopSheet">
   <div class="panel">
-    <span class="close" data-close="shopSheet" data-back="miscSheet">×</span>
+    <span class="close" data-close="shopSheet" data-back="miscPop">×</span>
     <h2>🛒 商城</h2>
     <div class="rules" style="text-align:center;padding:26px 0">
       <div style="font-size:44px">🛒</div>
@@ -924,6 +947,8 @@
   var $drawLuck = document.getElementById('drawLuck');
   var $helpBtn = document.getElementById('helpBtn');
   var $miscBtn = document.getElementById('miscBtn');
+  var $miscPop = document.getElementById('miscPop');
+  var $auraHelpBtn = document.getElementById('auraHelpBtn');
   var $homePage = document.getElementById('homePage');
   var $gamePage = document.getElementById('gamePage');
   var $lobbyGold = document.getElementById('lobbyGold');
@@ -1395,17 +1420,42 @@
   }, false);
 
   $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
-  $miscBtn.addEventListener('click', function () {                     // 🎁 杂项：氪金 / 光环 / 兑换码 / 商城
-    renderCodeHist();
-    openSheet('miscSheet');
+  // 🎁 悬浮小列表：打开时贴着 🎁 上方；点空白处关掉
+  function toggleMiscPop(force) {
+    var show;
+    if (force === undefined) show = $miscPop.className.indexOf('show') < 0;
+    else show = !!force;
+    $miscPop.className = show ? 'show' : '';
+    if (show) renderCodeHist();
+  }
+  $miscBtn.addEventListener('click', function (e) {
+    if (e && e.stopPropagation) e.stopPropagation();                    // 别被 document 的「点空白关闭」吃掉
+    toggleMiscPop();
   }, false);
-  document.getElementById('miscPay').addEventListener('click', function () { closeSheet('miscSheet'); openSheet('paySheet'); }, false);
+  document.addEventListener('click', function (e) {
+    if ($miscPop.className.indexOf('show') < 0) return;
+    var el = e.target;
+    if (el === $miscBtn) return;
+    while (el && el !== document.body) {                                // 点列表内部不算空白
+      if (el === $miscPop) return;
+      el = el.parentNode;
+    }
+    toggleMiscPop(false);
+  }, false);
+  document.getElementById('miscPay').addEventListener('click', function () { toggleMiscPop(false); openSheet('paySheet'); }, false);
   document.getElementById('miscAura').addEventListener('click', function () {
-    closeSheet('miscSheet');
+    toggleMiscPop(false);
     renderHist(); renderDex(); renderEquip(); renderDrawLuck();
     openSheet('auraSheet');
   }, false);
-  document.getElementById('miscShop').addEventListener('click', function () { toast('商城敬请期待'); }, false);
+  document.getElementById('miscShop').addEventListener('click', function () { toggleMiscPop(false); openSheet('shopSheet'); }, false);
+  document.getElementById('miscCode').addEventListener('click', function () { toggleMiscPop(false); openSheet('codePop'); }, false);
+  document.getElementById('miscSet').addEventListener('click', function () { toggleMiscPop(false); openSheet('setPop'); }, false);
+  $auraHelpBtn.addEventListener('click', function () { openSheet('auraRulesSheet'); }, false);
+  document.getElementById('codeClose').addEventListener('click', function () { closeSheet('codePop'); }, false);
+  document.getElementById('setClose').addEventListener('click', function () { closeSheet('setPop'); }, false);
+  document.getElementById('codePop').addEventListener('click', function (e) { if (e.target === this) closeSheet('codePop'); }, false);
+  document.getElementById('setPop').addEventListener('click', function (e) { if (e.target === this) closeSheet('setPop'); }, false);
 
   // 大厅游戏入口：现在只有老虎机做得出来，其余的都是占位
   var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
@@ -1424,7 +1474,8 @@
       if (el.className && String(el.className).indexOf('close') >= 0 && el.getAttribute('data-close')) {
         var back = el.getAttribute('data-back');
         closeSheet(el.getAttribute('data-close'));
-        if (back) openSheet(back);                // 氪金 / 商城是从杂项里进的，关掉回杂项
+        if (back === 'miscPop') toggleMiscPop(true);   // 氪金 / 商城是从 🎁 小列表里进的，关掉再弹回来
+        else if (back) openSheet(back);                // 其余按普通弹层回退
         return;
       }
       if (el.getAttribute && el.getAttribute('data-eq')) {
@@ -1480,8 +1531,8 @@
     $auraName.style.color = '#4b5563'; $auraName.style.textShadow = 'none';
     $tierLine.textContent = ''; $oddsLine.textContent = '';
     $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
-    renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck();
-    closeSheet('helpSheet');
+    renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
+    closeSheet('setPop');
     toast('已重置');
   }, false);
 
