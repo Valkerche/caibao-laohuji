@@ -5,216 +5,352 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no,email=no,address=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0b0b0f">
+<meta name="theme-color" content="#070908">
 <meta name="apple-mobile-web-app-title" content="赛博赌场">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>赛博赌场</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    background: #0b0b0f; color: #e8ecf2;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
-    font-size: 16px; line-height: 1.5; -webkit-text-size-adjust: 100%; overflow-x: hidden;
+  /* ================= 赌场风皮肤 ================= */
+  :root{
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei","Noto Sans SC",sans-serif;
+    /* 数字 / 英文：窄体标牌感（DIN / Bahnschrift），比衬线体干净得多；中文自动回落到系统无衬线 */
+    --disp:"DIN Alternate","Bahnschrift","Avenir Next Condensed","Roboto Condensed","PingFang SC",-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;
+    /* 只留给赌桌上那两行英文印花 */
+    --print:Georgia,"Times New Roman","Songti SC",serif;
+    --night:#0a0d0c; --night2:#070908;
+    --felt:#0e3b2a; --felt2:#0a2b1f;
+    --gold:#d4af37; --goldlit:#f3d98b; --golddim:#8a7024;
+    --gl:rgba(212,175,55,.30); --gl2:rgba(212,175,55,.13);
+    --red:#c8102e; --cream:#f4efe3; --ink:#16181d;
+    --tx:#e9e5d8; --txd:#8d8778;
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  html, body {
+    background:
+      radial-gradient(120% 40% at 50% 0%, rgba(212,175,55,.055), transparent 62%),
+      linear-gradient(#0a0d0c, var(--night2) 72%) fixed, #070908;
+    color: var(--tx);
+    font-family: var(--sans);
+    font-size: 16px; line-height: 1.5; -webkit-text-size-adjust: 100%; overflow-x: hidden;
+    min-height: 100%;
+  }
+  button { font-family: inherit; }
   .wrap { max-width: 520px; margin: 0 auto; padding: 14px 14px calc(96px + env(safe-area-inset-bottom)); }
 
-  /* 首页（大厅） */
-  #homePage { max-width: 520px; margin: 0 auto; padding: 40px 14px calc(96px + env(safe-area-inset-bottom)); }
-  .lobbyTitle { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 5px; margin-bottom: 6px; }
-  .lobbySub { text-align: center; font-size: 12px; color: #6b7280; letter-spacing: 1px; margin-bottom: 30px; }
-  .lobbySub b { font-size: 14px; }
+  /* 毡面噪点 */
+  .grain { position: relative; }
+  .grain::after {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .15;
+    background-image: var(--grain); mix-blend-mode: overlay;
+  }
+  .grain > * { position: relative; z-index: 2; }
+
+  /* 通用：黄铜描边板 */
+  .brass {
+    position: relative; border: 1px solid var(--gl); border-radius: 3px;
+    background: linear-gradient(#161b18, #0c100e);
+    box-shadow: 0 2px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.045);
+  }
+
+  /* ================= 大厅 ================= */
+  #homePage { max-width: 520px; margin: 0 auto; padding: 34px 14px calc(96px + env(safe-area-inset-bottom)); }
+  .lobbyTitle {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-size: 29px; font-weight: 800; letter-spacing: 7px; text-indent: 7px; text-align: center;
+    color: var(--goldlit);
+    text-shadow: 0 0 22px rgba(212,175,55,.30), 0 2px 0 rgba(0,0,0,.7);
+  }
+  .lobbyTitle::before, .lobbyTitle::after {
+    content: ''; flex: 0 0 58px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--golddim));
+  }
+  .lobbyTitle::after { background: linear-gradient(270deg, transparent, var(--golddim)); }
+  .lobbySub {
+    margin: 22px 0 20px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 9px 0; border-top: 1px solid var(--gl2); border-bottom: 1px solid var(--gl2);
+    font-size: 11px; letter-spacing: 1px; color: var(--txd);
+  }
+  .lobbySub::before {
+    content: ''; width: 15px; height: 15px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f7e3a4, #c9a431 58%, var(--golddim));
+    box-shadow: 0 0 9px rgba(212,175,55,.5), inset 0 0 0 1px rgba(0,0,0,.28);
+  }
+  .lobbySub b { font-family: var(--disp); font-size: 24px; font-weight: 700; color: var(--goldlit); letter-spacing: 1px; }
   .gameBtn {
-    display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 18px; margin-bottom: 12px;
-    border: 1px solid #262835; border-radius: 14px; background: #111219; color: #e8ecf2;
-    font-family: inherit; font-size: 20px; font-weight: 700; text-align: left;
-    touch-action: manipulation; transition: background .15s, border-color .15s;
+    position: relative; display: flex; align-items: center; gap: 13px; width: 100%;
+    padding: 11px 13px; margin-bottom: 9px; text-align: left;
+    border: 1px solid var(--gl); border-radius: 3px; color: var(--tx);
+    background: linear-gradient(#161b18, #0c100e);
+    box-shadow: 0 2px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.045);
+    font-size: 17px; font-weight: 700; letter-spacing: 1px;
+    touch-action: manipulation; transition: background .15s;
   }
-  .gameBtn:active { background: #171923; border-color: #3b82f6; }
-  .gameBtn .ico { font-size: 30px; line-height: 1; }
-  .gameBtn .nm { flex: 1; }
-  .gameBtn .go { font-size: 13px; color: #6b7280; font-weight: 600; letter-spacing: 0; }
-  /* 还没开放的游戏 / 商城：灰一点，右边挂「敬请期待」，点了只弹 toast */
-  .gameBtn.soon { opacity: .5; }
-  .gameBtn.soon .ico { filter: grayscale(.75); }
-  .gameBtn .go.soon { color: #6b7280; border: 1px solid #2b2d38; border-radius: 20px; padding: 2px 8px; font-size: 11px; }
-  #backBtn {
-    display: inline-block; margin-bottom: 10px; padding: 6px 13px; border: 1px solid #23252e;
-    border-radius: 20px; background: #111219; color: #8b93a3; font-family: inherit;
-    font-size: 13px; font-weight: 700; touch-action: manipulation;
+  .gameBtn::before {
+    content: ''; position: absolute; inset: 2px; border: 1px solid var(--gl2);
+    border-radius: 2px; pointer-events: none;
   }
-  #backBtn:active { background: #171923; }
+  .gameBtn:active { background: linear-gradient(#1d2420, #121714); }
+  .gameBtn .ico {
+    flex: none; width: 44px; height: 44px; border-radius: 50%; font-size: 21px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 32%, #232a25, #080b0a);
+    border: 1px solid var(--golddim);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.65), 0 0 12px rgba(212,175,55,.10);
+  }
+  .gameBtn .nm { flex: 1; min-width: 0; }
+  .gameBtn .go { font-family: var(--disp); font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--gold); }
+  .gameBtn.soon { opacity: .42; }
+  .gameBtn.soon .ico { filter: grayscale(1) brightness(.8); }
+  .gameBtn .go.soon {
+    font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 1px;
+    color: var(--txd); border: 1px solid rgba(141,135,120,.35); border-radius: 20px; padding: 2px 8px;
+  }
+  /* 未解锁：不是「敬请期待」，是攒够钱就能开——所以不明着灰掉，只上锁 */
+  .gameBtn.lock { opacity: .78; }
+  .gameBtn.lock .ico { filter: grayscale(.75) brightness(.85); }
+  .gameBtn .go.lock {
+    font-family: var(--disp); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    color: var(--gold); border: 1px solid var(--gl); border-radius: 20px; padding: 2px 9px;
+    background: rgba(212,175,55,.07); box-shadow: inset 0 0 0 1px rgba(0,0,0,.4);
+  }
+  /* 钱够了：卡片亮起来，告诉玩家「现在点就是买断」 */
+  .gameBtn.lock.afford { opacity: 1; }
+  .gameBtn.lock.afford .ico { filter: none; }
+  .gameBtn.lock.afford .go.lock {
+    color: var(--goldlit); border-color: var(--gold);
+    background: rgba(212,175,55,.13); box-shadow: 0 0 12px rgba(212,175,55,.18);
+  }
 
-  /* 顶部数据条 */
-  .stats { display: flex; border: 1px solid #23252e; border-radius: 10px; overflow: hidden; }
-  .stat { flex: 1; padding: 8px 4px; text-align: center; border-right: 1px solid #23252e; min-width: 0; }
+  #backBtn, #bjBack {
+    display: inline-block; margin-bottom: 10px; padding: 5px 12px;
+    border: 1px solid var(--gl); border-radius: 20px; background: transparent;
+    color: var(--txd); font-size: 12px; font-weight: 700; touch-action: manipulation;
+  }
+  #backBtn:active, #bjBack:active { color: var(--goldlit); border-color: var(--gold); }
+
+  /* ================= 顶部数据条 ================= */
+  .stats {
+    display: flex; border: 1px solid var(--gl); border-radius: 3px; overflow: hidden;
+    background: rgba(0,0,0,.38);
+  }
+  .stat { flex: 1; padding: 7px 4px; text-align: center; border-right: 1px solid var(--gl2); min-width: 0; }
   .stat:last-child { border-right: 0; }
-  .stat b { display: block; font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .stat span { font-size: 11px; color: #6b7280; }
+  .stat b {
+    display: block; font-family: var(--disp); font-size: 18px; font-weight: 800; letter-spacing: .5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .stat span { font-size: 10px; color: var(--txd); letter-spacing: .5px; }
   #goldBox { cursor: default; }
-  #goldBox:active { background: #14151c; }
+  #goldBox:active { background: rgba(212,175,55,.07); }
 
-  /* 九宫格 */
-  .grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  /* ================= 老虎机机身 ================= */
+  .playArea {
+    position: relative; margin-top: 13px; display: flex; align-items: stretch; gap: 10px;
+    padding: 12px; border: 6px solid #241a10; border-radius: 12px;
+    background: linear-gradient(#0d1a14, #081210);
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,.30), inset 0 0 50px rgba(0,0,0,.6), 0 6px 0 rgba(0,0,0,.5);
+  }
+  .playArea .grid { margin-top: 0; flex: 1 1 auto; min-width: 0; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
   .cell {
-    position: relative; aspect-ratio: 1 / 1; border: 1px solid #23252e; border-radius: 12px;
-    background: #111219; display: flex; align-items: center; justify-content: center;
-    font-size: 34px; line-height: 1; overflow: hidden; transition: border-color .12s, background .12s;
+    position: relative; aspect-ratio: 1 / 1; border-radius: 5px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; font-size: 34px; line-height: 1;
+    background: radial-gradient(circle at 50% 30%, #1a231d, #070c09);
+    border: 1px solid var(--golddim);
+    box-shadow: inset 0 0 14px rgba(0,0,0,.9), inset 0 0 0 1px rgba(212,175,55,.10);
+    transition: border-color .12s, background .12s;
   }
   .cell .sym { font-size: 34px; font-weight: 700; }
-  .cell .sym.txt { font-size: 20px; letter-spacing: 1px; }
+  .cell .sym.txt { font-size: 20px; letter-spacing: 1px; font-family: var(--disp); }
   .cell.spin { opacity: .55; }
-  .cell.win { border-color: #fbbf24; background: #1b1a12; box-shadow: 0 0 14px #fbbf2455 inset; }
+  .cell.win {
+    border-color: var(--goldlit);
+    box-shadow: inset 0 0 18px rgba(212,175,55,.28), 0 0 12px rgba(212,175,55,.35);
+  }
   .cell.stop { animation: pop .18s ease-out; }
   @keyframes pop { 0% { transform: scale(.86); opacity: .55; } 100% { transform: scale(1); opacity: 1; } }
-  /* 老版微信 X5 / iOS 14 不支持 aspect-ratio 时的兜底，保证格子有高度 */
   @supports not (aspect-ratio: 1 / 1) { .cell { min-height: 92px; } }
 
-  /* 中奖提示 */
-  #result { margin-top: 12px; min-height: 44px; text-align: center; }
-  #resultMain { font-size: 17px; font-weight: 700; }
-  #resultSub { margin-top: 4px; font-size: 11px; color: #6b7280; word-break: break-all; }
-  #lineList { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
-  #lineList span { font-size: 11px; padding: 2px 6px; border: 1px solid #2b2d38; border-radius: 5px; color: #9aa3b2; }
-
-  /* 下注 */
-  .betTitle { margin-top: 14px; font-size: 11px; color: #6b7280; }
-  .betRow { margin-top: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .betBtn {
-    height: 42px; border: 1px solid #262835; border-radius: 9px; background: #14151d; color: #cfd6e2;
-    font-size: 15px; font-weight: 700; font-family: inherit; touch-action: manipulation;
-  }
-  .betBtn.on { border-color: #fbbf24; color: #fbbf24; background: #1c1a12; }
-  .betBtn:disabled { opacity: .3; }
-  #betInfo { margin-top: 8px; font-size: 12px; color: #8b93a3; text-align: center; }
-  #betInfo b { color: #fbbf24; }
-
-  /* 九宫格 + 右侧真拉杆 */
-  .playArea { margin-top: 14px; display: flex; align-items: stretch; gap: 10px; }
-  .playArea .grid { margin-top: 0; flex: 1 1 auto; min-width: 0; }
+  /* 右侧真拉杆：黄铜杆 + 红色球头 */
   #leverCol { flex: 0 0 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   #lever {
-    position: relative; width: 46px; height: 150px; padding: 0; border: 1px solid #2a2d38;
-    border-radius: 23px; background: linear-gradient(#15161e, #0e0f15); font-family: inherit;
+    position: relative; width: 44px; height: 150px; padding: 0;
+    border: 1px solid #241a10; border-radius: 22px;
+    background: linear-gradient(90deg, #4a3a1c, #d8b558 40%, var(--golddim));
+    box-shadow: 0 0 0 1px rgba(0,0,0,.6), 0 3px 8px rgba(0,0,0,.6);
     touch-action: none; -webkit-user-select: none; user-select: none; overflow: hidden;
-    transition: opacity .15s, border-color .15s;
+    transition: opacity .15s;
   }
   #lever::before {
     content: ''; position: absolute; left: 50%; top: 34px; bottom: 10px; width: 9px; margin-left: -4px;
-    border-radius: 5px; background: #23263a;
+    border-radius: 5px; background: linear-gradient(#0a0d0b, #151b17); box-shadow: inset 0 0 4px #000;
   }
   #leverKnob {
     position: absolute; left: 50%; top: 8px; width: 34px; height: 34px; margin-left: -17px;
-    border-radius: 50%; background: radial-gradient(circle at 34% 28%, #fff6d8, #fbbf24 58%, #a15c07);
-    box-shadow: 0 0 10px #fbbf2466, 0 2px 6px #0008; transition: transform .22s cubic-bezier(.3,1.4,.6,1);
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #ff9a9a, var(--red) 58%, #7a0a1c);
+    box-shadow: 0 0 10px rgba(200,16,46,.55), 0 2px 6px #0008;
+    transition: transform .22s cubic-bezier(.3,1.4,.6,1);
   }
   #lever:disabled { opacity: .35; }
-  .leverTip { margin-top: 6px; font-size: 11px; color: #6b7280; letter-spacing: 1px; }
-  #claimWrap { margin-top: 8px; text-align: center; }
-  #claim {
-    padding: 7px 14px; border: 1px solid #3d3320; border-radius: 8px; background: #1a160e;
-    color: #fbbf24; font-size: 12px; font-family: inherit; touch-action: manipulation;
-  }
-  #claim:disabled { opacity: .35; color: #6b7280; border-color: #262835; background: #14151d; }
-  .hint { margin-top: 10px; font-size: 11px; color: #4b5563; line-height: 1.7; text-align: center; }
+  .leverTip { margin-top: 6px; font-family: var(--disp); font-size: 11px; color: var(--txd); letter-spacing: 2px; }
 
-  /* 角落按钮 */
+  /* ================= 中奖提示 ================= */
+  #result { margin-top: 15px; min-height: 44px; text-align: center; }
+  #resultMain {
+    font-family: var(--disp); font-size: 22px; font-weight: 800; letter-spacing: 2px;
+    color: var(--txd); text-shadow: 0 0 18px rgba(212,175,55,.28);
+  }
+  #resultSub { margin-top: 5px; font-size: 11px; color: var(--txd); word-break: break-all; }
+  #lineList { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  #lineList span {
+    font-size: 11px; padding: 3px 7px; border: 1px solid var(--gl2); border-radius: 3px;
+    color: var(--goldlit); background: rgba(212,175,55,.05);
+  }
+
+  /* ================= 下注筹码 ================= */
+  .betTitle { margin-top: 16px; text-align: center; font-size: 11px; color: var(--txd); letter-spacing: 1px; }
+  .betRow { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; }
+  .betBtn {
+    --c: #16181d;
+    position: relative; width: 54px; height: 54px; padding: 0; border: 0; border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, var(--c) 0 58%, var(--cream) 58% 64%, rgba(0,0,0,0) 64%),
+      repeating-conic-gradient(var(--c) 0 16deg, var(--cream) 16deg 32deg);
+    box-shadow: 0 3px 0 rgba(0,0,0,.5);
+    color: #fff; font-family: var(--disp); font-size: 15px; font-weight: 800; line-height: 1;
+    text-shadow: 0 1px 1px rgba(0,0,0,.45);
+    touch-action: manipulation; transition: transform .12s, box-shadow .12s;
+  }
+  .betBtn[data-bet="1"]    { --c: #e8e2d2; color: #3a3427; text-shadow: none; }
+  .betBtn[data-bet="10"]   { --c: var(--red); }
+  .betBtn[data-bet="50"]   { --c: #1e4d8c; }
+  .betBtn[data-bet="100"]  { --c: #16653f; }
+  .betBtn[data-bet="1000"] { --c: #16181d; box-shadow: 0 3px 0 rgba(0,0,0,.5), inset 0 0 0 2px var(--golddim); }
+  .betBtn[data-bet="0"]    { --c: #4a4436; font-size: 10px; letter-spacing: -1px; }
+  .betBtn.on {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 0 rgba(0,0,0,.5), 0 0 0 2px var(--goldlit), 0 0 14px rgba(212,175,55,.5);
+  }
+  .betBtn:disabled { opacity: .3; transform: none; }
+  #betInfo { margin-top: 10px; font-size: 12px; color: var(--txd); text-align: center; }
+  #betInfo b { font-family: var(--disp); color: var(--goldlit); }
+
+  #claimWrap, .claimWrap { margin-top: 10px; text-align: center; }
+  #claim, #bjClaim {
+    padding: 8px 15px; border: 1px solid var(--gl); border-radius: 3px; background: rgba(212,175,55,.06);
+    color: var(--goldlit); font-size: 12px; font-weight: 700; touch-action: manipulation;
+  }
+  #claim:disabled, #bjClaim:disabled {
+    opacity: .4; color: var(--txd); border-color: var(--gl2); background: transparent;
+  }
+  .hint { margin-top: 10px; font-size: 11px; color: var(--txd); line-height: 1.8; text-align: center; }
+
+  /* ================= 角落按钮（❓ / 🎁 尺寸不变，只换皮） ================= */
   .corner {
     position: fixed; z-index: 40; width: 54px; height: 54px; border-radius: 50%;
-    border: 1px solid #2b2d38; background: #16171f; color: #e8ecf2; font-size: 24px;
-    font-family: inherit; touch-action: manipulation; box-shadow: 0 4px 16px #0009;
+    border: 1px solid var(--golddim);
+    background: radial-gradient(circle at 50% 32%, #232a25, #0a0e0c);
+    color: var(--goldlit); font-size: 24px;
+    box-shadow: 0 4px 16px #000b, inset 0 0 0 2px rgba(0,0,0,.6), 0 0 12px rgba(212,175,55,.12);
+    touch-action: manipulation;
   }
   .corner:active { transform: scale(.94); }
   #helpBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
-  /* 氪金 💰 与光环 💥 不再单独露出（它们原来在底部会互相压住）。
-     现在只留 ❓（左下）与 🎁（右下）：氪金 / 光环 / 商城 / 兑换码都从 🎁 里进。 */
   #miscBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
   #payBtn, #auraBtn { display: none !important; }
 
-  /* 氪金面板 */
-  .payRow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
-  .payBtn {
-    padding: 12px 8px; border-radius: 10px; border: 1px solid #3a3220; background: #1a160e;
-    color: #fbbf24; font-family: inherit; font-size: 15px; line-height: 1.35; touch-action: manipulation;
-  }
-  .payBtn small { display: block; font-size: 11px; color: #8b8577; }
-  .payBtn:active { transform: scale(.97); }
-
-  /* 光环面板标题右侧的 ❓：外观跟左下角规则按钮同一套，只是小一号放在面板里 */
+  /* 面板里的 ❓：同一套外观，小一号 */
   #auraHelpBtn {
     float: right; width: 40px; height: 40px; margin: 0 0 0 8px; font-size: 19px;
     position: relative; z-index: 70;
   }
 
-  /* 礼物（🎁）悬浮小列表：点开后贴在 🎁 上方、右对齐；只有 emoji + 名字两列 */
+  /* ================= 🎁 悬浮小列表（尺寸不变） ================= */
   #miscPop {
     position: fixed; right: 14px; bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 45;
     display: none; flex-direction: column; gap: 7px; width: 138px;
-    background: #0f1016; border: 1px solid #2b2d38; border-radius: 13px; padding: 7px;
-    box-shadow: 0 10px 30px #000b;
+    background: #0b0f0d; border: 1px solid var(--gl); border-radius: 3px; padding: 7px;
+    box-shadow: 0 10px 30px #000c, inset 0 1px 0 rgba(255,255,255,.045);
   }
   #miscPop.show { display: flex; }
   .miscItem {
     display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%;
-    padding: 9px 10px; text-align: left; border: 1px solid #262835; border-radius: 9px;
-    background: #14151d; color: #e8ecf2; font-family: inherit; font-size: 14px; font-weight: 600;
-    touch-action: manipulation;
+    padding: 9px 10px; text-align: left; border: 1px solid var(--gl2); border-radius: 2px;
+    background: linear-gradient(#141a16, #0c100e); color: var(--tx);
+    font-size: 14px; font-weight: 600; touch-action: manipulation;
   }
-  .miscItem:active { background: #171923; border-color: #3b82f6; }
+  .miscItem:active { border-color: var(--gold); color: var(--goldlit); }
   .miscItem .ico { font-size: 18px; line-height: 1; }
   .miscItem .tx { flex: 1; min-width: 0; }
-  .miscItem .tx i { display: none; }            /* 一行小字注释全部不显示 */
-  .miscItem .go { display: none; }              /* 只要 emoji + 名字 */
-  /* 设置 / 兑换码小弹窗（从 🎁 列表里点开） */
-  .miniRow.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .miniRow.top h3 { font-size: 15px; }
-  .miniClose { border: 0; background: none; color: #6b7280; font-size: 20px; line-height: 1; font-family: inherit; padding: 0 4px; }
-  .acctBtn {
-    width: 100%; margin-top: 10px; padding: 11px; border: 1px solid #5b2230; border-radius: 10px;
-    background: #1b1013; color: #ff8fa3; font-size: 15px; font-weight: 700; font-family: inherit;
-    touch-action: manipulation;
-  }
-  .acctBtn:active { transform: scale(.98); }
-  .acctTip { margin-top: 12px; font-size: 11px; color: #c58b96; opacity: .75; text-align: center; }
-  /* 兑换码 */
-  .codeRow { display: flex; gap: 8px; }
-  .codeRow input {
-    flex: 1; min-width: 0; height: 46px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
-    color: #e8ecf2; font-size: 16px; font-family: inherit; padding: 0 12px; letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .codeRow button {
-    flex: 0 0 84px; height: 46px; border: 0; border-radius: 9px; background: #e8ecf2; color: #0b0b0f;
-    font-size: 15px; font-weight: 700; font-family: inherit; touch-action: manipulation;
-  }
-  .codeRow button:active { transform: scale(.97); }
+  .miscItem .tx i { display: none; }
+  .miscItem .go { display: none; }
 
-  /* 弹层 */
+  /* ================= 弹层 ================= */
   .sheet {
     position: fixed; inset: 0; z-index: 60; display: none;
-    background: #000a; padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
+    background: rgba(0,0,0,.72); padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
     align-items: flex-end;
   }
   .sheet.open { display: flex; }
   .panel {
     width: 100%; max-width: 520px; margin: 0 auto; max-height: 86vh; overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    background: #0f1016; border: 1px solid #262835; border-radius: 14px; padding: 14px;
+    background: linear-gradient(#121714, #0b0f0d);
+    border: 1px solid var(--gl); border-radius: 3px; padding: 14px;
+    box-shadow: 0 14px 40px #000c, inset 0 0 0 1px var(--gl2);
   }
-  .panel h2 { font-size: 16px; margin-bottom: 4px; }
-  .panel .close { float: right; margin-top: -30px; color: #6b7280; font-size: 22px; line-height: 1; }
+  .panel h2 { font-size: 16px; letter-spacing: 1px; color: var(--goldlit); margin-bottom: 4px; }
+  .panel .close { float: right; margin-top: -30px; color: var(--txd); font-size: 22px; line-height: 1; }
+  .panel .close:active { color: var(--goldlit); }
   .tabs { display: flex; gap: 6px; margin: 10px 0 12px; }
   .tab {
-    flex: 1; height: 38px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
-    color: #8b93a3; font-size: 13px; font-family: inherit; touch-action: manipulation;
+    flex: 1; height: 38px; border: 1px solid var(--gl2); border-radius: 2px;
+    background: rgba(0,0,0,.35); color: var(--txd); font-size: 13px; letter-spacing: 1px;
+    touch-action: manipulation;
   }
-  .tab.on { border-color: #60a5fa; color: #60a5fa; background: #111826; }
+  .tab.on { border-color: var(--gold); color: var(--goldlit); background: rgba(212,175,55,.10); }
   .tabPage { display: none; }
   .tabPage.on { display: block; }
 
-  /* 抽奖区 */
+  .miniRow.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .miniRow.top h3 { font-size: 15px; color: var(--goldlit); letter-spacing: 1px; }
+  .miniClose { border: 0; background: none; color: var(--txd); font-size: 20px; line-height: 1; padding: 0 4px; }
+
+  .payRow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+  .payBtn {
+    padding: 12px 8px; border-radius: 3px; border: 1px solid var(--gl); background: rgba(212,175,55,.06);
+    color: var(--goldlit); font-size: 15px; line-height: 1.35; touch-action: manipulation;
+  }
+  .payBtn small { display: block; font-family: var(--disp); font-size: 11px; color: var(--txd); }
+  .payBtn:active { transform: scale(.97); }
+
+  .acctBtn {
+    width: 100%; margin-top: 10px; padding: 11px; border: 1px solid rgba(200,16,46,.55); border-radius: 3px;
+    background: rgba(200,16,46,.10); color: #ef8a9b; font-size: 15px; font-weight: 700;
+    touch-action: manipulation;
+  }
+  .acctBtn:active { transform: scale(.98); }
+  .acctTip { margin-top: 12px; font-size: 11px; color: var(--txd); opacity: .8; text-align: center; }
+
+  .codeRow { display: flex; gap: 8px; }
+  .codeRow input {
+    flex: 1; min-width: 0; height: 46px; border: 1px solid var(--gl2); border-radius: 3px;
+    background: rgba(0,0,0,.4); color: var(--goldlit);
+    font-family: var(--disp); font-size: 16px; padding: 0 12px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .codeRow button {
+    flex: 0 0 84px; height: 46px; border: 1px solid var(--goldlit); border-radius: 3px;
+    background: linear-gradient(#f0d68c, #c9a431); color: #141008;
+    font-size: 15px; font-weight: 700; touch-action: manipulation;
+  }
+  .codeRow button:active { transform: scale(.97); }
+
+  /* ================= 抽光环 ================= */
   .stage {
-    min-height: 150px; padding: 16px 10px; border: 1px solid #23252e; border-radius: 12px;
+    min-height: 150px; padding: 16px 10px; border: 1px solid var(--gl2); border-radius: 3px;
+    background: radial-gradient(circle at 50% 30%, rgba(212,175,55,.07), transparent 70%), rgba(0,0,0,.35);
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
   }
   #auraName { font-size: 30px; font-weight: 800; letter-spacing: 2px; line-height: 1.2; word-break: break-all; }
@@ -222,69 +358,185 @@
   @keyframes pulse { from { opacity: .55 } to { opacity: 1 } }
   #auraName.rare { animation: rareflip .25s linear infinite alternate; }
   @keyframes rareflip { from { opacity: .3; transform: scale(.97) } to { opacity: 1; transform: scale(1.03) } }
-  .tierLine { margin-top: 8px; font-size: 13px; letter-spacing: 1px; }
-  .odds { margin-top: 3px; font-size: 12px; color: #6b7280; }
-  .gain { margin-top: 6px; font-size: 13px; color: #4ade80; }
-  .newTag { margin-top: 6px; font-size: 12px; font-weight: 700; color: #0b0b0f; background: #fbbf24; border-radius: 4px; padding: 1px 7px; display: inline-block; }
-  .idle { font-size: 14px; color: #4b5563; }
+  .tierLine { margin-top: 8px; font-size: 13px; letter-spacing: 2px; }
+  .odds { margin-top: 3px; font-family: var(--disp); font-size: 12px; color: var(--txd); }
+  .gain { margin-top: 6px; font-size: 13px; color: #7fc79a; }
+  .newTag {
+    margin-top: 6px; font-size: 12px; font-weight: 700; color: #141008;
+    background: var(--goldlit); border-radius: 2px; padding: 1px 7px; display: inline-block;
+  }
+  .idle { font-size: 14px; color: var(--txd); }
   #rollBtn {
-    margin-top: 12px; width: 100%; height: 54px; border: 0; border-radius: 12px;
-    background: #e8ecf2; color: #0b0b0f; font-size: 19px; font-weight: 800; letter-spacing: 3px;
-    font-family: inherit; touch-action: manipulation;
+    margin-top: 12px; width: 100%; height: 54px; border: 1px solid var(--goldlit); border-radius: 3px;
+    background: linear-gradient(#f0d68c, #c9a431); color: #141008;
+    font-size: 19px; font-weight: 800; letter-spacing: 5px; text-indent: 5px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.45);
+    touch-action: manipulation;
   }
   #rollBtn:disabled { opacity: .45; }
 
-  /* 通用列表 */
-  .sectTitle { margin: 16px 0 8px; font-size: 12px; color: #6b7280; display: flex; justify-content: space-between; }
+  /* ================= 通用列表 ================= */
+  .sectTitle { margin: 16px 0 8px; font-size: 12px; color: var(--txd); display: flex; justify-content: space-between; }
   .hist { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip { font-size: 12px; padding: 3px 8px; border: 1px solid #23252e; border-radius: 6px; }
-  .empty { font-size: 12px; color: #374151; }
+  .chip { font-size: 12px; padding: 3px 8px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .empty { font-size: 12px; color: var(--txd); opacity: .7; }
 
-  /* 图鉴 / 佩戴：网格卡片 */
+  /* ================= 图鉴 / 佩戴 ================= */
   .cardList { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
   .card {
-    border: 1px solid #23252e; border-radius: 10px; background: #101118; padding: 9px 10px;
+    position: relative; border: 1px solid var(--gl2); border-radius: 3px; padding: 9px 10px;
+    background: linear-gradient(#121714, #0b0f0d);
     display: flex; flex-direction: column; gap: 3px; min-width: 0;
   }
   .card .nm { font-weight: 700; font-size: 14px; line-height: 1.3; }
-  .card .tag { display: block; font-size: 10px; color: #6b7280; font-weight: 400; }
-  .card .meta { font-size: 10px; color: #6b7280; line-height: 1.55; word-break: break-all; }
-  .card .meta b { color: #9aa3b2; font-weight: 400; }
+  .card .tag { display: block; font-size: 10px; color: var(--txd); font-weight: 400; }
+  .card .meta { font-size: 10px; color: var(--txd); line-height: 1.6; word-break: break-all; }
+  .card .meta b { color: var(--tx); font-weight: 400; }
   .card.locked .nm { opacity: .38; }
   .card .foot { margin-top: 3px; display: flex; align-items: center; justify-content: space-between; gap: 4px; min-height: 22px; }
-  .card .own { font-size: 11px; color: #4b5563; }
-  .card .own.has { color: #4ade80; }
+  .card .own { font-size: 11px; color: var(--txd); }
+  .card .own.has { color: #7fc79a; }
   .eq {
-    flex: 0 0 auto; padding: 4px 9px; border: 1px solid #2b6cb0; border-radius: 7px; background: #0e1626;
-    color: #60a5fa; font-size: 11px; font-family: inherit; touch-action: manipulation;
+    flex: 0 0 auto; padding: 4px 9px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: rgba(212,175,55,.08); color: var(--goldlit); font-size: 11px; touch-action: manipulation;
   }
-  .eq.on { border-color: #4ade80; color: #4ade80; background: #0e1a12; }
+  .eq.on { border-color: #5fd08a; color: #5fd08a; background: rgba(95,208,138,.08); }
 
-  /* 规则 */
-  .rules { font-size: 13px; color: #c3cad6; line-height: 1.8; }
-  .rules h3 { font-size: 13px; color: #fbbf24; margin: 14px 0 4px; }
+  /* ================= 规则 ================= */
+  .rules { font-size: 13px; color: #cdc7b8; line-height: 1.85; }
+  .rules h3 {
+    font-size: 13px; color: var(--goldlit); letter-spacing: 2px; margin: 15px 0 4px;
+    padding-bottom: 4px; border-bottom: 1px solid var(--gl2);
+  }
+  .rules h3:first-child { margin-top: 4px; }
+  .rules b { color: var(--goldlit); font-weight: 700; }
   .rules .pay { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .rules .pay span { font-size: 12px; padding: 4px 8px; border: 1px solid #262835; border-radius: 6px; }
-  .rules small { color: #6b7280; }
-  #reset { display: inline-block; margin-top: 16px; font-size: 11px; color: #374151; text-decoration: underline; }
+  .rules .pay span { font-size: 12px; padding: 4px 8px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .rules small { color: var(--txd); }
+  #reset { display: inline-block; margin-top: 16px; font-size: 11px; color: var(--txd); text-decoration: underline; }
 
-  /* 输入弹层 */
+  /* ================= 输入弹层 ================= */
   .promptRow { display: flex; gap: 8px; margin-top: 12px; }
   .promptRow input {
-    flex: 1; height: 48px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
-    color: #e8ecf2; font-size: 18px; font-family: inherit; padding: 0 12px; text-align: center;
+    flex: 1; height: 48px; border: 1px solid var(--gl2); border-radius: 3px; background: rgba(0,0,0,.4);
+    color: var(--goldlit); font-family: var(--disp); font-size: 18px; padding: 0 12px; text-align: center;
   }
   .promptRow button {
-    flex: 0 0 88px; height: 48px; border: 0; border-radius: 9px; background: #e8ecf2; color: #0b0b0f;
-    font-size: 16px; font-weight: 700; font-family: inherit; touch-action: manipulation;
+    flex: 0 0 88px; height: 48px; border: 1px solid var(--goldlit); border-radius: 3px;
+    background: linear-gradient(#f0d68c, #c9a431); color: #141008;
+    font-size: 16px; font-weight: 700; touch-action: manipulation;
   }
-  .promptRow button.ghost { background: #14151d; color: #8b93a3; border: 1px solid #262835; }
-  .promptTip { margin-top: 8px; font-size: 11px; color: #6b7280; }
+  .promptRow button.ghost { background: transparent; color: var(--txd); border-color: var(--gl2); }
+  .promptTip { margin-top: 8px; font-size: 11px; color: var(--txd); }
 
-  /* toast */
+  /* ================= 黑杰克：赌桌 ================= */
+  .felt {
+    position: relative; margin-top: 11px; padding: 16px 12px 14px; overflow: hidden;
+    border: 7px solid #241a10; border-radius: 16px;
+    background: radial-gradient(90% 62% at 50% 12%, #14503a, var(--felt) 42%, var(--felt2) 100%);
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,.35), inset 0 0 70px rgba(0,0,0,.55), 0 7px 0 rgba(0,0,0,.55);
+  }
+  .felt::after {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .15;
+    background-image: var(--grain); mix-blend-mode: overlay;
+  }
+  .oval {
+    position: absolute; left: -24%; right: -24%; top: 14%; bottom: -58%; z-index: 0;
+    border: 1px solid rgba(212,175,55,.15); border-radius: 50%; pointer-events: none;
+  }
+  .oval.o2 { left: -14%; right: -14%; top: 19%; bottom: -50%; border-color: rgba(212,175,55,.09); }
+  .zone { position: relative; z-index: 2; text-align: center; }
+  .dealerarc {
+    position: absolute; left: 50%; top: -7px; width: 180%; height: 132px; transform: translateX(-50%);
+    pointer-events: none; z-index: 1;
+    border-bottom: 1px solid rgba(212,175,55,.22);
+    border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  }
+  .zlabel { font-family: var(--print); font-size: 8px; letter-spacing: 2.5px; color: rgba(212,175,55,.45); }
+  .hand { display: flex; justify-content: center; align-items: center; margin: 9px 0 7px; min-height: 88px; }
+  .hand .pcard + .pcard { margin-left: -18px; }
+  .pts {
+    display: inline-block; font-family: var(--disp); font-size: 16px; font-weight: 800;
+    color: var(--goldlit); letter-spacing: 1px; padding: 2px 11px;
+    border: 1px solid var(--gl); border-radius: 3px; background: rgba(0,0,0,.45);
+  }
+  .pts.soft { color: #ffe9a8; }
+  .print {
+    position: relative; z-index: 2; margin: 12px 0 8px; text-align: center;
+    font-family: var(--print); font-size: 9px; line-height: 1.9; letter-spacing: 1.8px;
+    color: rgba(212,175,55,.30); text-transform: uppercase;
+  }
+  .center { position: relative; z-index: 2; display: flex; justify-content: center; margin: 9px 0; }
+  .betcircle {
+    width: 78px; height: 78px; border-radius: 50%; border: 1px dashed rgba(212,175,55,.42);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    background: rgba(0,0,0,.18);
+  }
+  .betcircle span { font-size: 8px; color: rgba(212,175,55,.55); letter-spacing: 1px; }
+  .betcircle b { font-family: var(--disp); font-size: 20px; font-weight: 800; color: var(--goldlit); }
+
+  /* 扑克牌 */
+  .pcard {
+    position: relative; flex: none; width: 56px; height: 80px; border-radius: 4px;
+    background: var(--cream); border: 1px solid #b9b0a0; font-family: var(--print);
+    box-shadow: 0 2px 0 rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.55);
+    animation: dealin .22s ease-out;
+  }
+  @keyframes dealin { from { transform: translateY(-14px) scale(.92); opacity: 0 } to { transform: none; opacity: 1 } }
+  .pcard .cnr { position: absolute; top: 4px; left: 5px; font-size: 15px; font-weight: 700; line-height: .95; text-align: center; }
+  .pcard .cnr em { display: block; font-style: normal; font-size: 11px; margin-top: 1px; }
+  .pcard .pip { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 30px; opacity: .15; }
+  .pcard.red { color: var(--red); }
+  .pcard.blk { color: var(--ink); }
+  .pcard.back {
+    background-color: var(--red);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(212,175,55,.45) 0 2px, transparent 2px 9px),
+      repeating-linear-gradient(-45deg, rgba(212,175,55,.45) 0 2px, transparent 2px 9px);
+    border-color: var(--golddim);
+    box-shadow: 0 2px 0 rgba(0,0,0,.45), inset 0 0 0 2px var(--golddim), inset 0 0 0 5px var(--red);
+  }
+
+  /* 黑杰克：操作按钮 */
+  .actions { display: none; gap: 8px; margin-top: 13px; }
+  .act {
+    position: relative; flex: 1; padding: 10px 0; border-radius: 4px;
+    border: 1px solid var(--gl); background: linear-gradient(#171c19, #0c100e); color: var(--tx);
+    font-size: 15px; font-weight: 700; letter-spacing: 2px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+    touch-action: manipulation;
+  }
+  .act::before { content: ''; position: absolute; inset: 2px; border: 1px solid var(--gl2); border-radius: 2px; pointer-events: none; }
+  .act span { display: block; font-family: var(--disp); font-size: 8px; letter-spacing: 2px; color: var(--golddim); font-weight: 400; margin-top: 1px; }
+  .act:active { background: linear-gradient(#232b26, #141a16); }
+  .act:disabled { opacity: .35; }
+  .act.gold { background: linear-gradient(#f0d68c, #c9a431); color: #141008; border-color: var(--goldlit); }
+  .act.gold span { color: rgba(20,16,8,.55); }
+  .act.gold::before { border-color: rgba(0,0,0,.18); }
+  .act.gold:disabled { opacity: .4; }
+  .dealBtn {
+    display: block; width: 100%; height: 52px; margin-top: 13px;
+    border: 1px solid var(--goldlit); border-radius: 4px;
+    background: linear-gradient(#f0d68c, #c9a431); color: #141008;
+    font-size: 17px; font-weight: 800; letter-spacing: 4px; text-indent: 4px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.45);
+    touch-action: manipulation;
+  }
+  .dealBtn:disabled { opacity: .4; }
+  .bjmsg {
+    margin-top: 12px; min-height: 24px; text-align: center;
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: 1px; color: var(--txd);
+  }
+  .bjmsg.win { color: var(--goldlit); text-shadow: 0 0 18px rgba(212,175,55,.5); }
+  .bjmsg.lose { color: #c76a76; }
+  .bjmsg.push { color: #cdc7b8; }
+
+  /* ================= toast ================= */
   #toast {
     position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-    z-index: 80; padding: 8px 16px; border-radius: 20px; background: #e8ecf2; color: #0b0b0f;
+    z-index: 80; padding: 8px 16px; border-radius: 3px;
+    background: linear-gradient(#f0d68c, #c9a431); color: #141008;
+    border: 1px solid var(--goldlit);
     font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity .2s;
     white-space: nowrap;
   }
@@ -294,14 +546,14 @@
 <body>
 
 <!-- 首页（大厅）：下面几个还没做的游戏 / 商城先摆着，点了弹「敬请期待」 -->
-<div id="homePage">
+<div id="homePage" class="grain">
   <div class="lobbyTitle">赛博赌场</div>
-  <div class="lobbySub">金币 <b id="lobbyGold" style="color:#fbbf24">10</b></div>
+  <div class="lobbySub">金币 <b id="lobbyGold" style="color:#f3d98b">10</b></div>
   <button class="gameBtn" id="gameSlot" data-game="slot">
     <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
   </button>
-  <button class="gameBtn soon" data-game="BJ">
-    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="bjEntry" data-game="BJ">
+    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 1M</span>
   </button>
   <button class="gameBtn soon" data-game="CH">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
@@ -319,8 +571,8 @@
   <button id="backBtn">‹ 返回大厅</button>
 
   <div class="stats">
-    <div class="stat" id="goldBox"><b id="sGold" style="color:#fbbf24">100</b><span>金币</span></div>
-    <div class="stat"><b id="sSlotLuck" style="color:#60a5fa">×1.00</b><span>老虎机幸运</span></div>
+    <div class="stat" id="goldBox"><b id="sGold" style="color:#f3d98b">100</b><span>金币</span></div>
+    <div class="stat"><b id="sSlotLuck" style="color:#f3d98b">×1.00</b><span>老虎机幸运</span></div>
     <div class="stat" id="eqBox"><b id="sEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
   </div>
 
@@ -343,7 +595,7 @@
   </div>
 
   <div id="result">
-    <div id="resultMain" style="color:#4b5563">选好下注，拉右边的拉杆开始</div>
+    <div id="resultMain" style="color:#8d8778">选好下注，拉右边的拉杆开始</div>
     <div id="resultSub"></div>
     <div id="lineList"></div>
   </div>
@@ -362,6 +614,62 @@
   <div id="claimWrap"><button id="claim">领取救济金 100</button></div>
 </div>
 
+<!-- 黑杰克 -->
+<div class="wrap" id="bjPage" style="display:none">
+  <button id="bjBack">‹ 返回大厅</button>
+
+  <div class="stats">
+    <div class="stat"><b id="bjGold" style="color:#f3d98b">10</b><span>金币</span></div>
+    <div class="stat"><b id="bjLuck" style="color:#f3d98b">×1.00</b><span>抽牌幸运</span></div>
+    <div class="stat"><b id="bjEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+  </div>
+
+  <div class="felt">
+    <div class="oval"></div><div class="oval o2"></div>
+
+    <div class="zone">
+      <div class="dealerarc"></div>
+      <div class="zlabel">庄家 · DEALER</div>
+      <div class="hand" id="bjDealer"></div>
+      <div class="pts" id="bjDPts">—</div>
+    </div>
+
+    <div class="print">Blackjack Pays 3 to 2<br>Dealer must draw to 16 and stand on all 17's</div>
+
+    <div class="center">
+      <div class="betcircle"><span>本局下注</span><b id="bjBet">1</b></div>
+    </div>
+
+    <div class="zone">
+      <div class="hand" id="bjPlayer"></div>
+      <div class="pts" id="bjPPts">—</div>
+      <div class="zlabel" style="margin-top:6px">你 · PLAYER</div>
+    </div>
+  </div>
+
+  <div id="bjMsg" class="bjmsg"></div>
+
+  <div class="actions" id="bjActions">
+    <button class="act" id="bjHit">要牌<span>HIT</span></button>
+    <button class="act" id="bjStand">停牌<span>STAND</span></button>
+    <button class="act gold" id="bjDouble">加倍<span>DOUBLE</span></button>
+  </div>
+
+  <button class="dealBtn" id="bjDeal">开 始 发 牌</button>
+
+  <div class="betTitle">本局下注（发牌时扣掉，赢了连本带利返还）</div>
+  <div class="betRow" id="bjBetRow">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="claimWrap"><button id="bjClaim">领取救济金 100</button></div>
+</div>
+
 <button class="corner" id="helpBtn" style="display:none">❓</button>
 <button class="corner" id="miscBtn">🎁</button>
 <div id="toast"></div>
@@ -370,7 +678,7 @@
 <div class="sheet" id="auraSheet">
   <div class="panel">
     <span class="close" data-close="auraSheet">×</span>
-    <h2>💥 光环抽取 <small style="font-size:11px;color:#6b7280">（不花金币）</small><button class="corner" id="auraHelpBtn">❓</button></h2>
+    <h2>💥 光环抽取 <small style="font-size:11px;color:#8d8778">（不花金币）</small><button class="corner" id="auraHelpBtn">❓</button></h2>
     <div class="tabs">
       <button class="tab on" data-tab="draw">抽取</button>
       <button class="tab" data-tab="dex">图鉴</button>
@@ -407,9 +715,8 @@
 <div class="sheet" id="helpSheet">
   <div class="panel">
     <span class="close" data-close="helpSheet">×</span>
-    <h2>❓ 玩法与规则</h2>
-    <div class="rules">
-      <h3>九宫格老虎机</h3>
+    <h2 id="helpTitle">❓ 九宫格老虎机规则</h2>
+    <div class="rules" id="helpSlot">
       · 3×3 九宫格，共 <b>8 条中奖线</b>：3 横 + 3 竖 + 2 条对角<br>
       · 同一条线上出现 3 个相同符号即中奖；<b>🃏Wild 可以替代任意符号</b><br>
       · 中奖奖金 = <b>本局下注 × 符号倍率</b>（不是 1/8 的份额）<br>
@@ -434,6 +741,46 @@
       <h3>金币</h3>
       · 起手 10 金币；赢的钱 = 本局下注 × 符号倍率<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
+      · 所有进度自动保存在本机
+    </div>
+
+    <div class="rules" id="helpBj" style="display:none">
+      <h3>黑杰克 · 目标</h3>
+      · 手上牌的点数尽量接近 <b>21</b> 且不超过，同时比庄家大<br>
+      · 超过 21 就是 <b>爆牌</b>，立刻输掉本局赌注（庄家爆牌则你赢）<br>
+      · 用单副扑克 52 张，<b>每一局开始都重新洗牌</b>
+
+      <h3>点数怎么算</h3>
+      · 2 ~ 10 按面值；<b>J / Q / K 都算 10</b><br>
+      · <b>A 可以算 1 也可以算 11</b>，自动取对你更有利的那个（手上还有 A 在当 11 用时，会显示成「软点数」比如 9 / 19）
+
+      <h3>怎么玩</h3>
+      · 开局你 2 张、庄家 2 张（1 张明牌 + 1 张暗牌）<br>
+      · <b>要牌</b>：再抽一张，可以一直要，直到爆牌或你自己停牌<br>
+      · <b>停牌</b>：不再要牌，轮到庄家<br>
+      · <b>加倍</b>：赌注翻倍，只再抽一张就自动停牌（只有起手 2 张时能加倍；加倍后爆牌就输双倍赌注）<br>
+      · 点数到 21 会自动停牌；<b>没有分牌</b>
+
+      <h3>黑杰克</h3>
+      · 起手两张就是 21（<b>A + 10 / J / Q / K</b>）叫黑杰克，赔 <b>3 : 2</b>（下注 10 赢 15）<br>
+      · 庄家也是黑杰克就是平局，退还赌注
+
+      <h3>庄家怎么出牌</h3>
+      · 点数 <b>不足 17 必须要牌</b>，<b>17 及以上一律停牌</b>（软 17 也停）<br>
+      · 明牌是 <b>A 或 10</b> 时，庄家会先偷看暗牌——是黑杰克就直接亮牌结算<br>
+      · 你已经爆牌的话，庄家不再补牌
+
+      <h3>怎么算输赢</h3>
+      · 双方都没爆：点数大的赢，普通胜利 <b>1 : 1</b><br>
+      · 点数一样：平局，<b>退还赌注</b>（不输不赢）<br>
+      · 本局下注在发牌时就从金币里扣掉，赢了连本带利一起返还
+
+      <h3>抽牌幸运</h3>
+      · 你当前佩戴的那件会给你「抽牌幸运」，越高越走运<br>
+      · 它只在庄家补牌的时候轻轻推一小把，作用很小，大部分时候完全按牌堆正常发牌
+
+      <h3>金币</h3>
+      · 金币和老虎机是共用的；金币不够 1 枚时，页面下方可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
       · 所有进度自动保存在本机
     </div>
   </div>
@@ -517,7 +864,7 @@
     <div class="rules" style="text-align:center;padding:26px 0">
       <div style="font-size:44px">🛒</div>
       <div style="font-size:16px;font-weight:700;margin-top:10px">敬请期待</div>
-      <div style="font-size:12px;color:#6b7280;margin-top:6px">以后可以用金币在这里买道具</div>
+      <div style="font-size:12px;color:#8d8778;margin-top:6px">以后可以用金币在这里买道具</div>
     </div>
   </div>
 </div>
@@ -575,7 +922,7 @@
   var RTP_ADD    = 0.50;   // 老虎机回报率整体抬升（百分点）：默认光环 50% + 50% = 100%
 
   var TIER_NAME  = ['普通', '优良', '精良', '稀有', '史诗', '传说', '神话', '隐秘'];
-  var TIER_COLOR = ['#c8d0d8', '#4ade80', '#60a5fa', '#a78bfa', '#f472b6', '#fbbf24', '#f87171', '#ff4fd8'];
+  var TIER_COLOR = ['#c8d0d8', '#7fc79a', '#60a5fa', '#a78bfa', '#f472b6', '#f3d98b', '#f87171', '#ff4fd8'];
   var TIER_BONUS = [0, 0, 0, 0.5, 2, 8, 30, 120];   // 抽到该层级额外加的「抽奖幸运」
   var BASE_GAIN  = 0.05;
   var LUCK_CAP   = 400;
@@ -650,7 +997,7 @@
   /* ================= 存档 ================= */
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
-    gold: GOLD_START, eq: '默认', bet: 1,
+    gold: GOLD_START, eq: '默认', bet: 1, bjBet: 1, bjUnlocked: false,
     bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
     codes: {}                                    // 已兑换过的兑换码：{ 码: 兑换时间 }
   };
@@ -694,6 +1041,8 @@
       if (typeof d.gold === 'number') state.gold = d.gold;
       if (typeof d.eq === 'string' && idxOf(d.eq) !== 0) state.eq = d.eq;
       if (typeof d.bet === 'number' && d.bet >= 1) state.bet = Math.floor(d.bet);
+      if (typeof d.bjBet === 'number' && d.bjBet >= 1) state.bjBet = Math.floor(d.bjBet);
+      if (d.bjUnlocked === true) state.bjUnlocked = true;
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
       state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
@@ -954,16 +1303,46 @@
   var $lobbyGold = document.getElementById('lobbyGold');
   var $backBtn = document.getElementById('backBtn');
   var $gameSlot = document.getElementById('gameSlot');
+  var $bjEntry = document.getElementById('bjEntry');
   var $codeInput = document.getElementById('codeInput');
   var $codeBtn = document.getElementById('codeBtn');
   var $codeHist = document.getElementById('codeHist');
+
+  /* ---- 黑杰克 ---- */
+  var $bjPage = document.getElementById('bjPage');
+  var $bjBack = document.getElementById('bjBack');
+  var $bjGold = document.getElementById('bjGold');
+  var $bjLuck = document.getElementById('bjLuck');
+  var $bjEq = document.getElementById('bjEq');
+  var $bjDealer = document.getElementById('bjDealer');
+  var $bjPlayer = document.getElementById('bjPlayer');
+  var $bjDPts = document.getElementById('bjDPts');
+  var $bjPPts = document.getElementById('bjPPts');
+  var $bjBet = document.getElementById('bjBet');
+  var $bjMsg = document.getElementById('bjMsg');
+  var $bjActions = document.getElementById('bjActions');
+  var $bjHit = document.getElementById('bjHit');
+  var $bjStand = document.getElementById('bjStand');
+  var $bjDouble = document.getElementById('bjDouble');
+  var $bjDeal = document.getElementById('bjDeal');
+  var $bjBetRow = document.getElementById('bjBetRow');
+  var $bjClaim = document.getElementById('bjClaim');
+  var $helpTitle = document.getElementById('helpTitle');
+  var $helpSlot = document.getElementById('helpSlot');
+  var $helpBj = document.getElementById('helpBj');
+
+  var page = 'home';                        // home / slot / bj
   var atHome = true;                        // 一进来是「赛博赌场」大厅
 
-  // 大厅 ⇄ 老虎机：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
-  function setPage(home) {
-    atHome = !!home;
-    $homePage.style.display = atHome ? '' : 'none';
-    $gamePage.style.display = atHome ? 'none' : '';
+  // 大厅 ⇄ 老虎机 ⇄ 黑杰克：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
+  function setPage(p) {
+    if (p === true) p = 'home';
+    else if (p === false) p = 'slot';
+    page = p;
+    atHome = (p === 'home');
+    $homePage.style.display = (p === 'home') ? '' : 'none';
+    $gamePage.style.display = (p === 'slot') ? '' : 'none';
+    $bjPage.style.display = (p === 'bj') ? '' : 'none';
     refreshCorners();
   }
 
@@ -975,18 +1354,58 @@
   }
   function cellSym(i) { return CELLS[i].getElementsByClassName('sym')[0]; }
   function fillGridIdle() {
-    for (var i = 0; i < 9; i++) { CELLS[i].className = 'cell'; cellSym(i).textContent = '·'; cellSym(i).className = 'sym'; cellSym(i).style.color = '#23252e'; }
+    for (var i = 0; i < 9; i++) { CELLS[i].className = 'cell'; cellSym(i).textContent = '·'; cellSym(i).className = 'sym'; cellSym(i).style.color = '#1e2a22'; }
   }
 
   /* ================= 渲染：顶部 / 下注 ================= */
+  /* ---- 黑杰克的门槛：花 1M 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
+  var BJ_UNLOCK = 1000000;
+  function bjUnlocked() { return state.bjUnlocked === true; }
+  function bjCanUnlock() { return state.gold >= BJ_UNLOCK; }
+  function renderBjLock() {
+    var b = $bjEntry;
+    if (!b) return;
+    var go = b.getElementsByClassName('go')[0];
+    if (bjUnlocked()) {
+      if ((b.className || '') !== 'gameBtn') b.className = 'gameBtn';
+      if (go) { go.className = 'go'; go.textContent = '进入 ›'; }
+    } else {
+      var cls = 'gameBtn lock' + (bjCanUnlock() ? ' afford' : '');
+      if ((b.className || '') !== cls) b.className = cls;
+      if (go) { go.className = 'go lock'; go.textContent = '🔒 ' + abbr(BJ_UNLOCK); }
+    }
+  }
+  // 返回 true 表示已经解锁、可以进页：钱不够只提醒，买断要玩家点确认
+  function bjTryUnlock() {
+    if (bjUnlocked()) return true;
+    if (!bjCanUnlock()) {
+      toast('🔒 解锁黑杰克要 ' + abbr(BJ_UNLOCK) + ' 金币 · 还差 ' + abbr(BJ_UNLOCK - state.gold));
+      return false;
+    }
+    if (!confirm('花 ' + abbr(BJ_UNLOCK) + ' 金币解锁黑杰克？购买后永久开放。')) return false;
+    state.gold -= BJ_UNLOCK;
+    state.bjUnlocked = true;
+    save();
+    renderStats();
+    toast('🎉 黑杰克已解锁');
+    return true;
+  }
+
   function afford(bet) { return state.gold >= bet; }
 
   function renderStats() {
+    var col = TIER_COLOR[AURAS[idxOf(state.eq)].t];
     $sGold.textContent = abbr(state.gold);
     $lobbyGold.textContent = abbr(state.gold);
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
-    $sEq.style.color = TIER_COLOR[AURAS[idxOf(state.eq)].t];
+    $sEq.style.color = col;
+    // 金币 / 光环是老虎机和黑杰克两页共用的，一起刷
+    $bjGold.textContent = abbr(state.gold);
+    $bjLuck.textContent = fmtSlotLuck(slotLuck());
+    $bjEq.textContent = state.eq;
+    $bjEq.style.color = col;
+    renderBjLock();
   }
 
   function renderBet() {
@@ -1011,15 +1430,262 @@
     return s + ' 秒';
   }
 
-  function renderClaim() {
+  // 老虎机和黑杰克两页共用同一份救济金状态
+  function paintClaim(el) {
+    if (!el) return;
     var can = state.gold < 1;                           // 连 1 枚都下不起
     var left = CLAIM_CD - (Date.now() - state.claimAt);
     if (left < 0) left = 0;
-    $claim.style.display = 'inline-block';
-    if (left > 0) { $claim.disabled = true; $claim.textContent = '救济金冷却中 ' + fmtLeft(left); }
-    else if (!can) { $claim.disabled = true; $claim.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
-    else { $claim.disabled = false; $claim.textContent = '领取救济金 100 金币'; }
+    el.style.display = 'inline-block';
+    if (left > 0) { el.disabled = true; el.textContent = '救济金冷却中 ' + fmtLeft(left); }
+    else if (!can) { el.disabled = true; el.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
+    else { el.disabled = false; el.textContent = '领取救济金 100 金币'; }
   }
+  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); }
+
+  /* ================= 黑杰克 ================= */
+  // 规则：单副牌每局重洗 · J/Q/K=10 · A 软硬双值 · 庄家 S17（软 17 停）· 明牌 A/10 时 peek
+  // 任意两张牌都能加倍 · 不做分牌 · 黑杰克赔 3:2
+  var SUITS = ['♠', '♥', '♦', '♣'];                       // 0/3 黑，1/2 红
+  var RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  var BJ_LUCK_K = 0.003;      // 每 1 点光环幸运加成 -> +0.003 的偏置概率
+  var BJ_Q_MAX = 0.12;        // 偏置概率上限：满配光环也只在庄家补牌时偶尔推一小把
+  var BJ_BJ_PAY = 2.5;        // 黑杰克赔 3:2 -> 连本带利返还 2.5 倍赌注
+
+  // phase: idle（可下注/发牌）| deal | player | dealer | pause
+  var BJ = { deck: [], player: [], dealer: [], hole: true, bet: 1, phase: 'idle', doubled: false };
+
+  function cardPoint(c) { return c.r === 0 ? 11 : Math.min(c.r + 1, 10); }
+
+  // A 先统统按 11 算，超了就每张 A 减 10；soft = 还有 A 在当 11 用
+  function handInfo(cards) {
+    var total = 0, aces = 0, i;
+    for (i = 0; i < cards.length; i++) {
+      total += cardPoint(cards[i]);
+      if (cards[i].r === 0) aces++;
+    }
+    while (total > 21 && aces > 0) { total -= 10; aces--; }
+    return { v: total, soft: aces > 0 };
+  }
+  function isBlackjack(cards) { return cards.length === 2 && handInfo(cards).v === 21; }
+
+  function newDeck() {
+    var d = [], r, s, i, j, t;
+    for (s = 0; s < 4; s++) for (r = 0; r < 13; r++) d.push({ r: r, s: s });
+    for (i = d.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      t = d[i]; d[i] = d[j]; d[j] = t;
+    }
+    return d;
+  }
+  function takeTop() { if (!BJ.deck.length) BJ.deck = newDeck(); return BJ.deck.pop(); }
+
+  // 抽牌幸运：q = K ×（光环幸运加成），上限 12%。只有庄家补牌时生效：
+  // 有 q 的概率「不走牌堆顶」，改从牌堆里定向挑一张（优先挑会把庄家打爆的那张）。
+  function bjBias() {
+    var q = BJ_LUCK_K * (slotLuck() - 1);
+    return q > BJ_Q_MAX ? BJ_Q_MAX : q;
+  }
+  function dealerDraw(cur) {
+    var q = bjBias(), i, bust = [], safe = [], pool;
+    if (q <= 0 || Math.random() >= q) return takeTop();
+    for (i = 0; i < BJ.deck.length; i++) {
+      if (handInfo(cur.concat([BJ.deck[i]])).v > 21) bust.push(i); else safe.push(i);
+    }
+    pool = bust.length ? bust : safe;
+    if (!pool.length) return takeTop();
+    return BJ.deck.splice(pool[Math.floor(Math.random() * pool.length)], 1)[0];
+  }
+
+  function cardHtml(c, down) {
+    if (down) return '<div class="pcard back"></div>';
+    var red = (c.s === 1 || c.s === 2);
+    return '<div class="pcard ' + (red ? 'red' : 'blk') + '">' +
+      '<span class="cnr">' + RANKS[c.r] + '<em>' + SUITS[c.s] + '</em></span>' +
+      '<span class="pip">' + SUITS[c.s] + '</span></div>';
+  }
+  function ptsText(cards, hide) {
+    var shown = hide ? cards.slice(0, 1) : cards;
+    if (!shown.length) return '—';
+    var info = handInfo(shown);
+    if (info.soft && shown.length > 1 && info.v - 10 > 0) return (info.v - 10) + ' / ' + info.v;
+    return String(info.v);
+  }
+
+  function renderBj() {
+    var html = '', i;
+    for (i = 0; i < BJ.dealer.length; i++) html += cardHtml(BJ.dealer[i], i === 1 && BJ.hole);
+    $bjDealer.innerHTML = html;
+    html = '';
+    for (i = 0; i < BJ.player.length; i++) html += cardHtml(BJ.player[i], false);
+    $bjPlayer.innerHTML = html;
+
+    var hide = BJ.hole && BJ.dealer.length > 1;
+    $bjDPts.textContent = ptsText(BJ.dealer, hide);
+    $bjDPts.className = 'pts' + (handInfo(hide ? BJ.dealer.slice(0, 1) : BJ.dealer).soft ? ' soft' : '');
+    $bjPPts.textContent = ptsText(BJ.player, false);
+    $bjPPts.className = 'pts' + (handInfo(BJ.player).soft ? ' soft' : '');
+  }
+
+  function bjMsg(text, tone) {
+    $bjMsg.textContent = text || '';
+    $bjMsg.className = 'bjmsg' + (tone ? ' ' + tone : '');
+  }
+
+  function renderBjBet() {
+    var locked = (BJ.phase !== 'idle');
+    var btns = $bjBetRow.getElementsByClassName('betBtn'), i, b, sel;
+    for (i = 0; i < btns.length; i++) {
+      b = parseInt(btns[i].getAttribute('data-bet'), 10);
+      sel = (b === 0) ? (BET_PRESETS.indexOf(state.bjBet) < 0) : (state.bjBet === b);
+      btns[i].className = 'betBtn' + (sel ? ' on' : '');
+      btns[i].disabled = locked || (b > 0 && !afford(b));
+    }
+    $bjBet.textContent = abbr(state.bjBet);
+    $bjDeal.disabled = locked || !afford(state.bjBet);
+    $bjDeal.style.display = locked ? 'none' : '';
+    $bjActions.style.display = (BJ.phase === 'player') ? 'flex' : 'none';
+    $bjHit.disabled = (BJ.phase !== 'player');
+    $bjStand.disabled = (BJ.phase !== 'player');
+    $bjDouble.disabled = (BJ.phase !== 'player' || BJ.player.length !== 2 || !afford(state.bjBet));
+    paintClaim($bjClaim);
+  }
+
+  // 依次执行（每步之间留出翻牌动画的时间）
+  function bjSteps(list, done) {
+    var i = 0;
+    (function next() {
+      if (i >= list.length) { done(); return; }
+      list[i]();
+      i++;
+      setTimeout(next, 300);
+    })();
+  }
+
+  // mult = 连本带利返还的倍数（相对本局总赌注）
+  function bjEnd(mult, msg, tone) {
+    var bet = BJ.bet, back = Math.floor(bet * mult), net;
+    if (back > 0) state.gold = clampGold(state.gold + back);
+    net = back - bet;
+    BJ.phase = 'idle'; BJ.hole = false;
+    bjMsg(msg + '　' + (net > 0 ? '+' + abbr(net) : (net < 0 ? '-' + abbr(-net) : '±0')) + ' 金币', tone);
+    save(); renderStats(); renderBjBet(); renderBj();
+  }
+
+  function bjDeal() {
+    if (BJ.phase !== 'idle') return;
+    var bet = state.bjBet;
+    if (!afford(bet)) { toast('金币不足'); return; }
+    state.gold = clampGold(state.gold - bet);
+    BJ.deck = newDeck();
+    BJ.player = []; BJ.dealer = []; BJ.hole = true;
+    BJ.bet = bet; BJ.doubled = false; BJ.phase = 'deal';
+    bjMsg('发牌…', '');
+    renderStats(); renderBjBet(); renderBj();
+
+    bjSteps([
+      function () { BJ.player.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.player.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); }
+    ], function () {
+      var pBJ = isBlackjack(BJ.player), dBJ = isBlackjack(BJ.dealer);
+      if (pBJ || dBJ) {
+        BJ.hole = false; renderBj();
+        if (pBJ && dBJ) { bjEnd(1, '双方黑杰克 · 平局', 'push'); return; }
+        if (pBJ) { bjEnd(BJ_BJ_PAY, '黑杰克！赔 3 : 2', 'win'); return; }
+        bjEnd(0, '庄家黑杰克 · 你输了', 'lose');
+        return;
+      }
+      // 明牌不是 A/10 时庄家不偷看，但结果一样：暗牌不是黑杰克就继续
+      BJ.phase = 'player';
+      bjMsg('要牌 / 停牌 / 加倍', '');
+      renderBjBet();
+    });
+  }
+
+  function bjHit() {
+    if (BJ.phase !== 'player') return;
+    BJ.player.push(takeTop());
+    buzz(8); renderBj();
+    var v = handInfo(BJ.player).v;
+    if (v > 21) {
+      BJ.hole = false; BJ.phase = 'pause';
+      renderBj(); renderBjBet();
+      setTimeout(function () { bjEnd(0, '爆牌 · 你输了', 'lose'); }, 240);
+      return;
+    }
+    if (v === 21) {
+      BJ.phase = 'pause'; renderBjBet();
+      setTimeout(bjDealerPlay, 300);
+      return;
+    }
+    renderBjBet();
+  }
+
+  function bjStand() {
+    if (BJ.phase !== 'player') return;
+    bjDealerPlay();
+  }
+
+  function bjDouble() {
+    if (BJ.phase !== 'player') return;
+    if (BJ.player.length !== 2) { toast('只有起手两张牌时才能加倍'); return; }
+    if (!afford(state.bjBet)) { toast('金币不足，加倍不了'); return; }
+    state.gold = clampGold(state.gold - state.bjBet);
+    BJ.bet = state.bjBet * 2;
+    BJ.doubled = true;
+    renderStats(); renderBjBet();
+    BJ.player.push(takeTop());
+    buzz(10); renderBj();
+    if (handInfo(BJ.player).v > 21) {
+      BJ.hole = false; BJ.phase = 'pause';
+      renderBj(); renderBjBet();
+      setTimeout(function () { bjEnd(0, '加倍后爆牌 · 你输了', 'lose'); }, 240);
+      return;
+    }
+    BJ.phase = 'pause'; renderBjBet();
+    setTimeout(bjDealerPlay, 320);
+  }
+
+  function bjDealerPlay() {
+    BJ.phase = 'dealer'; BJ.hole = false;
+    renderBj(); renderBjBet();
+    bjMsg('庄家补牌…', '');
+    (function step() {
+      if (handInfo(BJ.dealer).v >= 17) { setTimeout(bjSettle, 380); return; }   // S17：软 17 也停
+      BJ.dealer.push(dealerDraw(BJ.dealer));
+      buzz(6); renderBj();
+      setTimeout(step, 400);
+    })();
+  }
+
+  function bjSettle() {
+    var p = handInfo(BJ.player).v, d = handInfo(BJ.dealer).v;
+    if (p > 21) { bjEnd(0, '爆牌 · 你输了', 'lose'); return; }
+    if (d > 21) { bjEnd(2, '庄家爆牌 · 你赢了', 'win'); return; }
+    if (p > d) { bjEnd(2, '你赢了', 'win'); return; }
+    if (p < d) { bjEnd(0, '庄家赢了', 'lose'); return; }
+    bjEnd(1, '平局 · 退还赌注', 'push');
+  }
+
+  $bjBetRow.addEventListener('click', function (e) {
+    var el = e.target;
+    if (!el || String(el.className).indexOf('betBtn') < 0) return;
+    if (BJ.phase !== 'idle') { toast('这一局还没结束'); return; }
+    var b = parseInt(el.getAttribute('data-bet'), 10);
+    if (b === 0) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.bjBet), function (v) {
+        state.bjBet = v; renderBjBet(); save();
+      });
+      return;
+    }
+    state.bjBet = b; renderBjBet(); save();
+  }, false);
+  $bjDeal.addEventListener('click', bjDeal, false);
+  $bjHit.addEventListener('click', bjHit, false);
+  $bjStand.addEventListener('click', bjStand, false);
+  $bjDouble.addEventListener('click', bjDouble, false);
 
   /* ================= 老虎机主逻辑 ================= */
   var spinning = false;
@@ -1033,7 +1699,7 @@
     state.gold = clampGold(state.gold - cost);
     renderStats(); renderBet();
     $resultMain.textContent = '转动中…';
-    $resultMain.style.color = '#6b7280';
+    $resultMain.style.color = '#8d8778';
     $resultSub.textContent = '';
     $lineList.innerHTML = '';
     for (var i = 0; i < 9; i++) { CELLS[i].className = 'cell spin'; }
@@ -1088,7 +1754,7 @@
     if (total > 0) {
       var big = total >= bet * 50;
       $resultMain.textContent = '🎉 中奖 ' + won.length + ' 条线　+' + abbr(total) + ' 金币';
-      $resultMain.style.color = big ? '#fbbf24' : '#4ade80';
+      $resultMain.style.color = big ? '#f3d98b' : '#7fc79a';
       buzz(big ? 90 : 25);
       var html = '';
       for (var i = 0; i < won.length; i++) {
@@ -1101,7 +1767,7 @@
       $resultSub.textContent = '本局下注 ' + abbr(bet) + '　净赢 ' + abbr(total - bet);
     } else {
       $resultMain.textContent = '未中奖　-' + abbr(bet) + ' 金币';
-      $resultMain.style.color = '#6b7280';
+      $resultMain.style.color = '#8d8778';
       $lineList.innerHTML = '';
       $resultSub.textContent = '本局下注 ' + abbr(bet) + '（8 条线都没中）';
     }
@@ -1198,7 +1864,7 @@
   function rtpOf() { return auraR(); }
 
   function renderDrawLuck() {
-    $drawLuck.innerHTML = '抽奖幸运 <b style="color:#fbbf24">' + fmtAuraLuck(state.luck) + '</b>';
+    $drawLuck.innerHTML = '抽奖幸运 <b style="color:#f3d98b">' + fmtAuraLuck(state.luck) + '</b>';
   }
 
   function rollAura() {
@@ -1317,7 +1983,7 @@
     keys.sort(function (a, b) { return state.codes[b] - state.codes[a]; });
     for (i = 0; i < keys.length; i++) {
       k = keys[i];
-      html += '<span class="chip" style="color:#4ade80;border-color:#4ade8033">' + k +
+      html += '<span class="chip" style="color:#7fc79a;border-color:#7fc79a33">' + k +
         ' +' + abbr((CODES[k] && CODES[k].g) || 0) + ' 金币</span>';
     }
     $codeHist.innerHTML = html;
@@ -1419,7 +2085,15 @@
     renderStats(); renderBet(); save();
   }, false);
 
-  $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
+  // ❓ 是同一个按钮，规则内容按当前所在页面切换
+  function openHelp() {
+    var slot = (page === 'slot');
+    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : '❓ 黑杰克规则';
+    $helpSlot.style.display = slot ? '' : 'none';
+    $helpBj.style.display = slot ? 'none' : '';
+    openSheet('helpSheet');
+  }
+  $helpBtn.addEventListener('click', openHelp, false);
   // 🎁 悬浮小列表：打开时贴着 🎁 上方；点空白处关掉
   function toggleMiscPop(force) {
     var show;
@@ -1457,17 +2131,31 @@
   document.getElementById('codePop').addEventListener('click', function (e) { if (e.target === this) closeSheet('codePop'); }, false);
   document.getElementById('setPop').addEventListener('click', function (e) { if (e.target === this) closeSheet('setPop'); }, false);
 
-  // 大厅游戏入口：现在只有老虎机做得出来，其余的都是占位
+  // 大厅游戏入口：老虎机 / 黑杰克已开放，其余的还是占位
   var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
       btn.addEventListener('click', function () {
-        if (btn.id === 'gameSlot') { setPage(false); return; }        // 进老虎机
+        var g = btn.getAttribute('data-game');
+        if (g === 'slot') { setPage('slot'); return; }                 // 进老虎机
+        if (g === 'BJ') {
+          if (!bjTryUnlock()) return;                                   // 没买断：门口拦下来
+          setPage('bj'); renderBj(); renderBjBet(); return;
+        }
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
       }, false);
     })(homeBtns[hb]);
   }
-  $backBtn.addEventListener('click', function () { setPage(true); }, false);     // 回大厅
+  $backBtn.addEventListener('click', function () { setPage('home'); }, false);   // 回大厅
+  $bjBack.addEventListener('click', function () { setPage('home'); }, false);
+  $bjClaim.addEventListener('click', function () {
+    if (Date.now() - state.claimAt < CLAIM_CD) return;
+    if (state.gold >= 1) return;
+    state.claimAt = Date.now();
+    state.gold = clampGold(state.gold + CLAIM_GOLD);
+    toast('领取了 100 金币');
+    renderStats(); renderBet(); renderBjBet(); renderClaim(); save();
+  }, false);
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
@@ -1520,15 +2208,18 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}
+      codes: {}, bjBet: 1, bjUnlocked: false
     };
     save();
+    BJ.deck = []; BJ.player = []; BJ.dealer = []; BJ.hole = true; BJ.bet = 1; BJ.doubled = false; BJ.phase = 'idle';
     fillGridIdle();
+    bjMsg('', '');
+    renderBj(); renderBjBet();
     $resultMain.textContent = '选好下注，拉右边的拉杆开始';
-    $resultMain.style.color = '#4b5563';
+    $resultMain.style.color = '#8d8778';
     $resultSub.textContent = ''; $lineList.innerHTML = '';
     $auraName.className = 'idle'; $auraName.textContent = '点下方按钮开始';
-    $auraName.style.color = '#4b5563'; $auraName.style.textShadow = 'none';
+    $auraName.style.color = '#8d8778'; $auraName.style.textShadow = 'none';
     $tierLine.textContent = ''; $oddsLine.textContent = '';
     $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
     renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
@@ -1623,7 +2314,8 @@
   if (!state.codes || typeof state.codes !== 'object') state.codes = {};
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
-  setPage(true);                                  // 从「赛博赌场」大厅开始
+  renderBj(); renderBjBet();
+  setPage('home');                                // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
 
   /* ================= 离线支持 ================= */
