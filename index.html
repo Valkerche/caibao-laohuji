@@ -34,6 +34,10 @@
   .gameBtn .ico { font-size: 30px; line-height: 1; }
   .gameBtn .nm { flex: 1; }
   .gameBtn .go { font-size: 13px; color: #6b7280; font-weight: 600; letter-spacing: 0; }
+  /* 还没开放的游戏 / 商城：灰一点，右边挂「敬请期待」，点了只弹 toast */
+  .gameBtn.soon { opacity: .5; }
+  .gameBtn.soon .ico { filter: grayscale(.75); }
+  .gameBtn .go.soon { color: #6b7280; border: 1px solid #2b2d38; border-radius: 20px; padding: 2px 8px; font-size: 11px; }
   #backBtn {
     display: inline-block; margin-bottom: 10px; padding: 6px 13px; border: 1px solid #23252e;
     border-radius: 20px; background: #111219; color: #8b93a3; font-family: inherit;
@@ -121,10 +125,11 @@
     font-family: inherit; touch-action: manipulation; box-shadow: 0 4px 16px #0009;
   }
   .corner:active { transform: scale(.94); }
-  #auraBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); }
   #helpBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
-  /* 氪金按钮：夹在 ❓ 与 💥 中间（用 margin-left 定位，避开 .corner:active 的 transform） */
-  #payBtn { left: 50%; margin-left: -27px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+  /* 氪金 💰 与光环 💥 不再单独露出（它们原来在底部会互相压住）。
+     现在只留 ❓（左下）与 🎁（右下）：氪金 / 光环 / 商城 / 兑换码都从 🎁 里进。 */
+  #miscBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+  #payBtn, #auraBtn { display: none !important; }
 
   /* 氪金面板 */
   .payRow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
@@ -134,6 +139,33 @@
   }
   .payBtn small { display: block; font-size: 11px; color: #8b8577; }
   .payBtn:active { transform: scale(.97); }
+
+  /* 杂项（🎁）：竖排功能列表 */
+  .miscTitle { margin: 14px 0 6px; font-size: 11px; color: #6b7280; letter-spacing: 1px; }
+  .miscTitle:first-of-type { margin-top: 4px; }
+  .miscList { display: flex; flex-direction: column; gap: 8px; }
+  .miscItem {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 13px; text-align: left;
+    border: 1px solid #262835; border-radius: 10px; background: #14151d; color: #e8ecf2;
+    font-family: inherit; font-size: 16px; font-weight: 700; touch-action: manipulation;
+  }
+  .miscItem:active { background: #171923; border-color: #3b82f6; }
+  .miscItem .ico { font-size: 24px; line-height: 1; }
+  .miscItem .tx { flex: 1; min-width: 0; }
+  .miscItem .tx i { display: block; font-style: normal; font-size: 11px; font-weight: 400; color: #6b7280; margin-top: 2px; }
+  .miscItem .go { font-size: 13px; color: #6b7280; font-weight: 600; }
+  /* 兑换码 */
+  .codeRow { display: flex; gap: 8px; }
+  .codeRow input {
+    flex: 1; min-width: 0; height: 46px; border: 1px solid #262835; border-radius: 9px; background: #14151d;
+    color: #e8ecf2; font-size: 16px; font-family: inherit; padding: 0 12px; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .codeRow button {
+    flex: 0 0 84px; height: 46px; border: 0; border-radius: 9px; background: #e8ecf2; color: #0b0b0f;
+    font-size: 15px; font-weight: 700; font-family: inherit; touch-action: manipulation;
+  }
+  .codeRow button:active { transform: scale(.97); }
 
   /* 弹层 */
   .sheet {
@@ -239,12 +271,24 @@
 </head>
 <body>
 
-<!-- 首页（大厅）：以后要加别的游戏，就在这里再放一个 .gameBtn -->
+<!-- 首页（大厅）：下面几个还没做的游戏 / 商城先摆着，点了弹「敬请期待」 -->
 <div id="homePage">
   <div class="lobbyTitle">赛博赌场</div>
   <div class="lobbySub">金币 <b id="lobbyGold" style="color:#fbbf24">10</b></div>
-  <button class="gameBtn" id="gameSlot">
+  <button class="gameBtn" id="gameSlot" data-game="slot">
     <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
+  </button>
+  <button class="gameBtn soon" data-game="BJ">
+    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="CH">
+    <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="WH">
+    <span class="ico">🎡</span><span class="nm">幸运转盘</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="SHOP">
+    <span class="ico">🛒</span><span class="nm">商城</span><span class="go soon">敬请期待</span>
   </button>
 </div>
 
@@ -296,9 +340,8 @@
   <div id="claimWrap"><button id="claim">领取救济金 100</button></div>
 </div>
 
-<button class="corner" id="helpBtn">❓</button>
-<button class="corner" id="payBtn">💰</button>
-<button class="corner" id="auraBtn">💥</button>
+<button class="corner" id="helpBtn" style="display:none">❓</button>
+<button class="corner" id="miscBtn">🎁</button>
 <div id="toast"></div>
 
 <!-- 光环面板 -->
@@ -369,7 +412,17 @@
       <h3>金币</h3>
       · 起手 10 金币；赢的钱 = 本局下注 × 符号倍率<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
+      · 金币数字按 <b>K / M / B / T</b> 缩写显示（每 1000 进一位：1.23K = 1230、1.23M = 123 万）<br>
       · 所有进度自动保存在本机
+
+      <h3>🎁 杂项（右下角礼物按钮）</h3>
+      · 氪金、光环、兑换码、商城 都在这里进<br>
+      · <b>兑换码</b>：在输入框里填码点「兑换」，不区分大小写，每个码只能兑换一次<br>
+      · <b>商城</b>：敬请期待，以后可以用金币买道具
+
+      <h3>⏳ 敬请期待</h3>
+      · 黑杰克、养鸡场、幸运转盘 三个入口已经摆在首页了，玩法还在做<br>
+      · 现在点它们只会弹一句「敬请期待」，进不去
 
       <h3>💥 光环（附加玩法，不花金币）</h3>
       · 每抽一次「抽奖幸运」+0.05，抽到稀有光环额外增加，上限 ×400<br>
@@ -385,16 +438,63 @@
   </div>
 </div>
 
-<!-- 氪金弹层 -->
+<!-- 氪金弹层（从 🎁 杂项列表进） -->
 <div class="sheet" id="paySheet">
   <div class="panel">
-    <span class="close" data-close="paySheet">×</span>
+    <span class="close" data-close="paySheet" data-back="miscSheet">×</span>
     <h2>💰 氪金</h2>
     <div class="payRow">
       <button class="payBtn" data-pay="10">1 元<small>10 金币</small></button>
       <button class="payBtn" data-pay="600">60 元<small>600 金币</small></button>
       <button class="payBtn" data-pay="1000">100 元<small>1000 金币</small></button>
       <button class="payBtn" data-pay="5200">520 元<small>5200 金币</small></button>
+    </div>
+  </div>
+</div>
+
+<!-- 杂项弹层（🎁）：氪金 / 光环 / 兑换码 / 商城 都从这里进 -->
+<div class="sheet" id="miscSheet">
+  <div class="panel">
+    <span class="close" data-close="miscSheet">×</span>
+    <h2>🎁 杂项</h2>
+    <div class="miscTitle">功能</div>
+    <div class="miscList">
+      <button class="miscItem" id="miscPay">
+        <span class="ico">💰</span>
+        <span class="tx">氪金<i>1 / 60 / 100 / 520 元档</i></span>
+        <span class="go">进入 ›</span>
+      </button>
+      <button class="miscItem" id="miscAura">
+        <span class="ico">💥</span>
+        <span class="tx">光环<i>抽取 · 图鉴 · 佩戴</i></span>
+        <span class="go">进入 ›</span>
+      </button>
+      <button class="miscItem" id="miscShop">
+        <span class="ico">🛒</span>
+        <span class="tx">商城<i>用金币买道具</i></span>
+        <span class="go soon">敬请期待 ›</span>
+      </button>
+    </div>
+
+    <div class="miscTitle">兑换码</div>
+    <div class="codeRow">
+      <input id="codeInput" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="输入兑换码">
+      <button id="codeBtn">兑换</button>
+    </div>
+    <div class="promptTip" id="codeTip">兑换码不区分大小写，每个码只能兑换一次。</div>
+    <div class="miscList" id="codeHist" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- 商城弹层（占位） -->
+<div class="sheet" id="shopSheet">
+  <div class="panel">
+    <span class="close" data-close="shopSheet" data-back="miscSheet">×</span>
+    <h2>🛒 商城</h2>
+    <div class="rules" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🛒</div>
+      <div style="font-size:16px;font-weight:700;margin-top:10px">敬请期待</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:6px">以后可以用金币在这里买道具</div>
     </div>
   </div>
 </div>
@@ -518,11 +618,18 @@
   var NUM_MAX = 1e12;
   var CLAIM_CD = 3600000;   // 救济金冷却（1 小时）
 
+  // 兑换码：存的时候统一转大写，每个码每人只能兑一次
+  var CODES = {
+    'CAIBAO': { g: 1000, tip: '菜包福利' },
+    'VIP888': { g: 888,  tip: '试行兑换码' }
+  };
+
   /* ================= 存档 ================= */
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1,
-    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false
+    bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
+    codes: {}                                    // 已兑换过的兑换码：{ 码: 兑换时间 }
   };
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -567,6 +674,7 @@
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
       state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
+      state.codes = (d.codes && typeof d.codes === 'object') ? d.codes : {};
     } catch (e) {}
   }
 
@@ -739,9 +847,32 @@
   }
 
   /* ================= 工具 ================= */
-  function comma(n) {
-    if (n > NUM_MAX * 1000) return n.toExponential(2);
-    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  /* 金币缩写：跟 Roblox 一样用 K / M / B / T（每 1000 进一位，大小写按用户要求用大写）。
+     规则：1000 以下直接显示整数；系数 ≥ 100 取整（999M），< 100 保留 2 位小数并去掉多余的 0（1.23M / 12.5M）。
+     关键点：先把系数按两位小数四舍五入，如果它进位到 1000（999,999 -> 1000.00K），就升到下一个单位再算，
+     否则会出现「1000.00K」这种错显示。 */
+  var UNITS = [['K', 1e3], ['M', 1e6], ['B', 1e9], ['T', 1e12]];
+  function bigUnit(n) { return (n >= UNITS[UNITS.length - 1][1]) ? UNITS[UNITS.length - 1] : null; }
+  function bigScaled(n, u) {
+    var v = u ? n / u[1] : n;
+    return v >= 100 ? Math.round(v) : Math.round(v * 100) / 100;
+  }
+  function abbr(n) {
+    n = Number(n);
+    if (!isFinite(n)) return '0';
+    if (n < 0) return '-' + abbr(-n);
+    if (n < 1000) return String(Math.floor(n));
+    var u = bigUnit(n), i, v;
+    for (i = 0; i < UNITS.length; i++) {
+      if (u === null && n >= UNITS[i][1] && n < UNITS[i + 1][1]) u = UNITS[i];
+    }
+    v = bigScaled(n, u);
+    if (v >= 1000 && u !== UNITS[UNITS.length - 1]) {         // 两位小数进位到 1000 -> 换下一个单位
+      for (i = 1; i < UNITS.length; i++) if (UNITS[i][1] > u[1]) { u = UNITS[i]; break; }
+      v = bigScaled(n, u);
+    }
+    var s = (v % 1 === 0) ? String(v) : v.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+    return s + u[0];
   }
   function clampGold(v) {
     if (!isFinite(v) || v < 0) v = 0;
@@ -752,7 +883,7 @@
   function fmtAuraLuck(v) { return '×' + (v < 100 ? v.toFixed(1) : String(Math.floor(v))); }
   function fmtChance(p) {
     if (p >= 0.01) return (p * 100).toFixed(2) + '%';
-    return '1 / ' + comma(Math.round(1 / p));
+    return '1 / ' + abbr(Math.round(1 / p));
   }
   function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
 
@@ -791,14 +922,16 @@
   var $eqList = document.getElementById('eqList');
   var $eqInfo = document.getElementById('eqInfo');
   var $drawLuck = document.getElementById('drawLuck');
-  var $auraBtn = document.getElementById('auraBtn');
   var $helpBtn = document.getElementById('helpBtn');
-  var $payBtn = document.getElementById('payBtn');
+  var $miscBtn = document.getElementById('miscBtn');
   var $homePage = document.getElementById('homePage');
   var $gamePage = document.getElementById('gamePage');
   var $lobbyGold = document.getElementById('lobbyGold');
   var $backBtn = document.getElementById('backBtn');
   var $gameSlot = document.getElementById('gameSlot');
+  var $codeInput = document.getElementById('codeInput');
+  var $codeBtn = document.getElementById('codeBtn');
+  var $codeHist = document.getElementById('codeHist');
   var atHome = true;                        // 一进来是「赛博赌场」大厅
 
   // 大厅 ⇄ 老虎机：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
@@ -806,7 +939,7 @@
     atHome = !!home;
     $homePage.style.display = atHome ? '' : 'none';
     $gamePage.style.display = atHome ? 'none' : '';
-    $helpBtn.style.display = atHome ? 'none' : '';
+    refreshCorners();
   }
 
   function setSym(el, si) {
@@ -824,8 +957,8 @@
   function afford(bet) { return state.gold >= bet; }
 
   function renderStats() {
-    $sGold.textContent = comma(state.gold);
-    $lobbyGold.textContent = comma(state.gold);
+    $sGold.textContent = abbr(state.gold);
+    $lobbyGold.textContent = abbr(state.gold);
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
     $sEq.style.color = TIER_COLOR[AURAS[idxOf(state.eq)].t];
@@ -840,7 +973,7 @@
       if (b > 0) btns[i].disabled = !afford(b);
       else btns[i].disabled = false;
     }
-    $betInfo.innerHTML = '本局下注 <b>' + comma(state.bet) + '</b> 金币　中奖线按 本局下注 × 符号倍率 全额赔';
+    $betInfo.innerHTML = '本局下注 <b>' + abbr(state.bet) + '</b> 金币　中奖线按 本局下注 × 符号倍率 全额赔';
     $lever.disabled = spinning || !afford(state.bet);
     renderClaim();
   }
@@ -929,7 +1062,7 @@
 
     if (total > 0) {
       var big = total >= bet * 50;
-      $resultMain.textContent = '🎉 中奖 ' + won.length + ' 条线　+' + comma(total) + ' 金币';
+      $resultMain.textContent = '🎉 中奖 ' + won.length + ' 条线　+' + abbr(total) + ' 金币';
       $resultMain.style.color = big ? '#fbbf24' : '#4ade80';
       buzz(big ? 90 : 25);
       var html = '';
@@ -937,15 +1070,15 @@
         var w = won[i], g = '';
         for (var t = 0; t < 3; t++) g += SLOT[w.c[t]].g;
         var nm = (w.c[0] === W_TAG && w.c[1] === W_TAG && w.c[2] === W_TAG) ? '　Wild×3' : '';
-        html += '<span>' + w.line.name + ' ' + g + ' ×' + w.m + ' → +' + comma(w.m * bet) + nm + '</span>';
+        html += '<span>' + w.line.name + ' ' + g + ' ×' + w.m + ' → +' + abbr(w.m * bet) + nm + '</span>';
       }
       $lineList.innerHTML = html;
-      $resultSub.textContent = '本局下注 ' + comma(bet) + '　净赢 ' + comma(total - bet);
+      $resultSub.textContent = '本局下注 ' + abbr(bet) + '　净赢 ' + abbr(total - bet);
     } else {
-      $resultMain.textContent = '未中奖　-' + comma(bet) + ' 金币';
+      $resultMain.textContent = '未中奖　-' + abbr(bet) + ' 金币';
       $resultMain.style.color = '#6b7280';
       $lineList.innerHTML = '';
-      $resultSub.textContent = '本局下注 ' + comma(bet) + '（8 条线都没中）';
+      $resultSub.textContent = '本局下注 ' + abbr(bet) + '（8 条线都没中）';
     }
 
     spinning = false;
@@ -1004,7 +1137,7 @@
       a = AURAS[i];
       cnt = state.counts[a.n] || 0;
       if (a.r > 0 && cnt > 0) owned++;
-      html += dexCard(a, a.n, a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取',
+      html += dexCard(a, a.n, a.r > 0 ? ('基础 1 / ' + abbr(a.r)) : '初始光环 · 不可抽取',
         '当前 ' + fmtChance(chanceOf(a.n)), cnt);
     }
     html = html + caibaoCard();                      // 词条排在整个图鉴最后面
@@ -1092,7 +1225,7 @@
     $auraName.style.textShadow = '0 0 ' + (a.t >= 5 ? 26 : a.t >= 3 ? 16 : 8) + 'px ' + col + '99';
     $tierLine.textContent = TIER_NAME[a.t];
     $tierLine.style.color = col;
-    $oddsLine.textContent = a.r > 0 ? ('基础 1 / ' + comma(a.r)) : '初始光环 · 不可抽取';
+    $oddsLine.textContent = a.r > 0 ? ('基础 1 / ' + abbr(a.r)) : '初始光环 · 不可抽取';
     $newSlot.innerHTML = isNew ? '<div class="newTag">NEW 新光环</div>' : '';
     $gainSlot.innerHTML = '<div class="gain">抽奖幸运 +' + gain.toFixed(2) + '</div>';
 
@@ -1103,8 +1236,20 @@
   }
 
   /* ================= 弹层 ================= */
-  function openSheet(id) { document.getElementById(id).className = 'sheet open'; }
-  function closeSheet(id) { document.getElementById(id).className = 'sheet'; }
+  // 弹层是从下往上盖的（.sheet 的 padding 在底部），所以弹层打开时把角落按钮藏起来，
+  // 否则它们会浮在弹层面板上；关掉再放回来（❓ 只有进了游戏才显示）。
+  function anySheetOpen() {
+    var s = document.getElementsByClassName('sheet'), i;
+    for (i = 0; i < s.length; i++) if (String(s[i].className).indexOf('open') >= 0) return true;
+    return false;
+  }
+  function refreshCorners() {
+    var show = !anySheetOpen();
+    $helpBtn.style.display = (show && !atHome) ? '' : 'none';
+    $miscBtn.style.display = show ? '' : 'none';
+  }
+  function openSheet(id) { document.getElementById(id).className = 'sheet open'; refreshCorners(); }
+  function closeSheet(id) { document.getElementById(id).className = 'sheet'; refreshCorners(); }
 
   var tabBtns = document.getElementsByClassName('tab');
   function selectTab(name) {
@@ -1130,13 +1275,45 @@
   document.getElementById('promptOk').addEventListener('click', function () {
     var v = parseInt(document.getElementById('promptInput').value, 10);
     if (!isFinite(v) || v < 1) { toast('请输入不小于 1 的整数'); return; }
-    if (v > NUM_MAX) { toast('最大 ' + comma(NUM_MAX)); return; }
+    if (v > NUM_MAX) { toast('最大 ' + abbr(NUM_MAX)); return; }
     closeSheet('promptSheet');
     var cb = promptCb; promptCb = null;
     if (cb) cb(v);
   }, false);
   document.getElementById('promptCancel').addEventListener('click', function () {
     promptCb = null; closeSheet('promptSheet');
+  }, false);
+
+  /* ================= 兑换码 ================= */
+  function renderCodeHist() {
+    var keys = [], k, html = '', i;
+    for (k in state.codes) if (Object.prototype.hasOwnProperty.call(state.codes, k)) keys.push(k);
+    if (!keys.length) { $codeHist.innerHTML = '<span class="empty">还没有兑换过兑换码</span>'; return; }
+    keys.sort(function (a, b) { return state.codes[b] - state.codes[a]; });
+    for (i = 0; i < keys.length; i++) {
+      k = keys[i];
+      html += '<span class="chip" style="color:#4ade80;border-color:#4ade8033">' + k +
+        ' +' + abbr((CODES[k] && CODES[k].g) || 0) + ' 金币</span>';
+    }
+    $codeHist.innerHTML = html;
+  }
+
+  function redeem() {
+    var raw = $codeInput.value, code = raw.replace(/\s+/g, '').toUpperCase();
+    if (!code) { toast('请输入兑换码'); return; }
+    if (!Object.prototype.hasOwnProperty.call(CODES, code)) { toast('兑换码不存在'); return; }
+    if (state.codes[code]) { toast('这个兑换码已经兑换过了'); return; }
+    var g = CODES[code].g;
+    state.codes[code] = Date.now();
+    state.gold = clampGold(state.gold + g);
+    $codeInput.value = '';
+    toast('兑换成功，金币 +' + abbr(g));
+    renderCodeHist(); renderStats(); renderBet(); save();
+  }
+
+  $codeBtn.addEventListener('click', redeem, false);
+  $codeInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) { if (e.preventDefault) e.preventDefault(); redeem(); }
   }, false);
 
   /* ================= 事件 ================= */
@@ -1200,7 +1377,7 @@
     if (!el || el.className.indexOf('betBtn') < 0) return;
     var b = parseInt(el.getAttribute('data-bet'), 10);
     if (b === 0) {
-      askNumber('自定义本局下注', '整数，1 ~ ' + comma(NUM_MAX) + '（不能超过当前金币）', String(state.bet), function (v) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.bet), function (v) {
         state.bet = v; renderBet(); save();
       });
       return;
@@ -1217,19 +1394,37 @@
     renderStats(); renderBet(); save();
   }, false);
 
-  $auraBtn.addEventListener('click', function () {
+  $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
+  $miscBtn.addEventListener('click', function () {                     // 🎁 杂项：氪金 / 光环 / 兑换码 / 商城
+    renderCodeHist();
+    openSheet('miscSheet');
+  }, false);
+  document.getElementById('miscPay').addEventListener('click', function () { closeSheet('miscSheet'); openSheet('paySheet'); }, false);
+  document.getElementById('miscAura').addEventListener('click', function () {
+    closeSheet('miscSheet');
     renderHist(); renderDex(); renderEquip(); renderDrawLuck();
     openSheet('auraSheet');
   }, false);
-  $helpBtn.addEventListener('click', function () { openSheet('helpSheet'); }, false);
-  $payBtn.addEventListener('click', function () { openSheet('paySheet'); }, false);
-  $gameSlot.addEventListener('click', function () { setPage(false); }, false);   // 进老虎机
+  document.getElementById('miscShop').addEventListener('click', function () { toast('商城敬请期待'); }, false);
+
+  // 大厅游戏入口：现在只有老虎机做得出来，其余的都是占位
+  var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
+  for (var hb = 0; hb < homeBtns.length; hb++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        if (btn.id === 'gameSlot') { setPage(false); return; }        // 进老虎机
+        toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
+      }, false);
+    })(homeBtns[hb]);
+  }
   $backBtn.addEventListener('click', function () { setPage(true); }, false);     // 回大厅
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
       if (el.className && String(el.className).indexOf('close') >= 0 && el.getAttribute('data-close')) {
+        var back = el.getAttribute('data-back');
         closeSheet(el.getAttribute('data-close'));
+        if (back) openSheet(back);                // 氪金 / 商城是从杂项里进的，关掉回杂项
         return;
       }
       if (el.getAttribute && el.getAttribute('data-eq')) {
@@ -1241,7 +1436,7 @@
       if (el.getAttribute && el.getAttribute('data-pay')) {
         var pv = parseInt(el.getAttribute('data-pay'), 10) || 0;
         state.gold = clampGold(state.gold + pv);
-        toast('金币 +' + comma(pv));
+        toast('金币 +' + abbr(pv));
         renderStats(); renderBet(); save();
         return;
       }
@@ -1249,12 +1444,12 @@
     }
   }, false);
 
-  // 点击遮罩关闭弹层
+  // 点击遮罩关闭弹层（promptSheet 例外，免得点空白把已输入的数字丢掉）
   var sheets = document.getElementsByClassName('sheet');
   for (var si = 0; si < sheets.length; si++) {
     (function (sh) {
       sh.addEventListener('click', function (e) {
-        if (e.target === sh && sh.id !== 'promptSheet') sh.className = 'sheet';
+        if (e.target === sh && sh.id !== 'promptSheet') closeSheet(sh.id);
       }, false);
     })(sheets[si]);
   }
@@ -1273,7 +1468,8 @@
     state = {
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
-      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false
+      bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
+      codes: {}
     };
     save();
     fillGridIdle();
@@ -1314,9 +1510,9 @@
       state.t3++;
       if (state.t3 >= 20) {
         state.t3 = 0; save();
-        askNumber('想加多少金币？', '整数，1 ~ ' + comma(NUM_MAX) + '，可以重复使用', '', function (v) {
+        askNumber('想加多少金币？', '整数，1 ~ ' + abbr(NUM_MAX) + '，可以重复使用', '', function (v) {
           state.gold = clampGold(state.gold + v);
-          toast('金币 +' + comma(v));
+          toast('金币 +' + abbr(v));
           renderStats(); renderBet(); save();
         });
       }
@@ -1373,8 +1569,9 @@
   load();
   state.counts['默认'] = 1;
   if (idxOf(state.eq) === 0 && state.eq !== '默认') state.eq = '默认';
+  if (!state.codes || typeof state.codes !== 'object') state.codes = {};
   fillGridIdle();
-  renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+  renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
   setPage(true);                                  // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
 
