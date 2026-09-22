@@ -54,7 +54,7 @@
   }
 
   /* ================= 大厅 ================= */
-  #homePage { max-width: 520px; margin: 0 auto; padding: 34px 14px calc(96px + env(safe-area-inset-bottom)); }
+  #homePage { max-width: 520px; margin: 0 auto; padding: 34px 14px calc(96px + env(safe-area-inset-bottom)); position: relative; }
   .lobbyTitle {
     display: flex; align-items: center; justify-content: center; gap: 12px;
     font-size: 29px; font-weight: 800; letter-spacing: 7px; text-indent: 7px; text-align: center;
@@ -257,9 +257,25 @@
     touch-action: manipulation;
   }
   .corner:active { transform: scale(.94); }
+  /* 右下角一列悬浮：🎁 贴边、🎒 在它正上方（同款方形）；左下角 📜（首页）/ ❓（游戏内） */
+  #logBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
   #helpBtn { left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
   #miscBtn { right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); font-size: 22px; }
+  #bagBtn { right: 14px; bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 44; font-size: 22px; border-radius: 14px; }   /* 🎒 方形，🎁 正上方 */
+  #bagBtn.hasBag::after {
+    content: ''; position: absolute; top: 6px; right: 6px; width: 9px; height: 9px;
+    border-radius: 50%; background: #ff6b81; box-shadow: 0 0 6px #ff6b81;
+  }
+  /* ⏪ 后悔药水：只有手里有回溯药水、且刚打完一局时才冒出来（叠在 🎒 上方） */
+  #rewindBtn { right: 14px; bottom: calc(142px + env(safe-area-inset-bottom)); width: auto; min-width: 54px; padding: 0 13px; border-radius: 27px; font-size: 13px; z-index: 70; white-space: nowrap; }
   #payBtn, #auraBtn { display: none !important; }
+
+  /* ================= 生效中的药水徽标 ================= */
+  .potBadge {
+    margin: 7px 0 0; text-align: center; font-size: 11px; color: var(--goldlit);
+    border: 1px solid var(--gl2); border-radius: 3px; padding: 4px 6px;
+    background: rgba(212,175,55,.06); letter-spacing: .3px;
+  }
 
   /* 面板里的 ❓：同一套外观，小一号 */
   #auraHelpBtn {
@@ -541,12 +557,68 @@
     white-space: nowrap;
   }
   #toast.on { opacity: 1; }
+
+  /* ================= 商城 / 背包 ================= */
+  .bagBtn {
+    float: right; margin: 4px 0 0 8px; padding: 6px 11px; position: relative; z-index: 70;
+    border: 1px solid var(--golddim); border-radius: 3px; background: rgba(212,175,55,.08);
+    color: var(--goldlit); font-size: 12px; font-weight: 700; touch-action: manipulation;
+  }
+  .bagBtn:active { border-color: var(--gold); }
+  .bagBtn.on { border-color: #5fd08a; color: #7fc79a; background: rgba(95,208,138,.08); }
+  .shopGold { font-size: 12px; color: #f3d98b; margin: 4px 0 0; letter-spacing: .5px; }
+  /* 📜 更新日志：条目 + 现行版本小标 */
+  .logItem { padding: 9px 0 8px; border-top: 1px dashed rgba(212,175,55,.16); }
+  .logItem:first-child { border-top: 0; }
+  .logV { font-family: var(--disp); font-size: 14px; font-weight: 700; color: var(--goldlit); letter-spacing: 1px; display: flex; align-items: center; gap: 7px; }
+  .logV .cur { font-family: inherit; font-size: 9px; font-weight: 700; letter-spacing: 1px; padding: 1px 6px; border-radius: 9px; color: #0d1210; background: linear-gradient(180deg, var(--goldlit), var(--gold)); }
+  .logItem ul { margin: 4px 0 0; padding-left: 15px; }
+  .logItem li { font-size: 12px; color: var(--tx); line-height: 1.75; }
+  /* 首页左上角版本铭牌（只在首页显示） */
+  #verTag { position: absolute; left: 12px; top: 10px; font-family: var(--disp); font-size: 11px; letter-spacing: 1px; color: var(--golddim); border: 1px solid rgba(212,175,55,.32); border-radius: 9px; padding: 2px 8px; }
+  .shopBagRow { font-size: 11px; color: var(--txd); margin: 4px 0 0; line-height: 1.6; }
+  #shopItems { grid-template-columns: repeat(auto-fill, minmax(154px, 1fr)); }
+  .gItem { display: flex; flex-direction: column; gap: 4px; }
+  .gTop { display: flex; align-items: center; gap: 6px; }
+  .gIco { font-size: 21px; line-height: 1; }
+  .gNm { font-weight: 700; font-size: 13px; line-height: 1.25; }
+  .gNm i { display: block; font-style: normal; font-size: 10px; font-weight: 400; color: var(--txd); }
+  .gTag { font-size: 10px; color: var(--txd); line-height: 1.6; flex: 1; }
+  .gMeta { font-size: 10px; color: var(--txd); }
+  .gMeta b { color: var(--tx); font-weight: 400; }
+  .gFoot { margin-top: 2px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .gPrice { font-size: 13px; color: #f3d98b; font-weight: 700; }
+  .gBuy {
+    padding: 5px 12px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: rgba(212,175,55,.10); color: var(--goldlit);
+    font-size: 12px; font-weight: 700; touch-action: manipulation;
+  }
+  .gBuy:active { border-color: var(--gold); }
+  .gBuy:disabled { opacity: .32; }
+  .gItem.off { opacity: .62; }
+  .bItem {
+    display: flex; align-items: center; gap: 9px; padding: 9px 2px;
+    border-bottom: 1px solid var(--gl2);
+  }
+  .bItem:last-child { border-bottom: 0; }
+  .bIco { font-size: 22px; line-height: 1; }
+  .bInfo { flex: 1; min-width: 0; }
+  .bInfo b { display: block; font-size: 13px; }
+  .bInfo small { display: block; font-size: 10px; color: var(--txd); margin-top: 2px; }
+  .bUse {
+    padding: 6px 13px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: rgba(212,175,55,.10); color: var(--goldlit); font-size: 12px; font-weight: 700;
+    touch-action: manipulation;
+  }
+  .bUse:active { border-color: var(--gold); }
+  .bDrop { padding: 6px 9px; border: 1px solid var(--gl2); border-radius: 2px; background: transparent; color: var(--txd); font-size: 11px; touch-action: manipulation; }
 </style>
 </head>
 <body>
 
-<!-- 首页（大厅）：下面几个还没做的游戏 / 商城先摆着，点了弹「敬请期待」 -->
+<!-- 首页（大厅）：老虎机 / 黑杰克 / 商城已开放，养鸡场与幸运转盘还是占位 -->
 <div id="homePage" class="grain">
+  <div id="verTag">v0.0</div>
   <div class="lobbyTitle">赛博赌场</div>
   <div class="lobbySub">金币 <b id="lobbyGold" style="color:#f3d98b">10</b></div>
   <button class="gameBtn" id="gameSlot" data-game="slot">
@@ -561,8 +633,8 @@
   <button class="gameBtn soon" data-game="WH">
     <span class="ico">🎡</span><span class="nm">幸运转盘</span><span class="go soon">敬请期待</span>
   </button>
-  <button class="gameBtn soon" data-game="SHOP">
-    <span class="ico">🛒</span><span class="nm">商城</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn" data-game="SHOP">
+    <span class="ico">🛒</span><span class="nm">商城</span><span class="go">进入 ›</span>
   </button>
 </div>
 
@@ -575,6 +647,7 @@
     <div class="stat"><b id="sSlotLuck" style="color:#f3d98b">×1.00</b><span>老虎机幸运</span></div>
     <div class="stat" id="eqBox"><b id="sEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
   </div>
+  <div class="potBadge" id="potBadge" style="display:none"></div>
 
   <div class="playArea">
   <div class="grid" id="grid">
@@ -623,6 +696,7 @@
     <div class="stat"><b id="bjLuck" style="color:#f3d98b">×1.00</b><span>抽牌幸运</span></div>
     <div class="stat"><b id="bjEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
   </div>
+  <div class="potBadge" id="bjPotBadge" style="display:none"></div>
 
   <div class="felt">
     <div class="oval"></div><div class="oval o2"></div>
@@ -671,6 +745,9 @@
 </div>
 
 <button class="corner" id="helpBtn" style="display:none">❓</button>
+<button class="corner" id="bagBtn" style="display:none">🎒</button>
+<button class="corner" id="rewindBtn" style="display:none">⏪</button>
+<button class="corner" id="logBtn" style="display:none;font-size:22px">📜</button>
 <button class="corner" id="miscBtn">🎁</button>
 <div id="toast"></div>
 
@@ -856,16 +933,51 @@
   </div>
 </div>
 
-<!-- 商城弹层（占位） -->
+<!-- 商城弹层：道具（药水）+ 外观（占位） -->
 <div class="sheet" id="shopSheet">
   <div class="panel">
+    <button class="bagBtn" id="bagBtn2">🎒 背包</button>
     <span class="close" data-close="shopSheet" data-back="miscPop">×</span>
     <h2>🛒 商城</h2>
-    <div class="rules" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🛒</div>
-      <div style="font-size:16px;font-weight:700;margin-top:10px">敬请期待</div>
-      <div style="font-size:12px;color:#8d8778;margin-top:6px">以后可以用金币在这里买道具</div>
+    <div class="shopGold" id="shopGold">金币 0</div>
+    <div class="shopBagRow" id="shopBagRow"></div>
+    <div class="tabs">
+      <button class="tab on" data-tab="items">🧪 道具</button>
+      <button class="tab" data-tab="look">🎨 外观</button>
     </div>
+    <div class="tabPage on" id="page-items">
+      <div class="rules" style="font-size:12px;color:#8d8778;line-height:1.7;margin:0 0 8px">
+        买下来的道具会进 🎒 背包，在背包里点「使用」才会开始生效。<br>
+        药水持续局数按「老虎机拉杆次数 / 黑杰克开局次数」算，同种药水可以叠加。
+      </div>
+      <div class="cardList" id="shopItems"></div>
+    </div>
+    <div class="tabPage" id="page-look">
+      <div class="empty" style="padding:26px 0;text-align:center">
+        <div style="font-size:40px">🎨</div>
+        <div style="font-size:15px;font-weight:700;margin-top:8px;color:#cdc7b8">敬请期待</div>
+        <div style="margin-top:6px">外观（皮肤 / 牌背 / 桌布）以后会摆在这里</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🎒 背包弹层（买来的道具在这里使用） -->
+<div class="sheet" id="bagSheet">
+  <div class="panel">
+    <span class="close" data-close="bagSheet">×</span>
+    <h2>🎒 背包</h2>
+    <div class="shopBagRow" id="bagHead"></div>
+    <div id="bagList"></div>
+  </div>
+</div>
+
+<!-- 📜 更新日志弹层（只在首页有入口） -->
+<div class="sheet" id="logSheet">
+  <div class="panel">
+    <span class="close" data-close="logSheet">×</span>
+    <h2>📜 更新日志</h2>
+    <div id="logList"></div>
   </div>
 </div>
 
@@ -985,8 +1097,37 @@
   var GOLD_START = 10;      // 起手金币
   var CLAIM_GOLD = 100;     // 救济金金额（与起手金币无关）
   var GOLD_MAX = 1e15;
-  var NUM_MAX = 1e12;
+  var NUM_MAX = 1e7;        // 单次下注上限（自定义下注，老虎机 / 黑杰克共用）
   var CLAIM_CD = 3600000;   // 救济金冷却（1 小时）
+
+  /* ================= 商城 · 道具（药水） ================= */
+  // 幸运 / 金币 / 无敌 各只有一种强度，大小瓶只差「持续局数」
+  // 后悔药水只有一个规格：回溯一次操作
+  var POT_DEF = {
+    luck:  { nm: '幸运药水', ico: '🍀', tag: '老虎机幸运 +5（幸运越高越容易中奖）' },
+    gold:  { nm: '金币药水', ico: '💰', tag: '本局中奖金额 ×1.30（输了没有额外效果）' },
+    rewind:{ nm: '后悔药水', ico: '⏪', tag: '回溯一次操作：本局作废，重摇／重开一局' },
+    shield:{ nm: '无敌药水', ico: '🛡️', tag: '本局输了不扣金币，赢了照给' }
+  };
+  var POT_SIZES = [
+    { k: 's', nm: '小瓶', dur: 3 },
+    { k: 'm', nm: '中瓶', dur: 8 },
+    { k: 'l', nm: '大瓶', dur: 20 }
+  ];
+  var LUCK_ADD = 5;         // 幸运药水：老虎机幸运 +5（幸运与光环 R 是 1:1）
+  var GOLD_MUL = 1.3;       // 金币药水：中奖金额倍率
+
+  // 商品表：id 唯一；key 相同 = 同一种药水；dur 单位是「局」
+  var SHOP_ITEMS = [
+    { id: 'lk_s', key: 'luck',   size: 's', dur: 3,  price: 1200 },
+    { id: 'lk_m', key: 'luck',   size: 'm', dur: 8,  price: 3000 },
+    { id: 'lk_l', key: 'luck',   size: 'l', dur: 20, price: 8000 },
+    { id: 'gd_s', key: 'gold',   size: 's', dur: 3,  price: 1300 },
+    { id: 'gd_m', key: 'gold',   size: 'm', dur: 8,  price: 3200 },
+    { id: 'gd_l', key: 'gold',   size: 'l', dur: 20, price: 8500 },
+    { id: 'rw',   key: 'rewind', size: '',  dur: 1,  price: 2000 },
+    { id: 'sh',   key: 'shield', size: '',  dur: 1,  price: 3500 }
+  ];
 
   // 兑换码：存的时候统一转大写，每个码每人只能兑一次
   var CODES = {
@@ -999,8 +1140,11 @@
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1, bjBet: 1, bjUnlocked: false,
     bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-    codes: {}                                    // 已兑换过的兑换码：{ 码: 兑换时间 }
+    codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
+    bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
+    pot: {}                                      // 生效中的药水：{ 药水key: 剩余局数 }
   };
+  var potTimer = {};                             // 只是给徽标做倒计时的显示定时器，不进存档
 
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
@@ -1047,6 +1191,25 @@
       state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
       state.codes = (d.codes && typeof d.codes === 'object') ? d.codes : {};
+
+      // 背包 / 药水：只认白名单里的商品 id 和药水 key，数量与局数都取正整数
+      var bag = {}, pot = {}, id, kk, vv;
+      if (d.bag && typeof d.bag === 'object') {
+        for (i = 0; i < SHOP_ITEMS.length; i++) {
+          id = SHOP_ITEMS[i].id;
+          vv = d.bag[id];
+          if (typeof vv === 'number' && vv > 0) bag[id] = Math.floor(vv);
+        }
+      }
+      if (d.pot && typeof d.pot === 'object') {
+        for (kk in POT_DEF) {
+          if (!Object.prototype.hasOwnProperty.call(POT_DEF, kk)) continue;
+          vv = d.pot[kk];
+          if (typeof vv === 'number' && vv > 0) pot[kk] = Math.floor(vv);
+        }
+      }
+      state.bag = bag;
+      state.pot = pot;
     } catch (e) {}
   }
 
@@ -1099,7 +1262,7 @@
     return idxOf('微光');
   }
 
-  function slotLuck() { return 1 + (AURAS[idxOf(state.eq)].L || 0); }
+  function slotLuck() { return 1 + (AURAS[idxOf(state.eq)].L || 0) + (potActive('luck') ? LUCK_ADD : 0); }
 
   // 九宫格的展示分布（只决定"看起来像什么"，与输赢无关）
   function fillProbs() {
@@ -1119,7 +1282,8 @@
   function auraR(nm) {
     var name = nm || state.eq;
     var a = AURAS[idxOf(name)];
-    return ((a && a.n === name && a.R) ? a.R : 0.5) + RTP_ADD + (state.cb ? CAIBAO_ADD : 0);
+    return ((a && a.n === name && a.R) ? a.R : 0.5) + RTP_ADD + (state.cb ? CAIBAO_ADD : 0)
+      + (potActive('luck') ? LUCK_ADD * 0.01 : 0);   // 🍀 幸运药水：幸运 +5 = 回报率 +5 个百分点
   }
 
   // 形状固定：权重只归一化一次（与佩戴光环无关），em 恒定 = ×5.0917
@@ -1296,6 +1460,9 @@
   var $drawLuck = document.getElementById('drawLuck');
   var $helpBtn = document.getElementById('helpBtn');
   var $miscBtn = document.getElementById('miscBtn');
+  var $bagBtn = document.getElementById('bagBtn');
+  var $logBtn = document.getElementById('logBtn');
+  var $verTag = document.getElementById('verTag');
   var $miscPop = document.getElementById('miscPop');
   var $auraHelpBtn = document.getElementById('auraHelpBtn');
   var $homePage = document.getElementById('homePage');
@@ -1392,6 +1559,228 @@
   }
 
   function afford(bet) { return state.gold >= bet; }
+
+  /* ================= 商城 / 背包 / 药水状态机 ================= */
+  var rewindTarget = null;   // 刚打完、还能用 ⏪ 回溯的那一局
+  function itemById(id) {    for (var i = 0; i < SHOP_ITEMS.length; i++) if (SHOP_ITEMS[i].id === id) return SHOP_ITEMS[i];
+    return null;
+  }
+  // 药水是否生效中；nm 省略时返回「任意一种药水生效中」
+  function potActive(nm) { return nm ? ((state.pot[nm] || 0) > 0) : potLeft() > 0; }
+  function potLeft() {
+    var n = 0, k;
+    for (k in state.pot) if (Object.prototype.hasOwnProperty.call(state.pot, k)) n += (state.pot[k] || 0);
+    return n;
+  }
+  function bagOwn(id) { return state.bag[id] || 0; }
+  function bagNum() {
+    var n = 0, k;
+    for (k in state.bag) if (Object.prototype.hasOwnProperty.call(state.bag, k)) n += (state.bag[k] || 0);
+    return n;
+  }
+  // ⏪ 后悔药水特殊：同一时间只能有一瓶在生效（用完才能再用下一瓶），其余药水用完直接用
+  function potUse(nm) {
+    if (nm !== 'rewind' || !potActive('rewind')) return true;
+    toast(POT_DEF.rewind.ico + ' ' + POT_DEF.rewind.nm + (rewindTarget ? '正在生效中，先去用掉这一瓶' : '已经在⏪ 待命，别浪费'));
+    return false;
+  }
+  function potTick(nm) {
+    if (!potActive(nm)) return;
+    state.pot[nm] -= 1;
+    if (state.pot[nm] <= 0) delete state.pot[nm];
+    save(); refreshPots();
+  }
+  // 点「使用」：药水立刻生效，剩余局数取「原来剩的 + 这次的」（同种叠加，最多 4 瓶 = 80 局）
+  function potSet(nm, dur) {
+    var now = state.pot[nm] || 0;
+    if (now + dur > 80) { toast(POT_DEF[nm].ico + ' ' + POT_DEF[nm].nm + '剩余局数已满（80 局）'); return false; }
+    state.pot[nm] = now + dur;
+    return true;
+  }
+  function refreshPots() {
+    renderPotBadges(); renderBagRow(); renderStats(); renderShop(); renderBag();
+  }
+  function buyItem(id) {
+    var it = itemById(id);
+    if (!it) return;
+    if (!afford(it.price)) { toast('金币不足，还差 ' + abbr(it.price - state.gold)); return; }
+    state.gold = clampGold(state.gold - it.price);
+    state.bag[id] = bagOwn(id) + 1;
+    save(); refreshPots();
+    toast('已买下 ' + POT_DEF[it.key].ico + ' ' + POT_DEF[it.key].nm + '，去背包里点使用');
+  }
+  function useItem(id) {
+    var it = itemById(id);
+    if (!it || bagOwn(id) < 1) return;
+    var key = it.key;
+    if (!potUse(key)) { toast(POT_DEF[key].ico + ' ' + POT_DEF[key].nm + '正在生效中，等用完这一瓶再用'); return; }
+    if (!potSet(key, it.dur)) return;
+    state.bag[id] = bagOwn(id) - 1;
+    if (state.bag[id] <= 0) delete state.bag[id];
+    save(); refreshPots();
+    if (key === 'rewind') {
+      bagClose();
+      if (rewindTarget) toast('⏪ 后悔药水已生效，点左下角 ⏪ 回到上一局重开（3 秒内有效）');
+      else toast('⏪ 后悔药水已生效，下次开一局结束后的 3 秒内可点左下角 ⏪ 重开');
+    } else if (key === 'shield') {
+      toast('🛡️ 无敌药水已生效，下一局输了不扣金币');
+    } else if (key === 'gold') {
+      toast('💰 金币药水已生效，本局中奖金额 ×' + GOLD_MUL.toFixed(2) + '（剩 ' + state.pot[key] + ' 局）');
+    } else {
+      toast('🍀 幸运药水已生效，老虎机幸运 +' + LUCK_ADD + '（剩 ' + state.pot[key] + ' 局）');
+    }
+  }
+  function dropItem(id) {                        // 丢弃一瓶（不退款），免得背包堆满错买的
+    if (bagOwn(id) < 1) return;
+    state.bag[id] = bagOwn(id) - 1;
+    if (state.bag[id] <= 0) delete state.bag[id];
+    save(); refreshPots();
+    toast('已丢弃 1 瓶');
+  }
+  function clearPotTimer() {
+    var k;
+    for (k in potTimer) if (Object.prototype.hasOwnProperty.call(potTimer, k)) { clearTimeout(potTimer[k]); delete potTimer[k]; }
+  }
+  function bagClose() { closeSheet('bagSheet'); }
+
+  // 商城：道具 + 外观（外观占位）
+  function renderShop() {
+    var box = document.getElementById('shopItems');
+    if (box) {
+      var h = '', i, N = SHOP_ITEMS.length;
+      for (i = 0; i < N; i++) {
+        var it = SHOP_ITEMS[i], d = POT_DEF[it.key], sz = null, j;
+        for (j = 0; j < POT_SIZES.length; j++) if (POT_SIZES[j].k === it.size) sz = POT_SIZES[j];
+        var own = bagOwn(it.id);
+        h += '<div class="gItem' + (afford(it.price) ? '' : ' off') + '" data-item="' + it.id + '">' +
+               '<div class="gTop"><span class="gIco">' + d.ico + '</span>' +
+                 '<span class="gNm">' + d.nm + (sz ? '<i>' + sz.nm + '</i>' : '<i>单次</i>') + '</span>' +
+               '</div>' +
+               '<div class="gTag">' + d.tag + '</div>' +
+               '<div class="gMeta">持续 <b>' + it.dur + '</b> 局' + (own > 0 ? '　·　背包 ' + own + ' 瓶' : '') + '</div>' +
+               '<div class="gFoot"><span class="gPrice">' + abbr(it.price) + '</span>' +
+                 '<button class="gBuy" data-buy="' + it.id + '"' + (afford(it.price) ? '' : ' disabled') + '>购买</button></div>' +
+             '</div>';
+      }
+      box.innerHTML = h;
+    }
+    var st = document.getElementById('shopGold');
+    if (st) st.textContent = '金币 ' + abbr(state.gold);
+    var bb = document.getElementById('bagBtn');
+    if (bb) {
+      var n = bagNum();
+      bb.className = 'corner' + (n > 0 ? ' hasBag' : '');   // 保留 .corner 底子，有道具时才亮红点
+      bb.textContent = '🎒 背包' + (n > 0 ? ' ' + n : '');
+    }
+  }
+
+  // 背包：买来的东西在这里点「使用 / 丢弃」
+  function renderBag() {
+    var box = document.getElementById('bagList');
+    if (!box) return;
+    if (bagNum() <= 0) { box.innerHTML = '<div class="empty">背包是空的，去商城买点东西吧</div>'; }
+    else {
+      var h = '', i;
+      for (i = 0; i < SHOP_ITEMS.length; i++) {
+        var it = SHOP_ITEMS[i], own = bagOwn(it.id);
+        if (own < 1) continue;
+        var d = POT_DEF[it.key], sz = null, j;
+        for (j = 0; j < POT_SIZES.length; j++) if (POT_SIZES[j].k === it.size) sz = POT_SIZES[j];
+        h += '<div class="bItem" data-item="' + it.id + '">' +
+               '<span class="bIco">' + d.ico + '</span>' +
+               '<span class="bInfo"><b>' + d.nm + (sz ? ' · ' + sz.nm : '') + '</b>' +
+                 '<small>持续 ' + it.dur + ' 局　·　持有 ' + own + ' 瓶</small></span>' +
+               '<button class="bUse" data-use="' + it.id + '">使用</button>' +
+               '<button class="bDrop" data-drop="' + it.id + '">丢弃</button>' +
+             '</div>';
+      }
+      box.innerHTML = h;
+    }
+    var e = document.getElementById('bagEmpty');
+    if (e) e.style.display = bagNum() > 0 ? 'none' : '';
+  }
+
+  // 两行徽标：生效中的药水，跟着游戏页和黑杰克页各显示一份
+  function renderPotBadges() {
+    var ids = ['potBadge', 'bjPotBadge'], i;
+    for (i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (!el) continue;
+      var k, arr = [], txt = '';
+      for (k in state.pot) if (Object.prototype.hasOwnProperty.call(state.pot, k)) arr.push({ k: k, n: state.pot[k] });
+      if (!arr.length) { el.style.display = 'none'; el.textContent = ''; continue; }
+      arr.sort(function (a, b) { return b.n - a.n; });
+      for (var j = 0; j < arr.length; j++) {
+        var dd = POT_DEF[arr[j].k];
+        txt += (j ? '　' : '') + dd.ico + ' ' + dd.nm + ' 剩 ' + arr[j].n + ' 局';
+      }
+      el.style.display = '';
+      el.textContent = txt;
+    }
+  }
+
+  // 背包那一行：数量 + 生效中的倒计时（每 5 秒刷一次，看得见剩几局）
+  function renderBagRow() {
+    var n = bagNum(), txt = '', k, first = true;
+    for (k in state.pot) {
+      if (!Object.prototype.hasOwnProperty.call(state.pot, k)) continue;
+      txt += (first ? '' : '　·　') + POT_DEF[k].ico + ' 剩 ' + state.pot[k] + ' 局';
+      first = false;
+    }
+    var a = document.getElementById('shopBagRow');
+    if (a) a.textContent = '背包里 ' + n + ' 件道具' + (txt ? '　|　生效中：' + txt : '');
+    var b = document.getElementById('bagHead');
+    if (b) b.textContent = '背包里 ' + n + ' 件道具' + (txt ? '　|　生效中：' + txt : '');
+    clearPotTimer();
+    if (txt) potTimer.row = setTimeout(function () { if (document.getElementById('shopBagRow')) renderBagRow(); }, 5000);
+  }
+
+  /* ---------- 后悔药水：回溯一次操作 ---------- */
+  function rewindArm(kind, bet, back) { rewindTarget = { kind: kind, bet: bet, back: back, used: false }; }
+  function renderRewindBtn() {
+    var b = document.getElementById('rewindBtn');
+    if (!b) return;
+    var show = (page === 'slot' || page === 'bj') && potActive('rewind') && rewindTarget && !rewindTarget.used;
+    b.style.display = show ? '' : 'none';
+    if (show) b.textContent = '⏪ 后悔药水 · 重开本局';
+  }
+  function useRewind() {
+    if (!potActive('rewind')) { toast('没有生效中的 ⏪ 后悔药水'); return; }
+    if (!rewindTarget || rewindTarget.used) { toast('现在没有可以回溯的一局'); return; }
+    var t = rewindTarget;
+    t.used = true;
+    rewindTarget = null;
+    potTick('rewind');                      // 用掉一瓶
+    if (t.kind === 'slot') {
+      if (spinning) { toast('正在转，等这局停下再说'); return; }
+      if (!afford(t.bet)) { toast('金币不足，回溯不了'); return; }
+      $resultMain.textContent = '⏪ 本局作废，再拉一次（不再扣钱）';
+      $resultMain.style.color = '#f3d98b';
+      $resultSub.textContent = '🍀 幸运 / 💰 金币药水仍然生效';
+      $lineList.innerHTML = '';
+      fillGridIdle();
+      renderRewindBtn();
+      return;
+    }
+    if (t.kind === 'bj') { rewindBj(t.bet); renderRewindBtn(); return; }
+  }
+  function rewindBj(bet) {
+    if (BJ.phase !== 'idle') return;
+    if (!afford(bet)) { toast('金币不足，回溯不了'); return; }
+    BJ.bet = bet; BJ.doubled = false; BJ.deck = newDeck();
+    BJ.player = []; BJ.dealer = []; BJ.hole = true; BJ.phase = 'deal';
+    bjMsg('⏪ 本局作废，重新发牌…', '');
+    renderBj(); renderBjBet();
+    bjSteps([
+      function () { BJ.player.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.player.push(takeTop()); renderBj(); buzz(6); },
+      function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); }
+    ], function () { bjAfterDeal(); });
+  }
+
+  // 徽标要跟着时间自己消失（3 秒窗口），所以顺手挂一个 1 秒的刷新
+  setInterval(function () { if (potActive('rewind') && rewindTarget) renderRewindBtn(); }, 1000);
 
   function renderStats() {
     var col = TIER_COLOR[AURAS[idxOf(state.eq)].t];
@@ -1575,12 +1964,19 @@
 
   // mult = 连本带利返还的倍数（相对本局总赌注）
   function bjEnd(mult, msg, tone) {
-    var bet = BJ.bet, back = Math.floor(bet * mult), net;
+    BJ.phase = 'idle'; BJ.hole = false;
+    var bet = BJ.bet, back = Math.floor(bet * mult), net, extra = '';
+    // 🛡️ 无敌药水：本局输了不扣钱（把发牌时扣掉的赌注原样退回），赢/平不受影响
+    if (mult === 0 && potActive('shield')) {
+      back = bet;
+      extra = '　🛡️ 无敌药水：赌注已退回';
+      potTick('shield');
+    }
     if (back > 0) state.gold = clampGold(state.gold + back);
     net = back - bet;
-    BJ.phase = 'idle'; BJ.hole = false;
-    bjMsg(msg + '　' + (net > 0 ? '+' + abbr(net) : (net < 0 ? '-' + abbr(-net) : '±0')) + ' 金币', tone);
-    save(); renderStats(); renderBjBet(); renderBj();
+    rewindArm('bj', bet, back);                 // 留个「刚打完的这一局」，等玩家点 ⏪
+    bjMsg(msg + '　' + (net > 0 ? '+' + abbr(net) : (net < 0 ? '-' + abbr(-net) : '±0')) + ' 金币' + extra, tone);
+    save(); renderStats(); renderBjBet(); renderBj(); refreshPots(); renderRewindBtn();
   }
 
   function bjDeal() {
@@ -1599,23 +1995,26 @@
       function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); },
       function () { BJ.player.push(takeTop()); renderBj(); buzz(6); },
       function () { BJ.dealer.push(takeTop()); renderBj(); buzz(6); }
-    ], function () {
-      var pBJ = isBlackjack(BJ.player), dBJ = isBlackjack(BJ.dealer);
-      if (pBJ || dBJ) {
-        BJ.hole = false; renderBj(); buzz(12);
-        // 先让暗牌翻过来给玩家看一眼，再报结果
-        setTimeout(function () {
-          if (pBJ && dBJ) { bjEnd(1, '双方黑杰克 · 平局', 'push'); return; }
-          if (pBJ) { bjEnd(BJ_BJ_PAY, '黑杰克！赔 3 : 2', 'win'); return; }
-          bjEnd(0, '庄家黑杰克 · 你输了', 'lose');
-        }, BJ_T.look);
-        return;
-      }
-      // 明牌不是 A/10 时庄家不偷看，但结果一样：暗牌不是黑杰克就继续
-      BJ.phase = 'player';
-      bjMsg('要牌 / 停牌 / 加倍', '');
-      renderBjBet();
-    });
+    ], function () { bjAfterDeal(); });
+  }
+
+  // 四张牌发完之后的判定（回溯重开时也要走一遍，所以单独拆出来）
+  function bjAfterDeal() {
+    var pBJ = isBlackjack(BJ.player), dBJ = isBlackjack(BJ.dealer);
+    if (pBJ || dBJ) {
+      BJ.hole = false; renderBj(); buzz(12);
+      // 先让暗牌翻过来给玩家看一眼，再报结果
+      setTimeout(function () {
+        if (pBJ && dBJ) { bjEnd(1, '双方黑杰克 · 平局', 'push'); return; }
+        if (pBJ) { bjEnd(BJ_BJ_PAY, '黑杰克！赔 3 : 2', 'win'); return; }
+        bjEnd(0, '庄家黑杰克 · 你输了', 'lose');
+      }, BJ_T.look);
+      return;
+    }
+    // 明牌不是 A/10 时庄家不偷看，但结果一样：暗牌不是黑杰克就继续
+    BJ.phase = 'player';
+    bjMsg('要牌 / 停牌 / 加倍', '');
+    renderBjBet();
   }
 
   function bjHit() {
@@ -1763,7 +2162,12 @@
       }
     }
 
+    // 💰 金币药水：本局中奖金额 ×1.30（没中就什么都没有）
+    var goldPot = total > 0 && potActive('gold');
+    if (goldPot) total = Math.floor(total * GOLD_MUL);
+
     state.gold = clampGold(state.gold + total);
+    rewindArm('slot', bet, total);       // 留一手：这局结束后的 ⏪ 回溯点
     renderStats(); renderBet(); save();
 
     if (total > 0) {
@@ -1779,13 +2183,19 @@
         html += '<span>' + w.line.name + ' ' + g + ' ×' + w.m + ' → +' + abbr(w.m * bet) + nm + '</span>';
       }
       $lineList.innerHTML = html;
-      $resultSub.textContent = '本局下注 ' + abbr(bet) + '　净赢 ' + abbr(total - bet);
+      $resultSub.textContent = '本局下注 ' + abbr(bet) + '　净赢 ' + abbr(total - bet) + (goldPot ? '　💰 金币药水 ×' + GOLD_MUL.toFixed(2) : '');
     } else {
       $resultMain.textContent = '未中奖　-' + abbr(bet) + ' 金币';
       $resultMain.style.color = '#8d8778';
       $lineList.innerHTML = '';
       $resultSub.textContent = '本局下注 ' + abbr(bet) + '（8 条线都没中）';
     }
+
+    // 这一局里生效过的药水各消耗一局
+    if (potActive('luck')) potTick('luck');
+    if (potActive('gold')) potTick('gold');
+    refreshPots();
+    renderRewindBtn();
 
     spinning = false;
     renderBet();
@@ -1951,8 +2361,82 @@
   }
   function refreshCorners() {
     var show = !anySheetOpen();
-    $helpBtn.style.display = (show && !atHome) ? '' : 'none';
-    $miscBtn.style.display = show ? '' : 'none';
+    $helpBtn.style.display = (show && !atHome) ? '' : 'none';    // ❓ 规则：只有进了游戏才有（左下角）
+    $bagBtn.style.display = show ? '' : 'none';                  // 🎒 背包：哪都有（右下角、🎁 正上方）
+    $miscBtn.style.display = show ? '' : 'none';                 // 🎁 礼物：哪都有（右下角最外）
+    $logBtn.style.display = (show && atHome) ? '' : 'none';      // 📜 更新日志：只在大厅（左下角）
+    $bagBtn.textContent = '🎒';
+    renderRewindBtn();
+  }
+
+  /* ================= 📜 更新日志 ================= */
+  // 版本号规则（三段式 x.y.z）：
+  //   x 大版本 —— 里程碑（1.0 老虎机完工 / 2.0 黑杰克完工）
+  //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
+  //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
+  // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
+  var VERSION = '2.5.1';
+  var CHANGELOG = [
+    { v: '2.5.1', t: '修修补补', li: [
+      '🔧 修复若干小问题：角落按钮在手机上偶尔叠在一起、点不到',
+      '🎒 背包按钮回到右下角，和 🎁 排成一列',
+      '❓ 规则按钮固定到游戏里的左下角，📜 更新日志固定到首页左下角',
+      '🧹 清掉更新日志按钮下面多余的小字'
+    ] },
+    { v: '2.5', t: '商城与背包', li: [
+      '🛒 商城开张：🧪 道具 8 个规格，🎨 外观敬请期待',
+      '🎒 背包：买来的东西点「使用」才生效，同种药水可叠加',
+      '🍀 幸运 +5 ／ 💰 金币 ×1.30 ／ ⏪ 回溯一次 ／ 🛡️ 输局退注',
+      '首页的 🛒 商城卡也开放了'
+    ] },
+    { v: '2.4', t: '全站换皮', li: [
+      '赌场风配色与质感，全站统一',
+      '角落按钮精简成 🎁 悬浮小菜单'
+    ] },
+    { v: '2.3', t: '设置项', li: [
+      '⚙️ 设置面板：音效等开关都收在这里'
+    ] },
+    { v: '2.2', t: '兑换码', li: [
+      '🎫 兑换码，奖励记录会留在列表里'
+    ] },
+    { v: '2.1', t: '氪金面板与救济金', li: [
+      '💎 氪金面板与 🎁 悬浮小菜单成型',
+      '金币见底可以领救济金，每小时一次'
+    ] },
+    { v: '2.0', t: '黑杰克完工', li: [
+      '🃏 单副牌 21 点：加倍 / 分牌 / 保险一应俱全',
+      '1K 买断解锁，幸运值会悄悄影响牌局',
+      '🔒 按钮攒够钱就会亮起来'
+    ] },
+    { v: '1.4', t: '规则面板拆分', li: [
+      '❓ 规则按老虎机 / 黑杰克分页，看着不乱'
+    ] },
+    { v: '1.3', t: 'PWA 离线', li: [
+      '可以「添加到主屏幕」，断网也能玩'
+    ] },
+    { v: '1.2', t: '金币缩写', li: [
+      '大数字用 K / M / B / T 显示'
+    ] },
+    { v: '1.1', t: '真拉杆', li: [
+      '老虎机的拉杆能真的往下拉了'
+    ] },
+    { v: '1.0', t: '老虎机完工', li: [
+      '九宫格 8 条中奖线，投注 1 ~ 1000',
+      '23 个光环可抽取、图鉴可佩戴'
+    ] }
+  ];
+  function renderChangelog() {
+    $verTag.textContent = 'v' + VERSION;
+    var i, j, h = '';
+    for (i = 0; i < CHANGELOG.length; i++) {
+      var e = CHANGELOG[i];
+      h += '<div class="logItem"><div class="logV">v' + e.v +
+           (i === 0 ? '<span class="cur">现行版本</span>' : '') +
+           '<span style="font-size:11px;font-weight:400;color:var(--txd);letter-spacing:0">' + e.t + '</span></div><ul>';
+      for (j = 0; j < e.li.length; j++) h += '<li>' + e.li[j] + '</li>';
+      h += '</ul></div>';
+    }
+    document.getElementById('logList').innerHTML = h;
   }
   function openSheet(id) { document.getElementById(id).className = 'sheet open'; refreshCorners(); }
   function closeSheet(id) { document.getElementById(id).className = 'sheet'; refreshCorners(); }
@@ -1961,10 +2445,14 @@
   function selectTab(name) {
     var i;
     for (i = 0; i < tabBtns.length; i++) tabBtns[i].className = 'tab' + (tabBtns[i].getAttribute('data-tab') === name ? ' on' : '');
-    var pages = ['draw', 'dex', 'equip'];
-    for (i = 0; i < pages.length; i++) document.getElementById('page-' + pages[i]).className = 'tabPage' + (pages[i] === name ? ' on' : '');
+    var pages = ['draw', 'dex', 'equip', 'items', 'look'];
+    for (i = 0; i < pages.length; i++) {
+      var pg = document.getElementById('page-' + pages[i]);
+      if (pg) pg.className = 'tabPage' + (pages[i] === name ? ' on' : '');
+    }
     if (name === 'dex') renderDex();
     if (name === 'equip') renderEquip();
+    if (name === 'items') renderShop();
   }
 
   /* ================= 数字输入 ================= */
@@ -2138,6 +2626,22 @@
     openSheet('auraSheet');
   }, false);
   document.getElementById('miscShop').addEventListener('click', function () { toggleMiscPop(false); openSheet('shopSheet'); }, false);
+  /* ---- 商城 / 背包 ---- */
+  document.getElementById('bagBtn').addEventListener('click', function () { openSheet('bagSheet'); }, false);
+  document.getElementById('bagBtn2').addEventListener('click', function () { openSheet('bagSheet'); }, false);
+  document.getElementById('rewindBtn').addEventListener('click', useRewind, false);
+  document.getElementById('shopSheet').addEventListener('click', function (e) {
+    var el = e.target;
+    if (el && el.getAttribute && el.getAttribute('data-buy')) { buyItem(el.getAttribute('data-buy')); return; }
+    if (e.target === this) closeSheet('shopSheet');            // 点遮罩空白处也能关（大厅直接进来时没有 🎁 可回）
+  }, false);
+  document.getElementById('bagSheet').addEventListener('click', function (e) {
+    var el = e.target;
+    if (!el || !el.getAttribute) return;
+    if (el.getAttribute('data-use')) { useItem(el.getAttribute('data-use')); return; }
+    if (el.getAttribute('data-drop')) { dropItem(el.getAttribute('data-drop')); }
+  }, false);
+  document.getElementById('bagSheet').addEventListener('click', function (e) { if (e.target === this) closeSheet('bagSheet'); }, false);
   document.getElementById('miscCode').addEventListener('click', function () { toggleMiscPop(false); openSheet('codePop'); }, false);
   document.getElementById('miscSet').addEventListener('click', function () { toggleMiscPop(false); openSheet('setPop'); }, false);
   $auraHelpBtn.addEventListener('click', function () { openSheet('auraRulesSheet'); }, false);
@@ -2145,8 +2649,11 @@
   document.getElementById('setClose').addEventListener('click', function () { closeSheet('setPop'); }, false);
   document.getElementById('codePop').addEventListener('click', function (e) { if (e.target === this) closeSheet('codePop'); }, false);
   document.getElementById('setPop').addEventListener('click', function (e) { if (e.target === this) closeSheet('setPop'); }, false);
+  renderChangelog();
+  $logBtn.addEventListener('click', function () { openSheet('logSheet'); }, false);
+  document.getElementById('logSheet').addEventListener('click', function (e) { if (e.target === this) closeSheet('logSheet'); }, false);
 
-  // 大厅游戏入口：老虎机 / 黑杰克已开放，其余的还是占位
+  // 大厅游戏入口：老虎机 / 黑杰克 / 商城已开放，养鸡场与幸运转盘还是占位
   var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
@@ -2157,6 +2664,7 @@
           if (!bjTryUnlock()) return;                                   // 没买断：门口拦下来
           setPage('bj'); renderBj(); renderBjBet(); return;
         }
+        if (g === 'SHOP') { toggleMiscPop(false); openSheet('shopSheet'); return; }   // 进商城
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
       }, false);
     })(homeBtns[hb]);
@@ -2223,8 +2731,9 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false
+      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}
     };
+    rewindTarget = null; clearPotTimer();
     save();
     BJ.deck = []; BJ.player = []; BJ.dealer = []; BJ.hole = true; BJ.bet = 1; BJ.doubled = false; BJ.phase = 'idle';
     fillGridIdle();
@@ -2294,9 +2803,12 @@
   state.counts['默认'] = 1;
   if (idxOf(state.eq) === 0 && state.eq !== '默认') state.eq = '默认';
   if (!state.codes || typeof state.codes !== 'object') state.codes = {};
+  if (!state.bag || typeof state.bag !== 'object') state.bag = {};
+  if (!state.pot || typeof state.pot !== 'object') state.pot = {};
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
   renderBj(); renderBjBet();
+  refreshPots();                                  // 商城 / 背包 / 生效中药水徽标
   setPage('home');                                // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
 
