@@ -102,7 +102,7 @@
   .gameBtn .go { font-family: var(--disp); font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--gold); }
   .gameBtn.soon { opacity: .42; }
   .gameBtn.soon .ico { filter: grayscale(1) brightness(.8); }
-  .gameBtn .go.soon {
+  .gameBtn .go.soon, .modeBtn .go.soon {
     font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 1px;
     color: var(--txd); border: 1px solid rgba(141,135,120,.35); border-radius: 20px; padding: 2px 8px;
   }
@@ -122,12 +122,50 @@
     background: rgba(212,175,55,.13); box-shadow: 0 0 12px rgba(212,175,55,.18);
   }
 
-  #backBtn, #bjBack, #fishBack {
+  /* 模式卡：首页第一层只挑模式，比机子卡再大一号 */
+  .modeTitle {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-bottom: 16px; font-size: 23px; font-weight: 800; letter-spacing: 6px; text-indent: 6px;
+    color: var(--goldlit); text-shadow: 0 0 20px rgba(212,175,55,.28), 0 2px 0 rgba(0,0,0,.7);
+  }
+  .modeTitle::before, .modeTitle::after {
+    content: ''; flex: 0 0 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--golddim));
+  }
+  .modeTitle::after { background: linear-gradient(270deg, transparent, var(--golddim)); }
+  .modeBtn {
+    position: relative; display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 14px; margin-bottom: 11px; text-align: left;
+    border: 1px solid var(--gl); border-radius: 3px; color: var(--tx);
+    background: linear-gradient(#1a211c, #0b0f0d);
+    box-shadow: 0 2px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.045);
+    touch-action: manipulation; transition: background .15s;
+  }
+  .modeBtn::before {
+    content: ''; position: absolute; inset: 2px; border: 1px solid var(--gl2);
+    border-radius: 2px; pointer-events: none;
+  }
+  .modeBtn:active { background: linear-gradient(#232b25, #121714); }
+  .modeBtn .ico {
+    flex: none; width: 56px; height: 56px; border-radius: 50%; font-size: 27px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 32%, #232a25, #080b0a);
+    border: 1px solid var(--golddim);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.65), 0 0 14px rgba(212,175,55,.12);
+  }
+  .modeBtn .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .modeBtn .nm { font-size: 19px; font-weight: 800; letter-spacing: 3px; }
+  .modeBtn .ds { font-size: 11px; letter-spacing: .5px; color: var(--txd); }
+  .modeBtn .go { font-family: var(--disp); font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--gold); }
+  .modeBtn.soon { opacity: .42; }
+  .modeBtn.soon .ico { filter: grayscale(1) brightness(.8); }
+
+  #backBtn, #bjBack, #fishBack, #freeBack {
     display: inline-block; margin-bottom: 10px; padding: 5px 12px;
     border: 1px solid var(--gl); border-radius: 20px; background: transparent;
     color: var(--txd); font-size: 12px; font-weight: 700; touch-action: manipulation;
   }
-  #backBtn:active, #bjBack:active, #fishBack:active { color: var(--goldlit); border-color: var(--gold); }
+  #backBtn:active, #bjBack:active, #fishBack:active, #freeBack:active { color: var(--goldlit); border-color: var(--gold); }
 
   /* ================= 顶部数据条 ================= */
   .stats {
@@ -1132,6 +1170,8 @@
     .fStat i { font-size: 8px; letter-spacing: 0; }
     .fStat b { font-size: 13px; }
     .gameBtn .nm { font-size: 15px; }
+    .modeBtn .nm { font-size: 17px; letter-spacing: 2px; }
+    .modeBtn .ds { font-size: 10px; }
     .fGear { gap: 8px; }
     .fBtn { padding: 6px 8px; font-size: 10px; white-space: normal; }
     .gTable { gap: 8px; }
@@ -1162,25 +1202,63 @@
 </head>
 <body>
 
-<!-- 首页（大厅）：老虎机 / 黑杰克 / 钓鱼 / 轮盘赌 / 商城已开放，养鸡场还是占位 -->
+<!-- 首页（选模式）：自由模式开着，欠债模式还只是个牌子 -->
 <div id="homePage" class="grain">
   <div id="verTag">v0.0</div>
   <div class="lobbyTitle">赛博赌场</div>
   <div class="lobbySub">💰 金币 <b id="lobbyGold" style="color:#f3d98b">10</b>　🐚 贝壳 <b id="lobbyShell" style="color:#9fe0c4">0</b></div>
+  <button class="modeBtn" id="modeFree" data-mode="FREE">
+    <span class="ico">🎲</span>
+    <span class="txt"><span class="nm">自由模式</span><span class="ds">自由下注 · 输光还能领救济金</span></span>
+    <span class="go">进入 ›</span>
+  </button>
+  <button class="modeBtn soon" id="modeDebt" data-mode="DEBT">
+    <span class="ico">💸</span>
+    <span class="txt"><span class="nm">欠债模式</span><span class="ds">还在装修中</span></span>
+    <span class="go soon">尚未开放</span>
+  </button>
+</div>
+
+<!-- 自由模式：之前所有机子都收在这一层里 -->
+<div class="wrap grain" id="freePage" style="display:none">
+  <button id="freeBack">‹ 首页</button>
+  <div class="modeTitle">自由模式</div>
+  <div class="lobbySub">💰 金币 <b id="freeGold" style="color:#f3d98b">10</b>　🐚 贝壳 <b id="freeShell" style="color:#9fe0c4">0</b></div>
   <button class="gameBtn" id="gameSlot" data-game="slot">
     <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
   </button>
   <button class="gameBtn lock" id="bjEntry" data-game="BJ">
-    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 1K</span>
+    <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn" id="fishEntry" data-game="FISH">
-    <span class="ico">🎣</span><span class="nm">钓鱼</span><span class="go">进入 ›</span>
+  <button class="gameBtn lock" id="fishEntry" data-game="FISH">
+    <span class="ico">🎣</span><span class="nm">钓鱼</span><span class="go lock">🔒 💰 1K</span>
+  </button>
+  <button class="gameBtn lock" id="whEntry" data-game="WH">
+    <span class="ico">🎡</span><span class="nm">轮盘赌</span><span class="go lock">🔒 💰 1K</span>
   </button>
   <button class="gameBtn soon" data-game="CH">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
   </button>
-  <button class="gameBtn" id="whEntry" data-game="WH">
-    <span class="ico">🎡</span><span class="nm">轮盘赌</span><span class="go">进入 ›</span>
+  <button class="gameBtn soon" data-game="DK">
+    <span class="ico">🦆</span><span class="nm">赛鸭场</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="DT">
+    <span class="ico">🐉</span><span class="nm">火龙塔</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="MS">
+    <span class="ico">💣</span><span class="nm">扫雷</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="PG">
+    <span class="ico">🐧</span><span class="nm">企鹅步</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="MN">
+    <span class="ico">🚀</span><span class="nm">登月</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="PB">
+    <span class="ico">🎱</span><span class="nm">弹珠板</span><span class="go soon">敬请期待</span>
+  </button>
+  <button class="gameBtn soon" data-game="CF">
+    <span class="ico">🪙</span><span class="nm">翻硬币</span><span class="go soon">敬请期待</span>
   </button>
   <button class="gameBtn" data-game="SHOP">
     <span class="ico">🛒</span><span class="nm">商城</span><span class="go">进入 ›</span>
@@ -1189,7 +1267,7 @@
 
 <!-- 老虎机 -->
 <div class="wrap" id="gamePage" style="display:none">
-  <button id="backBtn">‹ 返回大厅</button>
+  <button id="backBtn">‹ 自由模式</button>
 
   <div class="stats">
     <div class="stat" id="goldBox"><b id="sGold" style="color:#f3d98b">100</b><span>金币</span></div>
@@ -1238,7 +1316,7 @@
 
 <!-- 黑杰克 -->
 <div class="wrap" id="bjPage" style="display:none">
-  <button id="bjBack">‹ 返回大厅</button>
+  <button id="bjBack">‹ 自由模式</button>
 
   <div class="stats">
     <div class="stat"><b id="bjGold" style="color:#f3d98b">10</b><span>金币</span></div>
@@ -1297,7 +1375,7 @@
 <div id="fishPage" style="display:none">
   <div class="fishWrap">
     <div class="fTop">
-      <button id="fishBack">‹ 返回大厅</button>
+      <button id="fishBack">‹ 自由模式</button>
       <div class="fTopStats">
         <span class="fStat"><i>💰 金币</i><b id="fishGold">0</b></span>
         <span class="fStat" id="shellBox"><i>🐚 贝壳</i><b id="fishShell">0</b></span>
@@ -1369,7 +1447,7 @@
 <!-- 轮盘赌（4.0）：真赌桌竖过来摆，0 在最上面 -->
 <div id="wheelPage" class="wheelWrap" style="display:none">
   <div class="whTop">
-    <button id="wheelBack">‹ 返回大厅</button>
+    <button id="wheelBack">‹ 自由模式</button>
     <div class="whTopStats">
       <div class="stats">
         <div class="stat"><b id="whGold" style="color:#f3d98b">100</b><span>金币</span></div>
@@ -1536,6 +1614,7 @@
       · 它只在庄家补牌的时候轻轻推一小把，作用很小，大部分时候完全按牌堆正常发牌
 
       <h3>金币</h3>
+      · 黑杰克要 <b>1K 金币买断</b>才进得去，买断后永久有效（后面输光了也不会重新锁上）<br>
       · 金币和老虎机是共用的；金币不够 1 枚时，页面下方可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
       · 所有进度自动保存在本机
     </div>
@@ -1560,7 +1639,7 @@
       · <b>饵</b>按竿消耗，能让大鱼更容易上钩，空钩也能钓、只是偏小
 
       <h3>出竿场所</h3>
-      · 入场免费，<b>钓场要用 💰 金币解锁</b>，越贵的池子越容易出稀有鱼<br>
+      · 钓鱼要 <b>1K 金币买断</b>才进得去；进园之后<b>各钓场还要用 💰 金币逐个解锁</b>，越贵的池子越容易出稀有鱼<br>
       · 鱼篓满了就钓不了，记得卖鱼、扩容或者养进鱼缸
 
       <h3>药水与幸运</h3>
@@ -1596,6 +1675,7 @@
       · 🛡️ 无敌药水：本局要是输了，把这一把的注全退回给你
 
       <h3>金币</h3>
+      · 轮盘赌要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
       · 所有进度自动保存在本机
     </div>
@@ -1998,7 +2078,8 @@
   /* ================= 存档 ================= */
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
-    gold: GOLD_START, eq: '默认', bet: 1, bjBet: 1, bjUnlocked: false,
+    gold: GOLD_START, eq: '默认', bet: 1, bjBet: 1,
+    bjUnlocked: false, fishUnlocked: false, whUnlocked: false,   // 三台机子的买断记录（买了永久开）
     bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
     codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
     bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
@@ -2050,6 +2131,8 @@
       if (typeof d.bet === 'number' && d.bet >= 1) state.bet = Math.floor(d.bet);
       if (typeof d.bjBet === 'number' && d.bjBet >= 1) state.bjBet = Math.floor(d.bjBet);
       if (d.bjUnlocked === true) state.bjUnlocked = true;
+      if (d.fishUnlocked === true) state.fishUnlocked = true;
+      if (d.whUnlocked === true) state.whUnlocked = true;
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
       state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
@@ -2407,9 +2490,13 @@
   var $autoBtn = document.getElementById('autoBtn');
   var $autoPop = document.getElementById('autoPop');
   var $homePage = document.getElementById('homePage');
+  var $freePage = document.getElementById('freePage');
+  var $freeBack = document.getElementById('freeBack');
   var $gamePage = document.getElementById('gamePage');
   var $lobbyGold = document.getElementById('lobbyGold');
   var $lobbyShell = document.getElementById('lobbyShell');
+  var $freeGold = document.getElementById('freeGold');
+  var $freeShell = document.getElementById('freeShell');
   var $backBtn = document.getElementById('backBtn');
   var $gameSlot = document.getElementById('gameSlot');
   var $bjEntry = document.getElementById('bjEntry');
@@ -2516,16 +2603,18 @@
   var $gmFishVal = document.getElementById('gmFishVal');
   var $shellBox = document.getElementById('shellBox');
 
-  var page = 'home';                        // home / slot / bj / fish
-  var atHome = true;                        // 一进来是「赛博赌场」大厅
+  var page = 'home';                        // home（选模式）/ free（自由模式机子列表）/ slot / bj / fish / wheel
+  var atHome = true;                        // 一进来是「赛博赌场」首页
 
-  // 大厅 ⇄ 老虎机 ⇄ 黑杰克：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
+  // 首页 ⇄ 自由模式 ⇄ 各个机子：只切 display，别的逻辑都不动。
+  // 首页和自由模式都算「大厅」（📜 更新日志挂着、❓ 规则不出现），进了机子才反过来。
   function setPage(p) {
     if (p === true) p = 'home';
     else if (p === false) p = 'slot';
     page = p;
-    atHome = (p === 'home');
+    atHome = (p === 'home' || p === 'free');
     $homePage.style.display = (p === 'home') ? '' : 'none';
+    $freePage.style.display = (p === 'free') ? '' : 'none';
     $gamePage.style.display = (p === 'slot') ? '' : 'none';
     $bjPage.style.display = (p === 'bj') ? '' : 'none';
     $fishPage.style.display = (p === 'fish') ? '' : 'none';
@@ -2547,38 +2636,54 @@
   }
 
   /* ================= 渲染：顶部 / 下注 ================= */
-  /* ---- 黑杰克的门槛：花 1K 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
-  var BJ_UNLOCK = 1000;
-  function bjUnlocked() { return state.bjUnlocked === true; }
-  function bjCanUnlock() { return state.gold >= BJ_UNLOCK; }
-  function renderBjLock() {
-    var b = $bjEntry;
+  /* ---- 机子门槛：黑杰克 / 钓鱼 / 轮盘赌都要花 1K 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
+  var LOCK_FEE = 1000;
+  var LOCK_CARDS = [
+    { g: 'BJ',   id: 'bjEntry',   nm: '黑杰克', flag: 'bjUnlocked' },
+    { g: 'FISH', id: 'fishEntry', nm: '钓鱼',   flag: 'fishUnlocked' },
+    { g: 'WH',   id: 'whEntry',   nm: '轮盘赌', flag: 'whUnlocked' }
+  ];
+  function lockInfo(g) { for (var i = 0; i < LOCK_CARDS.length; i++) if (LOCK_CARDS[i].g === g) return LOCK_CARDS[i]; return null; }
+  function gameUnlocked(g) { var d = lockInfo(g); return !!d && state[d.flag] === true; }
+  function gameCanUnlock(g) { return !!lockInfo(g) && state.gold >= LOCK_FEE; }
+  function renderGameLock(g) {
+    var d = lockInfo(g);
+    if (!d) return;
+    var b = document.getElementById(d.id);
     if (!b) return;
     var go = b.getElementsByClassName('go')[0];
-    if (bjUnlocked()) {
+    if (gameUnlocked(g)) {
       if ((b.className || '') !== 'gameBtn') b.className = 'gameBtn';
       if (go) { go.className = 'go'; go.textContent = '进入 ›'; }
     } else {
-      var cls = 'gameBtn lock' + (bjCanUnlock() ? ' afford' : '');
+      var cls = 'gameBtn lock' + (gameCanUnlock(g) ? ' afford' : '');
       if ((b.className || '') !== cls) b.className = cls;
-      if (go) { go.className = 'go lock'; go.textContent = '🔒 ' + abbr(BJ_UNLOCK); }
+      if (go) { go.className = 'go lock'; go.textContent = '🔒 💰 ' + abbr(LOCK_FEE); }
     }
   }
+  function renderLocks() { for (var i = 0; i < LOCK_CARDS.length; i++) renderGameLock(LOCK_CARDS[i].g); }
   // 返回 true 表示已经解锁、可以进页：钱不够只提醒，买断要玩家点确认
-  function bjTryUnlock() {
-    if (bjUnlocked()) return true;
-    if (!bjCanUnlock()) {
-      toast('🔒 解锁黑杰克要 ' + abbr(BJ_UNLOCK) + ' 金币 · 还差 ' + abbr(BJ_UNLOCK - state.gold));
+  function gameTryUnlock(g) {
+    var d = lockInfo(g);
+    if (!d || gameUnlocked(g)) return true;
+    if (!gameCanUnlock(g)) {
+      toast('🔒 解锁' + d.nm + '要 💰' + abbr(LOCK_FEE) + ' · 还差 💰' + abbr(LOCK_FEE - state.gold));
       return false;
     }
-    if (!confirm('花 ' + abbr(BJ_UNLOCK) + ' 金币解锁黑杰克？购买后永久开放。')) return false;
-    state.gold -= BJ_UNLOCK;
-    state.bjUnlocked = true;
+    if (!confirm('花 💰' + abbr(LOCK_FEE) + ' 解锁' + d.nm + '？购买后永久开放。')) return false;
+    state.gold -= LOCK_FEE;
+    state[d.flag] = true;
     save();
     renderStats();
-    toast('🎉 黑杰克已解锁');
+    toast('🎉 ' + d.nm + '已解锁');
     return true;
   }
+  // 旧名保留：__api 和既有测试还按黑杰克的名字调这几个
+  var BJ_UNLOCK = LOCK_FEE;
+  function bjUnlocked() { return gameUnlocked('BJ'); }
+  function bjCanUnlock() { return gameCanUnlock('BJ'); }
+  function bjTryUnlock() { return gameTryUnlock('BJ'); }
+  function renderBjLock() { renderGameLock('BJ'); }
 
   function afford(bet) { return state.gold >= bet; }
 
@@ -2821,6 +2926,8 @@
     $sGold.textContent = abbr(state.gold);
     $lobbyGold.textContent = abbr(state.gold);
     if ($lobbyShell) $lobbyShell.textContent = abbr(shellNum());
+    $freeGold.textContent = abbr(state.gold);            // 自由模式列表页也摆一份钱
+    if ($freeShell) $freeShell.textContent = abbr(shellNum());
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
     $sEq.style.color = col;
@@ -2834,7 +2941,7 @@
     $whLuck.textContent = fmtSlotLuck(slotLuck());
     $whEq.textContent = state.eq;
     $whEq.style.color = col;
-    renderBjLock();
+    renderLocks();
   }
 
   function renderBet() {
@@ -3532,8 +3639,24 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '4.2.0';
+  var VERSION = '4.5.0';
   var CHANGELOG = [
+    { v: '4.5.0', t: '买断制', li: [
+      '🔒 🃏 黑杰克 / 🎣 钓鱼 / 🎡 轮盘赌 现在都要 💰 1K 金币买断才进得去，买断之后永久开放',
+      '🎰 老虎机照旧免费，进门就能玩',
+      '💡 金币攒够 💰 1K，对应机子的卡片会亮起来，点一下确认就买断'
+    ] },
+    { v: '4.4.0', t: '新机子排队', li: [
+      '🦆 自由模式里新挂了七块牌子：赛鸭场 / 火龙塔 / 扫雷 / 企鹅步 / 登月 / 弹珠板 / 翻硬币',
+      '🐔 连上原来的养鸡场，排队中的新玩法一共八个，都标着「敬请期待」，名字和位置先占住',
+      '🎡 轮盘赌挪到前排，跟老虎机 / 黑杰克 / 钓鱼排在一起；🛒 商城照旧压在最下面'
+    ] },
+    { v: '4.3.0', t: '模式框架', li: [
+      '🧭 大厅改版：进门先挑模式，之前所有机子都收进了「自由模式」这一层',
+      '🎲 自由模式里还是那几台：老虎机 / 黑杰克 / 钓鱼 / 轮盘赌 / 商城（养鸡场还在搭）',
+      '💸 底下多挂了一块「欠债模式」的牌子，门还没开',
+      '↩️ 返回键改成回上一层：机子 → 自由模式 → 首页'
+    ] },
     { v: '4.2.0', t: '自动光环仪', li: [
       '⏱️ 商城上架「自动光环仪」：小 / 中 / 大三台，买一台就能在接下来 5 / 15 / 40 分钟里替你自动抽光环，人可以去玩别的',
       '📥 光环面板可以收起来：收起后右下角一直挂着剩余时间，想看就点回去',
@@ -3879,8 +4002,19 @@
   $logBtn.addEventListener('click', function () { openSheet('logSheet'); }, false);
   document.getElementById('logSheet').addEventListener('click', function (e) { if (e.target === this) closeSheet('logSheet'); }, false);
 
-  // 大厅游戏入口：老虎机 / 黑杰克 / 钓鱼 / 轮盘赌 / 商城已开放，养鸡场还是占位
-  var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
+  // 首页先选模式：自由模式进机子列表，欠债模式还只是块牌子
+  var modeBtns = document.getElementById('homePage').getElementsByClassName('modeBtn');
+  for (var mb = 0; mb < modeBtns.length; mb++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        if (btn.getAttribute('data-mode') === 'FREE') { setPage('free'); return; }   // 进自由模式
+        toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 尚未开放');
+      }, false);
+    })(modeBtns[mb]);
+  }
+
+  // 自由模式机子列表：老虎机免费直接进，黑杰克 / 钓鱼 / 轮盘赌各要 1K 金币买断，商城开弹层，其余 8 张占位卡只弹「敬请期待」
+  var homeBtns = document.getElementById('freePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
       btn.addEventListener('click', function () {
@@ -3890,15 +4024,22 @@
           if (!bjTryUnlock()) return;                                   // 没买断：门口拦下来
           setPage('bj'); renderBj(); renderBjBet(); return;
         }
-        if (g === 'FISH') { setPage('fish'); return; }                 // 进钓鱼
-        if (g === 'WH') { setPage('wheel'); return; }                  // 进轮盘赌
+        if (g === 'FISH') {
+          if (!gameTryUnlock('FISH')) return;                            // 没买断：门口拦下来
+          setPage('fish'); return;
+        }
+        if (g === 'WH') {
+          if (!gameTryUnlock('WH')) return;                              // 没买断：门口拦下来
+          setPage('wheel'); return;
+        }
         if (g === 'SHOP') { toggleMiscPop(false); openSheet('shopSheet'); return; }   // 进商城
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
       }, false);
     })(homeBtns[hb]);
   }
-  $backBtn.addEventListener('click', function () { setPage('home'); }, false);   // 回大厅
-  $bjBack.addEventListener('click', function () { setPage('home'); }, false);
+  $freeBack.addEventListener('click', function () { setPage('home'); }, false);  // 自由模式 → 首页选模式
+  $backBtn.addEventListener('click', function () { setPage('free'); }, false);   // 机子 → 自由模式
+  $bjBack.addEventListener('click', function () { setPage('free'); }, false);
   $bjClaim.addEventListener('click', function () { doClaim(renderBjBet); }, false);
   document.addEventListener('click', function (e) {
     var el = e.target;
@@ -3952,7 +4093,8 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, auto: { on: false, until: 0, last: 0 }, fish: freshFish(),
+      codes: {}, bjBet: 1, bjUnlocked: false, fishUnlocked: false, whUnlocked: false,
+      bag: {}, pot: {}, auto: { on: false, until: 0, last: 0 }, fish: freshFish(),
       wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }
     };
     rewindTarget = null; clearPotTimer(); fishIdle();
@@ -4290,7 +4432,7 @@
       : '欧式单零 37 格 · 点号码押注，红 / 黑 / 绿在下面';
   }
 
-  $wheelBack.addEventListener('click', function () { setPage('home'); }, false);
+  $wheelBack.addEventListener('click', function () { setPage('free'); }, false);
   $whSpin.addEventListener('click', function () { whSpin(false); }, false);
   $whClaim.addEventListener('click', function () { doClaim(); }, false);
   $whTable.addEventListener('click', function (e) {
@@ -5430,7 +5572,7 @@
     toast('图鉴都记上了');
   }
 
-  $fishBack.addEventListener('click', function () { setPage('home'); }, false);
+  $fishBack.addEventListener('click', function () { setPage('free'); }, false);
   $fishSheetBtn.addEventListener('click', function () { renderFishSheet(); openSheet('fishSheet'); }, false);
   $castBtn.addEventListener('click', fishCastClick, false);
   $ccOk.addEventListener('click', dismissCatch, false);
