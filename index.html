@@ -268,7 +268,41 @@
   }
   /* ⏪ 后悔药水：只有手里有回溯药水、且刚打完一局时才冒出来（叠在 🎒 上方） */
   #rewindBtn { right: 14px; bottom: calc(142px + env(safe-area-inset-bottom)); width: auto; min-width: 54px; padding: 0 13px; border-radius: 27px; font-size: 13px; z-index: 70; white-space: nowrap; }
+  /* ⏱️ 自动光环仪：收起面板后钉在右下角报剩余时间（再叠一格） */
+  #autoBtn { right: 14px; bottom: calc(204px + env(safe-area-inset-bottom)); width: auto; min-width: 54px; padding: 0 13px; border-radius: 27px; font-size: 13px; z-index: 70; white-space: nowrap; }
   #payBtn, #auraBtn { display: none !important; }
+
+  /* ================= ⏱️ 自动光环仪 ================= */
+  #autoBar {
+    margin-top: 12px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--golddim); border-radius: 3px; padding: 8px 10px;
+    background: linear-gradient(90deg, rgba(212,175,55,.14), rgba(212,175,55,.04));
+    font-size: 13px; color: var(--goldlit);
+  }
+  #autoBar #autoTx { flex: 1; text-align: left; letter-spacing: .5px; }
+  #autoBar #autoTx b { font-family: var(--disp); font-size: 15px; }
+  .autoMini {
+    border: 1px solid var(--gl2); border-radius: 3px; background: #0b0f0d;
+    color: var(--tx); font-size: 12px; padding: 5px 11px; letter-spacing: 1px;
+  }
+  .autoMini:active { transform: scale(.95); }
+  /* 抽到好东西时从顶上冒一下的小卡片：只报喜，不挡操作 */
+  #autoPop {
+    position: fixed; left: 50%; top: calc(10px + env(safe-area-inset-top));
+    transform: translate(-50%, -16px); z-index: 90; pointer-events: none;
+    opacity: 0; transition: opacity .22s, transform .22s;
+    max-width: min(86vw, 340px); padding: 10px 16px; text-align: center;
+    border: 1px solid var(--goldlit); border-radius: 4px;
+    background: linear-gradient(#141a16, #0a0e0c); box-shadow: 0 6px 22px #000a;
+  }
+  #autoPop.on { opacity: 1; transform: translate(-50%, 0); }
+  #autoPop.hi { animation: popHi .5s linear infinite alternate; }
+  @keyframes popHi {
+    from { box-shadow: 0 6px 22px #000a, 0 0 0 rgba(243,217,139,0); }
+    to   { box-shadow: 0 6px 26px #000c, 0 0 18px rgba(243,217,139,.85); }
+  }
+  #autoPop .apT { font-size: 19px; font-weight: 800; letter-spacing: 2px; color: var(--goldlit); }
+  #autoPop .apS { margin-top: 5px; font-size: 12px; line-height: 1.6; color: var(--txd); }
 
   /* ================= 生效中的药水徽标 ================= */
   .potBadge {
@@ -1384,9 +1418,11 @@
 <button class="corner" id="helpBtn" style="display:none">❓</button>
 <button class="corner" id="bagBtn" style="display:none">🎒</button>
 <button class="corner" id="rewindBtn" style="display:none">⏪</button>
+<button class="corner" id="autoBtn" style="display:none">⏱️ 0:00</button>
 <button class="corner" id="logBtn" style="display:none;font-size:22px">📜</button>
 <button class="corner" id="miscBtn">🎁</button>
 <div id="toast"></div>
+<div id="autoPop"></div>
 
 <!-- 光环面板 -->
 <div class="sheet" id="auraSheet">
@@ -1397,6 +1433,12 @@
       <button class="tab on" data-tab="draw">抽取</button>
       <button class="tab" data-tab="dex">图鉴</button>
       <button class="tab" data-tab="equip">佩戴</button>
+    </div>
+
+    <div id="autoBar" style="display:none">
+      <span id="autoTx"></span>
+      <button class="autoMini" id="autoFold">收起</button>
+      <button class="autoMini" id="autoStop">停止</button>
     </div>
 
     <div class="tabPage on" id="page-draw">
@@ -1414,7 +1456,7 @@
     </div>
 
     <div class="tabPage" id="page-dex">
-      <div class="sectTitle"><span>全部光环（23 个） · 词条（1）</span><span id="dexCount"></span></div>
+      <div class="sectTitle"><span>全部光环（60 个） · 词条（1）</span><span id="dexCount"></span></div>
       <div id="dexList" class="cardList"></div>
     </div>
 
@@ -1757,27 +1799,67 @@
     { n: '默认',   t: 0, r: 0,         L: 0.00, R: 0.50, start: true },
     { n: '微光',   t: 0, r: 2,         L: 0.02, R: 0.51 },
     { n: '尘埃',   t: 0, r: 3,         L: 0.04, R: 0.52 },
+    { n: '露珠',   t: 0, r: 4,         L: 0.05, R: 0.525 },
     { n: '微风',   t: 0, r: 5,         L: 0.06, R: 0.53 },
     { n: '苔藓',   t: 1, r: 6,         L: 0.10, R: 0.56 },
+    { n: '蕨叶',   t: 1, r: 7,         L: 0.12, R: 0.565 },
     { n: '溪流',   t: 1, r: 10,        L: 0.15, R: 0.58 },
+    { n: '铜铃',   t: 1, r: 12,        L: 0.17, R: 0.585 },
     { n: '琥珀',   t: 1, r: 16,        L: 0.20, R: 0.60 },
+    { n: '蜂巢',   t: 1, r: 24,        L: 0.24, R: 0.61 },
     { n: '霜叶',   t: 2, r: 35,        L: 0.30, R: 0.63 },
+    { n: '雨幕',   t: 2, r: 40,        L: 0.33, R: 0.64 },
     { n: '月影',   t: 2, r: 55,        L: 0.40, R: 0.66 },
+    { n: '冰晶',   t: 2, r: 65,        L: 0.43, R: 0.67 },
     { n: '极光碎', t: 2, r: 80,        L: 0.55, R: 0.69 },
+    { n: '风弦',   t: 2, r: 120,       L: 0.62, R: 0.70 },
+    { n: '幽兰',   t: 3, r: 180,       L: 0.75, R: 0.71 },
+    { n: '蓝焰',   t: 3, r: 260,       L: 0.82, R: 0.715 },
     { n: '星陨',   t: 3, r: 300,       L: 0.90, R: 0.72 },
+    { n: '鲸歌',   t: 3, r: 380,       L: 1.05, R: 0.74 },
     { n: '潮汐',   t: 3, r: 500,       L: 1.30, R: 0.76 },
+    { n: '沙漏',   t: 3, r: 700,       L: 1.55, R: 0.78 },
     { n: '朱雀',   t: 3, r: 1000,      L: 1.80, R: 0.80 },
+    { n: '龙骨',   t: 4, r: 2000,      L: 2.00, R: 0.81 },
+    { n: '赤铜',   t: 4, r: 3500,      L: 2.30, R: 0.82 },
     { n: '冥河',   t: 4, r: 5000,      L: 2.60, R: 0.83 },
+    { n: '夜莺',   t: 4, r: 6500,      L: 3.00, R: 0.845 },
     { n: '黄金',   t: 4, r: 9000,      L: 3.50, R: 0.86 },
+    { n: '玄武',   t: 4, r: 11000,     L: 4.00, R: 0.87 },
     { n: '雷罚',   t: 4, r: 15000,     L: 4.50, R: 0.89 },
+    { n: '熔岩',   t: 4, r: 25000,     L: 5.50, R: 0.905 },
+    { n: '白鸦',   t: 5, r: 40000,     L: 6.00, R: 0.91 },
+    { n: '幻梦',   t: 5, r: 60000,     L: 6.50, R: 0.915 },
     { n: '苍穹',   t: 5, r: 80000,     L: 7.00, R: 0.92 },
+    { n: '神殿',   t: 5, r: 120000,    L: 8.00, R: 0.93 },
     { n: '无相',   t: 5, r: 200000,    L: 10.00, R: 0.95 },
+    { n: '蚀月',   t: 5, r: 300000,    L: 11.50, R: 0.96 },
     { n: '逆光',   t: 5, r: 500000,    L: 14.00, R: 0.98 },
+    { n: '星海',   t: 5, r: 700000,    L: 16.00, R: 0.99 },
+    { n: '深渊',   t: 5, r: 1200000,   L: 18.00, R: 0.995 },
     { n: '起源',   t: 6, r: 2000000,   L: 20.00, R: 1.00 },
+    { n: '创世',   t: 6, r: 3000000,   L: 22.00, R: 1.005 },
+    { n: '终焉',   t: 6, r: 5000000,   L: 24.00, R: 1.01 },
     { n: '奇点',   t: 6, r: 8000000,   L: 25.00, R: 1.02 },
+    { n: '米迦勒', t: 6, r: 10000000,  L: 27.00, R: 1.03 },
+    { n: '路西法', t: 6, r: 15000000,  L: 28.50, R: 1.035 },
     { n: '加百列', t: 6, r: 20000000,  L: 30.00, R: 1.05 },
+    { n: '悖论',   t: 6, r: 30000000,  L: 32.00, R: 1.055 },
+    { n: '虚空',   t: 6, r: 50000000,  L: 34.00, R: 1.055 },
+    { n: '归一',   t: 7, r: 55000000,  L: 35.00, R: 1.06 },
+    { n: '太初',   t: 7, r: 60000000,  L: 35.50, R: 1.075 },
+    { n: '无我',   t: 7, r: 65000000,  L: 36.00, R: 1.09 },
+    { n: '轮回',   t: 7, r: 70000000,  L: 36.50, R: 1.10 },
+    { n: '银钥',   t: 7, r: 75000000,  L: 37.00, R: 1.115 },
+    { n: '万象',   t: 7, r: 80000000,  L: 37.50, R: 1.13 },
+    { n: '黄昏',   t: 7, r: 85000000,  L: 38.00, R: 1.145 },
+    { n: '极乐',   t: 7, r: 90000000,  L: 39.00, R: 1.16 },
+    { n: '永恒',   t: 7, r: 95000000,  L: 39.50, R: 1.18 },
     { n: '无限',   t: 7, r: 100000000, L: 40.00, R: 1.20 }
   ];
+  // 很老的存档是按「下标」记光环的，这张表是当年那 22 个的顺序，只用来把老存档还原成名字
+  var AURAS_OLD = ['微光', '尘埃', '微风', '苔藓', '溪流', '琥珀', '霜叶', '月影', '极光碎', '星陨',
+                   '潮汐', '朱雀', '冥河', '黄金', '雷罚', '苍穹', '无相', '逆光', '起源', '奇点', '加百列', '无限'];
   // 隐藏「词条」：待机时点顶部「佩戴光环」显示 10 下获得。
   // 它不是光环：不可抽取、不出现在佩戴列表里、不占佩戴位；
   // 获得后自动生效在当前佩戴的那个光环上，给那个光环的回报率 +10 个百分点。
@@ -1795,6 +1877,11 @@
 
   function idxOf(name) { for (var i = 0; i < AURAS.length; i++) if (AURAS[i].n === name) return i; return 0; }
   function isRollable(a) { return a.r > 0; }
+
+  // 一次抽奖占用的时间：越稀有的层级转得越久，转完还要停一下才收尾
+  function rollDur(t)  { return 1700 + Math.min(t, 7) * 260; }
+  function rollWait(t) { return t >= 5 ? 220 : 90; }
+  function autoCost(t) { return rollDur(t) + rollWait(t); }
 
   /* ================= 数据：老虎机 ================= */
   // m = 3 个连线倍率；wild = 万能符；pair = 2 个樱桃的倍率
@@ -1869,7 +1956,16 @@
   var LUCK_ADD = 5;         // 幸运药水：老虎机幸运 +5（幸运与光环 R 是 1:1）
   var GOLD_MUL = 1.3;       // 金币药水：中奖金额倍率
 
-  // 商品表：id 唯一；key 相同 = 同一种药水；dur 单位是「局」
+  // 自动光环仪：买一台，接下来的一段时间里自动替你抽光环
+  var AUTO_DEF = { nm: '自动光环仪', ico: '⏱️', tag: '限时自动替你抽光环；关掉页面也在继续，回来一次性结算' };
+  var AUTO_SIZES = [
+    { k: 's', nm: '小型', dur: 5 },
+    { k: 'm', nm: '中型', dur: 15 },
+    { k: 'l', nm: '大型', dur: 40 }
+  ];
+  var AUTO_MAX_MS = 40 * 60000;   // 一台最长跑 40 分钟
+
+  // 商品表：id 唯一；key 相同 = 同一种道具；dur 单位是「局」，自动光环仪是「分钟」
   var SHOP_ITEMS = [
     { id: 'lk_s', key: 'luck',   size: 's', dur: 3,  price: 1200 },
     { id: 'lk_m', key: 'luck',   size: 'm', dur: 8,  price: 3000 },
@@ -1878,8 +1974,20 @@
     { id: 'gd_m', key: 'gold',   size: 'm', dur: 8,  price: 3200 },
     { id: 'gd_l', key: 'gold',   size: 'l', dur: 20, price: 8500 },
     { id: 'rw',   key: 'rewind', size: '',  dur: 1,  price: 2000 },
-    { id: 'sh',   key: 'shield', size: '',  dur: 1,  price: 3500 }
+    { id: 'sh',   key: 'shield', size: '',  dur: 1,  price: 3500 },
+    { id: 'au_s', key: 'auto',   size: 's', dur: 5,  price: 6000 },
+    { id: 'au_m', key: 'auto',   size: 'm', dur: 15, price: 15000 },
+    { id: 'au_l', key: 'auto',   size: 'l', dur: 40, price: 36000 }
   ];
+
+  function itemDef(key) { return POT_DEF[key] || (key === 'auto' ? AUTO_DEF : null); }
+  function itemSize(it) {
+    var arr = it.key === 'auto' ? AUTO_SIZES : POT_SIZES;
+    for (var i = 0; i < arr.length; i++) if (arr[i].k === it.size) return arr[i];
+    return null;
+  }
+  function itemUnit(it) { return it.key === 'auto' ? '分钟' : '局'; }
+  function itemPcs(it)  { return it.key === 'auto' ? '台' : '瓶'; }
 
   // 兑换码：存的时候统一转大写，每个码每人只能兑一次
   var CODES = {
@@ -1895,6 +2003,7 @@
     codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
     bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
     pot: {},                                     // 生效中的药水：{ 药水key: 剩余局数 }
+    auto: { on: false, until: 0, last: 0 },      // 自动光环仪：是否在跑 / 跑到几点 / 上次抽奖结算到几点
     fish: freshFish(),                           // 钓鱼：鱼篓 / 图鉴 / 鱼缸 / 渔具
     wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }   // 轮盘赌：转过的局数 / 单局最高回收 / 筹码 / 下注模式
   };
@@ -1917,8 +2026,8 @@
         for (k in d.counts) {
           if (!Object.prototype.hasOwnProperty.call(d.counts, k)) continue;
           if (/^\d+$/.test(k)) {
-            i = parseInt(k, 10) + 1;                    // 旧表第 i 个 = 新表 i+1（新表开头多了「默认」）
-            if (AURAS[i]) c[AURAS[i].n] = d.counts[k];
+            i = parseInt(k, 10);                        // 老存档按下标存，按当年那张表还原成名字
+            if (AURAS_OLD[i]) c[AURAS_OLD[i]] = d.counts[k];
           } else {
             c[k] = d.counts[k];
           }
@@ -1932,7 +2041,7 @@
         for (i = 0; i < d.hist.length; i++) {
           var hh = d.hist[i];
           if (typeof hh === 'string' && idxOf(hh) !== 0) h.push(hh);
-          else if (typeof hh === 'number' && AURAS[hh + 1]) h.push(AURAS[hh + 1].n);
+          else if (typeof hh === 'number' && AURAS_OLD[hh]) h.push(AURAS_OLD[hh]);
         }
         state.hist = h.slice(0, 12);
       }
@@ -1964,6 +2073,19 @@
       }
       state.bag = bag;
       state.pot = pot;
+
+      // 自动光环仪：时间戳一律夹回合法范围，跑过头的回来先补完那一台的量再停
+      var au = d.auto, nowMs = Date.now();
+      state.auto = { on: false, until: 0, last: 0 };
+      if (au && typeof au === 'object' && au.on === true) {
+        var u = (typeof au.until === 'number' && au.until > 0) ? Math.min(au.until, nowMs + AUTO_MAX_MS) : 0;
+        if (u > 0) {
+          var ls = (typeof au.last === 'number' && au.last > 0) ? au.last : u;
+          if (ls < u - AUTO_MAX_MS) ls = u - AUTO_MAX_MS;
+          if (ls > u) ls = u;
+          state.auto = { on: true, until: u, last: ls };
+        }
+      }
 
       // 钓鱼：认不出来的鱼 / 皮肤 / 钓场一律丢掉，数值全部夹回合法范围
       var fs = d.fish, nf = freshFish(), fi, fv, fid, b2;
@@ -2280,6 +2402,10 @@
   var $verTag = document.getElementById('verTag');
   var $miscPop = document.getElementById('miscPop');
   var $auraHelpBtn = document.getElementById('auraHelpBtn');
+  var $autoBar = document.getElementById('autoBar');
+  var $autoTx = document.getElementById('autoTx');
+  var $autoBtn = document.getElementById('autoBtn');
+  var $autoPop = document.getElementById('autoPop');
   var $homePage = document.getElementById('homePage');
   var $gamePage = document.getElementById('gamePage');
   var $lobbyGold = document.getElementById('lobbyGold');
@@ -2505,12 +2631,22 @@
     state.gold = clampGold(state.gold - it.price);
     state.bag[id] = bagOwn(id) + 1;
     save(); refreshPots();
-    toast('已买下 ' + POT_DEF[it.key].ico + ' ' + POT_DEF[it.key].nm + '，去背包里点使用');
+    toast('已买下 ' + itemDef(it.key).ico + ' ' + itemDef(it.key).nm + '，去背包里点使用');
   }
   function useItem(id) {
     var it = itemById(id);
     if (!it || bagOwn(id) < 1) return;
     var key = it.key;
+    if (key === 'auto') {                           // 自动光环仪：一用就开跑，直接送进光环面板
+      if (!autoStart(it.dur * 60000)) return;       // 已经在跑：这一台不开，包里的也还留着
+      state.bag[id] = bagOwn(id) - 1;
+      if (state.bag[id] <= 0) delete state.bag[id];
+      save(); refreshPots();
+      bagClose();
+      renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+      openSheet('auraSheet');
+      return;
+    }
     if (!potUse(key)) { toast(POT_DEF[key].ico + ' ' + POT_DEF[key].nm + '正在生效中，等用完这一瓶再用'); return; }
     if (!potSet(key, it.dur)) return;
     state.bag[id] = bagOwn(id) - 1;
@@ -2547,15 +2683,14 @@
     if (box) {
       var h = '', i, N = SHOP_ITEMS.length;
       for (i = 0; i < N; i++) {
-        var it = SHOP_ITEMS[i], d = POT_DEF[it.key], sz = null, j;
-        for (j = 0; j < POT_SIZES.length; j++) if (POT_SIZES[j].k === it.size) sz = POT_SIZES[j];
+        var it = SHOP_ITEMS[i], d = itemDef(it.key), sz = itemSize(it);
         var own = bagOwn(it.id);
         h += '<div class="gItem' + (afford(it.price) ? '' : ' off') + '" data-item="' + it.id + '">' +
                '<div class="gTop"><span class="gIco">' + d.ico + '</span>' +
                  '<span class="gNm">' + d.nm + (sz ? '<i>' + sz.nm + '</i>' : '<i>单次</i>') + '</span>' +
                '</div>' +
                '<div class="gTag">' + d.tag + '</div>' +
-               '<div class="gMeta">持续 <b>' + it.dur + '</b> 局' + (own > 0 ? '　·　背包 ' + own + ' 瓶' : '') + '</div>' +
+               '<div class="gMeta">持续 <b>' + it.dur + '</b> ' + itemUnit(it) + (own > 0 ? '　·　背包 ' + own + ' ' + itemPcs(it) : '') + '</div>' +
                '<div class="gFoot"><span class="gPrice">' + abbr(it.price) + '</span>' +
                  '<button class="gBuy" data-buy="' + it.id + '"' + (afford(it.price) ? '' : ' disabled') + '>购买</button></div>' +
              '</div>';
@@ -2583,12 +2718,11 @@
       for (i = 0; i < SHOP_ITEMS.length; i++) {
         var it = SHOP_ITEMS[i], own = bagOwn(it.id);
         if (own < 1) continue;
-        var d = POT_DEF[it.key], sz = null, j;
-        for (j = 0; j < POT_SIZES.length; j++) if (POT_SIZES[j].k === it.size) sz = POT_SIZES[j];
+        var d = itemDef(it.key), sz = itemSize(it);
         h += '<div class="bItem" data-item="' + it.id + '">' +
                '<span class="bIco">' + d.ico + '</span>' +
                '<span class="bInfo"><b>' + d.nm + (sz ? ' · ' + sz.nm : '') + '</b>' +
-                 '<small>持续 ' + it.dur + ' 局　·　持有 ' + own + ' 瓶</small></span>' +
+                 '<small>持续 ' + it.dur + ' ' + itemUnit(it) + '　·　持有 ' + own + ' ' + itemPcs(it) + '</small></span>' +
                '<button class="bUse" data-use="' + it.id + '">使用</button>' +
                '<button class="bDrop" data-drop="' + it.id + '">丢弃</button>' +
              '</div>';
@@ -3164,7 +3298,7 @@
     }
     html = html + caibaoCard();                      // 词条排在整个图鉴最后面
     $dexList.innerHTML = html;
-    $dexCount.textContent = owned + ' / 22';
+    $dexCount.textContent = owned + ' / ' + (AURAS.length - 1);
   }
 
   function renderEquip() {
@@ -3199,7 +3333,7 @@
   }
 
   function rollAura() {
-    if (rolling) return;
+    if (rolling || autoState().on) return;
     rolling = true;
     $rollBtn.disabled = true;
 
@@ -3207,7 +3341,7 @@
     if (tier >= 5) buzz(90); else if (tier >= 3) buzz(35);
 
     /* 时长：普通约 1.7 秒，越稀有越久，最稀有约 3.5 秒；转速由快逐渐变慢 */
-    var dur = 1700 + Math.min(tier, 7) * 260;
+    var dur = rollDur(tier);
     var t0 = Date.now();
     var pool = [];
     for (var i = 0; i < AURAS.length; i++) if (isRollable(AURAS[i])) pool.push(AURAS[i]);
@@ -3230,6 +3364,14 @@
   }
 
   function finishRoll(idx) {
+    applyAura(idx);
+    renderHist(); renderDex(); renderEquip(); renderDrawLuck(); save();
+
+    setTimeout(function () { rolling = false; $rollBtn.disabled = autoState().on; }, rollWait(AURAS[idx].t));
+  }
+
+  // 一次抽奖的结算：改状态 + 画面板，手动和自动都走这一条路
+  function applyAura(idx) {
     var a = AURAS[idx];
     var gain = BASE_GAIN + TIER_BONUS[a.t];
     var isNew = !state.counts[a.n];
@@ -3240,6 +3382,12 @@
     state.hist.unshift(a.n);
     if (state.hist.length > 12) state.hist.pop();
 
+    showRoll(a, isNew, gain);
+    return { a: a, isNew: isNew, gain: gain };
+  }
+
+  // 把一次抽奖的结果画进面板
+  function showRoll(a, isNew, gain) {
     var col = TIER_COLOR[a.t];
     $auraName.className = '';
     $auraName.textContent = a.n;
@@ -3250,11 +3398,113 @@
     $oddsLine.textContent = a.r > 0 ? ('基础 1 / ' + abbr(a.r)) : '初始光环 · 不可抽取';
     $newSlot.innerHTML = isNew ? '<div class="newTag">NEW 新光环</div>' : '';
     $gainSlot.innerHTML = '<div class="gain">抽奖幸运 +' + gain.toFixed(2) + '</div>';
+  }
 
-    renderHist(); renderDex(); renderEquip(); renderDrawLuck(); save();
+  /* ================= 自动光环仪 ================= */
+  /* 买一台，接下来的几分钟里自动替你抽。计时按真实时间走，页面关掉也照走；
+     回来（或切回前台）时，把这段时间里欠下的抽奖一次性补算完，
+     所以关掉页面那段时间抽到的东西，一件都不会少。 */
+  function autoState() {
+    if (!state.auto || typeof state.auto !== 'object') state.auto = { on: false, until: 0, last: 0 };
+    return state.auto;
+  }
+  function autoLeft() { var a = autoState(); return a.on ? Math.max(0, a.until - Date.now()) : 0; }
+  function autoClock(ms) {
+    var s = Math.ceil(Math.max(0, ms) / 1000);
+    return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+  }
+  function autoStart(ms) {
+    var a = autoState();
+    if (!(ms > 0)) return false;
+    if (a.on) { toast('⏱️ 自动光环仪还在转，等这一台停下来再启动下一台'); return false; }
+    var now = Date.now();
+    state.auto = { on: true, until: now + Math.min(ms, AUTO_MAX_MS), last: now };
+    save(); refreshAuto();
+    toast('⏱️ 自动光环仪已启动，' + Math.round(ms / 60000) + ' 分钟内自动替你抽光环（收起面板也照抽）');
+    return true;
+  }
+  function autoStop() {
+    if (!autoState().on) return;
+    state.auto = { on: false, until: 0, last: 0 };
+    save(); refreshAuto();
+    toast('⏱️ 自动光环仪已停下');
+  }
+  // 时间到：这一台跑完了（剩下的零头不够再抽一次，直接收摊）
+  function autoFinish() {
+    state.auto = { on: false, until: 0, last: 0 };
+    save(); refreshAuto();
+    toast('⏱️ 自动光环仪：这一台跑完了，去商城还能再买一台');
+  }
+  // 静默结算：把 last 到「现在和结束时间里更早的那个」之间欠下的抽奖一口气抽完
+  function autoKick() {
+    var a = autoState(), now = Date.now(), end, idx, res, cost, cnt = 0, last = null;
+    var news = [], rares = [], gainSum = 0;
+    if (!a.on || rolling) return;
+    end = Math.min(now, a.until);
+    if (end - a.last > AUTO_MAX_MS) a.last = end - AUTO_MAX_MS;      // 存档被动过也拖不垮
+    while (a.last < end) {
+      idx = pickAura();
+      cost = autoCost(AURAS[idx].t);
+      if (a.last + cost > end) break;                                 // 剩下的零头不够再抽一次
+      a.last += cost;
+      res = applyAura(idx);
+      cnt++; last = res; gainSum += res.gain;
+      if (res.isNew) news.push(res.a.n);
+      if (res.a.t >= 4) rares.push(res.a);
+    }
+    if (cnt) {
+      renderHist(); renderDex(); renderEquip(); renderDrawLuck(); save();
+      if (cnt === 1) { if (last.a.t >= 4) popAura(last.a, last.isNew); }
+      else if (rares.length) popAutoReport(cnt, gainSum, news, rares);
+    }
+    if (now >= a.until) autoFinish();
+    refreshAuto();
+  }
+  function autoTick() {
+    if (autoState().on) autoKick(); else refreshAuto();
+  }
+  // 面板里的进度条 / 角落的 ⏱️ 小按钮 / 抽奖按钮，都跟着自动状态走
+  function refreshAuto() {
+    var on = autoState().on, t = autoLeft();
+    if ($autoBar) $autoBar.style.display = on ? '' : 'none';
+    if ($autoTx) $autoTx.innerHTML = on ? ('⏱️ 自动抽取中　剩 <b>' + autoClock(t) + '</b>') : '';
+    if ($rollBtn) {
+      $rollBtn.disabled = on || rolling;
+      $rollBtn.textContent = on ? '自动抽取中…' : '抽 奖';
+    }
+    if ($autoBtn) {
+      $autoBtn.style.display = (on && !anySheetOpen()) ? '' : 'none';
+      $autoBtn.textContent = '⏱️ ' + autoClock(t);
+    }
+  }
 
-    var wait = a.t >= 5 ? 220 : 90;
-    setTimeout(function () { rolling = false; $rollBtn.disabled = false; }, wait);
+  /* ---- 抽到好东西时从顶上冒一下的小卡片（一次只显示一张，排队不叠） ---- */
+  var popTimer = null;
+  function popShow(html, ms, hi) {
+    if (!$autoPop) return;
+    $autoPop.innerHTML = html;
+    $autoPop.className = hi ? 'on hi' : 'on';
+    if (hi) buzz(60);
+    if (popTimer) clearTimeout(popTimer);
+    popTimer = setTimeout(function () { $autoPop.className = ''; popTimer = null; }, ms || 2500);
+  }
+  function popAura(a, isNew) {
+    var col = TIER_COLOR[a.t];
+    popShow('<div class="apT" style="color:' + col + '">' + a.n + '</div>' +
+            '<div class="apS">' + TIER_NAME[a.t] + '　幸运 +' + a.L.toFixed(2) + (isNew ? '　NEW 新光环' : '') + '</div>',
+            a.t >= 5 ? 3200 : 2500, a.t >= 5);
+  }
+  // 关掉页面 / 收起面板那段时间的账：一张小卡报完
+  function popAutoReport(cnt, gainSum, news, rares) {
+    var seen = {}, names = [], i, s;
+    for (i = 0; i < rares.length && names.length < 5; i++) {
+      if (seen[rares[i].n]) continue;
+      seen[rares[i].n] = 1; names.push(rares[i].n);
+    }
+    s = '共抽 ' + cnt + ' 次　抽奖幸运 +' + gainSum.toFixed(2);
+    if (news.length) s += '<br>新光环 ' + news.length + ' 个：' + news.slice(0, 5).join('、') + (news.length > 5 ? ' 等' : '');
+    if (names.length) s += '<br>史诗以上：' + names.join('、') + (rares.length > names.length ? ' 等' : '');
+    popShow('<div class="apT">⏱️ 自动光环仪</div><div class="apS">' + s + '</div>', 4000, rares.length > 0);
   }
 
   /* ================= 弹层 ================= */
@@ -3273,6 +3523,7 @@
     $logBtn.style.display = (show && atHome) ? '' : 'none';      // 📜 更新日志：只在大厅（左下角）
     $bagBtn.textContent = '🎒';
     renderRewindBtn();
+    refreshAuto();                                                // ⏱️ 自动光环仪：收起面板后钉在右下角
   }
 
   /* ================= 📜 更新日志 ================= */
@@ -3281,8 +3532,15 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '4.1.1';
+  var VERSION = '4.2.0';
   var CHANGELOG = [
+    { v: '4.2.0', t: '自动光环仪', li: [
+      '⏱️ 商城上架「自动光环仪」：小 / 中 / 大三台，买一台就能在接下来 5 / 15 / 40 分钟里替你自动抽光环，人可以去玩别的',
+      '📥 光环面板可以收起来：收起后右下角一直挂着剩余时间，想看就点回去',
+      '🛌 页面关掉那段时间也照抽，回来一次性结算，一件都不会少',
+      '🔔 抽出史诗以上的光环会从屏幕顶上冒一张小卡告诉你抽到了什么；传说以上还带一层金光',
+      '💥 光环从 23 个加到 60 个：每个档位都有新面孔，最高处仍然是「无限」'
+    ] },
     { v: '4.1.1', t: '钓台转盘修正', li: [
       '🎡 钓台上的红 / 黑 / 绿转盘：停在哪一格就报哪一色，不会再出现指针停在黑格、却报开红的情况'
     ] },
@@ -3588,6 +3846,16 @@
   document.getElementById('bagBtn').addEventListener('click', function () { openSheet('bagSheet'); }, false);
   document.getElementById('bagBtn2').addEventListener('click', function () { openSheet('bagSheet'); }, false);
   document.getElementById('rewindBtn').addEventListener('click', useRewind, false);
+  /* ---- ⏱️ 自动光环仪 ---- */
+  document.getElementById('autoBtn').addEventListener('click', function () {
+    renderHist(); renderDex(); renderEquip(); renderDrawLuck();
+    openSheet('auraSheet');
+  }, false);
+  document.getElementById('autoFold').addEventListener('click', function () {
+    closeSheet('auraSheet');
+    toast('⏱️ 已经收起来了，照抽不误；右下角那格随时点回来');
+  }, false);
+  document.getElementById('autoStop').addEventListener('click', autoStop, false);
   document.getElementById('shopSheet').addEventListener('click', function (e) {
     var el = e.target;
     if (el && el.getAttribute && el.getAttribute('data-buy')) { buyItem(el.getAttribute('data-buy')); return; }
@@ -3684,7 +3952,7 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, fish: freshFish(),
+      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, auto: { on: false, until: 0, last: 0 }, fish: freshFish(),
       wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }
     };
     rewindTarget = null; clearPotTimer(); fishIdle();
@@ -5190,13 +5458,16 @@
   if (!state.bag || typeof state.bag !== 'object') state.bag = {};
   if (!state.pot || typeof state.pot !== 'object') state.pot = {};
   if (!state.fish || typeof state.fish !== 'object') state.fish = freshFish();
+  if (!state.auto || typeof state.auto !== 'object') state.auto = { on: false, until: 0, last: 0 };
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
   renderBj(); renderBjBet();
   refreshPots();                                  // 商城 / 背包 / 生效中药水徽标
   renderFishPage(); renderFishSheet();
+  autoKick();                                     // ⏱️ 关掉页面那段时间欠下的抽奖，回来先补上
   setPage('home');                                // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
+  setInterval(autoTick, 1000);                    // ⏱️ 自动光环仪的心跳
 
   /* ================= 离线支持 ================= */
   // sw.js 用「联网时优先网络、断网时回退缓存」的策略；file:// 打开时不需要也不注册。
@@ -5207,6 +5478,11 @@
     }
     window.addEventListener('offline', function () { toast('已断网 · 离线也能继续玩'); });
     window.addEventListener('online', function () { toast('已恢复联网'); });
+    // 从后台切回来：自动光环仪先把后台那段时间欠下的补上，别等心跳
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) autoKick();
+    });
+    window.addEventListener('focus', function () { autoKick(); });
     window.addEventListener('resize', drawRig);
     setTimeout(drawRig, 60);
   } catch (e) {}
