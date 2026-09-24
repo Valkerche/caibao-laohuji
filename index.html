@@ -238,11 +238,11 @@
   #betInfo b { font-family: var(--disp); color: var(--goldlit); }
 
   #claimWrap, .claimWrap { margin-top: 10px; text-align: center; }
-  #claim, #bjClaim {
+  #claim, #bjClaim, #whClaim {
     padding: 8px 15px; border: 1px solid var(--gl); border-radius: 3px; background: rgba(212,175,55,.06);
     color: var(--goldlit); font-size: 12px; font-weight: 700; touch-action: manipulation;
   }
-  #claim:disabled, #bjClaim:disabled {
+  #claim:disabled, #bjClaim:disabled, #whClaim:disabled {
     opacity: .4; color: var(--txd); border-color: var(--gl2); background: transparent;
   }
   .hint { margin-top: 10px; font-size: 11px; color: var(--txd); line-height: 1.8; text-align: center; }
@@ -1021,6 +1021,71 @@
     background: linear-gradient(180deg, rgba(18,112,60,.42), rgba(18,112,60,.10)); }
   .gmBtn.wide { padding: 14px; font-weight: 800; letter-spacing: .3em; text-indent: .3em; }
 
+  /* ================= 🎡 轮盘赌 ================= */
+  .wheelWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .whTop { display: flex; align-items: stretch; gap: 8px; margin-bottom: 8px; }
+  .whTop #wheelBack { margin-bottom: 0; display: flex; align-items: center; }
+  .whTopStats { flex: 1; display: flex; gap: 6px; }
+  .whHead { display: block; }
+  .whWheelBox { position: relative; margin: 2px auto 10px; width: min(58vw, 232px); height: min(58vw, 232px); }
+  .whWheel { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--golddim);
+    box-shadow: 0 0 0 2px rgba(0,0,0,.7), 0 0 20px rgba(212,175,55,.22), inset 0 0 16px rgba(0,0,0,.7);
+    transition: transform 3.2s cubic-bezier(.16,.72,.24,1); }
+  .whPin { position: absolute; left: 50%; top: -7px; margin-left: -6px; z-index: 3;
+    border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 11px solid var(--goldlit);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.85)); }
+  .whHub { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px; z-index: 2;
+    display: flex; align-items: center; justify-content: center; border: 2px solid var(--golddim); border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #17191e, #050807); color: var(--goldlit);
+    font-family: var(--disp); font-size: 21px; font-weight: 800;
+    box-shadow: 0 0 12px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06); }
+  .whInfo { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.06), rgba(0,0,0,.30)); }
+  .whRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .whMsg { margin-top: 4px; font-size: 11px; line-height: 1.45; color: var(--txd); min-height: 16px; }
+  .whStake { margin-top: 4px; font-size: 11px; color: var(--txd); }
+  .whStake b { font-family: var(--disp); color: var(--goldlit); }
+
+  .whTable { margin-top: 8px; padding: 3px; border: 1px solid var(--golddim); border-radius: 4px;
+    background: linear-gradient(#0d1a14, #081210);
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,.14), inset 0 0 30px rgba(0,0,0,.5); }
+  .whZeroRow { display: flex; gap: 3px; margin-bottom: 3px; }
+  .whRow { display: flex; gap: 3px; margin-top: 3px; }
+  .whRow .whCell { flex: 1; }
+  .whOut { display: flex; gap: 3px; margin-top: 3px; }
+  .whOut .whCell { flex: 1; height: 30px; font-size: 14px; }
+  .whCell { position: relative; display: flex; align-items: center; justify-content: center;
+    height: 24px; border: 1px solid #2a342c; border-radius: 2px; background: linear-gradient(#141d17, #0b120e);
+    font-family: var(--disp); font-size: 12px; font-weight: 800; color: var(--tx);
+    touch-action: manipulation; transition: box-shadow .12s, border-color .12s; }
+  .whCell.sm { font-size: 10px; letter-spacing: -.2px; }
+  .whCell.red { background: linear-gradient(#a3122a, #6d0c1c); border-color: #c8102e; color: #ffe9ee; }
+  .whCell.black { background: linear-gradient(#20242a, #0f1216); border-color: #3a3f46; color: #e6ebf0; }
+  .whCell.green { background: linear-gradient(#12703c, #0a4a27); border-color: #1c9c56; color: #d6ffe6; }
+  .whCell.w2 { flex: 2; }
+  .whCell.on { border-color: var(--goldlit); box-shadow: inset 0 0 0 2px rgba(243,217,139,.55); }
+  .whCell.pick { border-color: #fff; box-shadow: inset 0 0 12px rgba(212,175,55,.65); }
+  .whCell:active { filter: brightness(1.25); }
+  .whChip { position: absolute; top: 0; right: 2px; font-size: 9px; font-weight: 800; color: var(--goldlit);
+    text-shadow: 0 1px 2px #000, 0 0 6px #000; }
+  .whZero { flex: 1; height: 26px; font-size: 14px; }
+  .whMode { display: flex; align-items: center; gap: 3px; margin-top: 6px; }
+  .whM { flex: 1; padding: 7px 4px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: rgba(212,175,55,.06); color: var(--txd); font-size: 12px; touch-action: manipulation; }
+  .whM.on { background: rgba(212,175,55,.22); color: var(--goldlit); box-shadow: inset 0 0 0 1px var(--goldlit); }
+  .whTopStats { flex: 1; display: flex; gap: 6px; }
+  .whTopStats .stats { flex: 1; }
+  .whChips { display: flex; gap: 7px; justify-content: center; margin-top: 7px; }
+  .whChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .whGo { display: flex; gap: 8px; margin-top: 7px; }
+  .whSpin { flex: 2; padding: 13px 6px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: linear-gradient(180deg, rgba(212,175,55,.22), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .28em; text-indent: .28em;
+    touch-action: manipulation; }
+  .whSpin:disabled { opacity: .4; }
+  .whGo #whClaim { flex: 1; margin: 0; }
+
   /* 窄屏：把容易挤爆的文字排开 */
   @media (max-width: 380px) {
     .wrap, .fishWrap { padding-left: 10px; padding-right: 10px; }
@@ -1046,12 +1111,24 @@
     .gmBtn b { font-size: 14px; }
     .ccInner { padding: 12px 16px 14px; }
     .ccName { font-size: 18px; }
+    .whWheelBox { width: min(56vw, 208px); height: min(56vw, 208px); }
+    .whHub { width: 56px; height: 56px; margin: -28px 0 0 -28px; font-size: 19px; }
+    .whCell { height: 22px; font-size: 11px; }
+    .whChips .betBtn { width: 42px; height: 42px; font-size: 12px; }
+  }
+  /* 矮屏（横过来 / 小屏手机）：盘与格子再收一点，尽量一屏放得下 */
+  @media (max-height: 730px) {
+    .whWheelBox { width: min(50vw, 188px); height: min(50vw, 188px); }
+    .whCell { height: 21px; font-size: 11px; }
+    .whChips .betBtn { width: 42px; height: 42px; }
+    .whSpin { padding: 10px 6px; font-size: 15px; }
+    .whM { padding: 5px 4px; }
   }
 </style>
 </head>
 <body>
 
-<!-- 首页（大厅）：老虎机 / 黑杰克 / 商城已开放，养鸡场与幸运转盘还是占位 -->
+<!-- 首页（大厅）：老虎机 / 黑杰克 / 钓鱼 / 轮盘赌 / 商城已开放，养鸡场还是占位 -->
 <div id="homePage" class="grain">
   <div id="verTag">v0.0</div>
   <div class="lobbyTitle">赛博赌场</div>
@@ -1068,8 +1145,8 @@
   <button class="gameBtn soon" data-game="CH">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
   </button>
-  <button class="gameBtn soon" data-game="WH">
-    <span class="ico">🎡</span><span class="nm">幸运转盘</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn" id="whEntry" data-game="WH">
+    <span class="ico">🎡</span><span class="nm">轮盘赌</span><span class="go">进入 ›</span>
   </button>
   <button class="gameBtn" data-game="SHOP">
     <span class="ico">🛒</span><span class="nm">商城</span><span class="go">进入 ›</span>
@@ -1255,6 +1332,55 @@
   </div>
 </div>
 
+<!-- 轮盘赌（4.0）：真赌桌竖过来摆，0 在最上面 -->
+<div id="wheelPage" class="wheelWrap" style="display:none">
+  <div class="whTop">
+    <button id="wheelBack">‹ 返回大厅</button>
+    <div class="whTopStats">
+      <div class="stats">
+        <div class="stat"><b id="whGold" style="color:#f3d98b">100</b><span>金币</span></div>
+        <div class="stat"><b id="whLuck" style="color:#f3d98b">×1.00</b><span>轮盘幸运</span></div>
+        <div class="stat"><b id="whEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="potBadge" id="whPotBadge" style="display:none"></div>
+
+  <div class="whHead">
+    <div class="whWheelBox">
+      <div class="whWheel" id="whWheel"></div>
+      <div class="whPin"></div>
+      <div class="whHub" id="whHub">—</div>
+    </div>
+    <div class="whInfo">
+      <div class="whRes" id="whRes">先押注，再点「转」</div>
+      <div class="whMsg" id="whMsg"></div>
+      <div class="whStake" id="whStake">本局注单 <b>0</b> 注</div>
+    </div>
+  </div>
+
+  <div class="whTable" id="whTable"></div>
+
+  <div class="whChips" id="whChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+  </div>
+
+  <div class="whMode" id="whModeRow">
+    <button class="whM on" data-mode="bet">🎯 下注</button>
+    <button class="whM" data-mode="take">✂ 去注</button>
+    <button class="whM" data-act="clear">🗑 清空</button>
+  </div>
+
+  <div class="whGo">
+    <button class="whSpin" id="whSpin">转</button>
+    <button id="whClaim">领取救济金 100</button>
+  </div>
+</div>
+
 <button class="corner" id="helpBtn" style="display:none">❓</button>
 <button class="corner" id="bagBtn" style="display:none">🎒</button>
 <button class="corner" id="rewindBtn" style="display:none">⏪</button>
@@ -1398,6 +1524,38 @@
       <h3>药水与幸运</h3>
       · 身上的幸运加成、<b>🍀 幸运药水</b> 和「⭐ 永久钓鱼幸运」会一起算进钓鱼幸运：绿区更宽、鱼挣扎更慢、也更容易遇到稀有的<br>
       · 🍀 幸运药水在钓鱼里按「钓上一条算一局」消耗，💰 金币药水与 🛡️ 无敌药水对钓鱼无效
+    </div>
+
+    <div class="rules" id="helpWheel" style="display:none">
+      <h3>轮盘赌 · 怎么玩</h3>
+      · 一个球落进 0 ~ 36 里的某一格，落在你押中的注上就按赔率赔<br>
+      · 台面就是真赌桌竖过来摆：<b>最上面是 0（绿）</b>，下面 12 行每行 3 个号码（一行就是真桌上的一列），最下面一排是 <b>红 / 黑 / 绿</b><br>
+      · 一手可以同时押好几个注，球停下后 <b>逐注结算</b>：押中的按赔率赔，没押中的那部分归庄家<br>
+      · 只在 0 ~ 36 里落球，<b>0 只赔押到它的注</b>（点 0 号格，或者押「绿」），别的注落在 0 上算输
+
+      <h3>赔率表</h3>
+      <div class="pay">
+        <span>单号 ×36（35:1）</span>
+        <span>红 / 黑 ×2（1:1）</span>
+        <span>绿 0 ×36（35:1）</span>
+      </div>
+
+      <h3>怎么下注</h3>
+      · 先在下面选一枚筹码，再点台面上的格子：点一下加一枚；按了 <b>去注</b> 之后点格子，就把那一格上的注全退回来<br>
+      · 点号码格就是押那个号码；最下面 <b>红 / 黑 / 绿</b> 三个大格押颜色（绿就是 0）<br>
+      · <b>清空</b> 把台面上的注一次全撤掉（注要等转的时候才从金币里扣，撤注不花冤枉钱）<br>
+      · 球转起来之后 <b>转</b> 钮会锁住，等球停下再继续
+
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，球越容易落在 <b>你押中的格子</b> 里，<b>赔率一个字都不改</b>；台面上押得越宽，幸运能发挥的余地越小<br>
+      · 🍀 幸运药水：轮盘幸运 +5，每转完一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30（没押中就什么都没有）<br>
+      · ⏪ 后悔药水：本局作废，台面注单原样留着免费重转一次（投注不退）<br>
+      · 🛡️ 无敌药水：本局要是输了，把这一把的注全退回给你
+
+      <h3>金币</h3>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 所有进度自动保存在本机
     </div>
   </div>
 </div>
@@ -1737,7 +1895,8 @@
     codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
     bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
     pot: {},                                     // 生效中的药水：{ 药水key: 剩余局数 }
-    fish: freshFish()                            // 钓鱼：鱼篓 / 图鉴 / 鱼缸 / 渔具
+    fish: freshFish(),                           // 钓鱼：鱼篓 / 图鉴 / 鱼缸 / 渔具
+    wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }   // 轮盘赌：转过的局数 / 单局最高回收 / 筹码 / 下注模式
   };
   var potTimer = {};                             // 只是给徽标做倒计时的显示定时器，不进存档
 
@@ -1858,6 +2017,14 @@
         }
       }
       state.fish = nf;
+      // 轮盘赌：筹码只认台上那几档，模式只认下注 / 去注
+      var wl = d.wheel;
+      if (wl && typeof wl === 'object') {
+        if (typeof wl.spins === 'number' && wl.spins > 0) state.wheel.spins = Math.floor(wl.spins);
+        if (typeof wl.best === 'number' && wl.best > 0) state.wheel.best = Math.floor(wl.best);
+        if (typeof wl.chip === 'number' && BET_PRESETS.indexOf(Math.floor(wl.chip)) >= 0) state.wheel.chip = Math.floor(wl.chip);
+        if (wl.mode === 'take') state.wheel.mode = 'take';
+      }
     } catch (e) {}
   }
 
@@ -2147,6 +2314,25 @@
   var $helpSlot = document.getElementById('helpSlot');
   var $helpBj = document.getElementById('helpBj');
   var $helpFish = document.getElementById('helpFish');
+  var $helpWheel = document.getElementById('helpWheel');
+
+  /* ---- 轮盘赌（4.0） ---- */
+  var $wheelPage = document.getElementById('wheelPage');
+  var $wheelBack = document.getElementById('wheelBack');
+  var $whGold = document.getElementById('whGold');
+  var $whLuck = document.getElementById('whLuck');
+  var $whEq = document.getElementById('whEq');
+  var $whWheel = document.getElementById('whWheel');
+  var $whHub = document.getElementById('whHub');
+  var $whRes = document.getElementById('whRes');
+  var $whMsg = document.getElementById('whMsg');
+  var $whStake = document.getElementById('whStake');
+  var $whTable = document.getElementById('whTable');
+  var $whChips = document.getElementById('whChips');
+  var $whModeRow = document.getElementById('whModeRow');
+  var $whSpin = document.getElementById('whSpin');
+  var $whClaim = document.getElementById('whClaim');
+  var $whPotBadge = document.getElementById('whPotBadge');
 
   /* ---- 钓鱼 ---- */
   var $fishPage = document.getElementById('fishPage');
@@ -2217,7 +2403,9 @@
     $gamePage.style.display = (p === 'slot') ? '' : 'none';
     $bjPage.style.display = (p === 'bj') ? '' : 'none';
     $fishPage.style.display = (p === 'fish') ? '' : 'none';
+    $wheelPage.style.display = (p === 'wheel') ? '' : 'none';
     if (p === 'fish') renderFishPage();
+    if (p === 'wheel') renderWheelPage();
     refreshCorners();
   }
 
@@ -2413,7 +2601,7 @@
 
   // 两行徽标：生效中的药水，跟着游戏页和黑杰克页各显示一份
   function renderPotBadges() {
-    var ids = ['potBadge', 'bjPotBadge'], i;
+    var ids = ['potBadge', 'bjPotBadge', 'whPotBadge'], i;
     for (i = 0; i < ids.length; i++) {
       var el = document.getElementById(ids[i]);
       if (!el) continue;
@@ -2451,7 +2639,7 @@
   function renderRewindBtn() {
     var b = document.getElementById('rewindBtn');
     if (!b) return;
-    var show = (page === 'slot' || page === 'bj') && potActive('rewind') && rewindTarget && !rewindTarget.used;
+    var show = (page === 'slot' || page === 'bj' || page === 'wheel') && potActive('rewind') && rewindTarget && !rewindTarget.used;
     b.style.display = show ? '' : 'none';
     if (show) b.textContent = '⏪ 后悔药水 · 重开本局';
   }
@@ -2474,6 +2662,7 @@
       return;
     }
     if (t.kind === 'bj') { rewindBj(t.bet); renderRewindBtn(); return; }
+    if (t.kind === 'wheel') { whRewind(t); renderRewindBtn(); return; }
   }
   function rewindBj(bet) {
     if (BJ.phase !== 'idle') return;
@@ -2506,6 +2695,11 @@
     $bjLuck.textContent = fmtSlotLuck(slotLuck());
     $bjEq.textContent = state.eq;
     $bjEq.style.color = col;
+    // 轮盘赌页顶部也是同一份金币 / 幸运 / 光环
+    $whGold.textContent = abbr(state.gold);
+    $whLuck.textContent = fmtSlotLuck(slotLuck());
+    $whEq.textContent = state.eq;
+    $whEq.style.color = col;
     renderBjLock();
   }
 
@@ -2542,7 +2736,7 @@
     else if (!can) { el.disabled = true; el.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
     else { el.disabled = false; el.textContent = '领取救济金 100 金币'; }
   }
-  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); }
+  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); paintClaim($whClaim); }
 
   /* ================= 黑杰克 ================= */
   // 规则：单副牌每局重洗 · J/Q/K=10 · A 软硬双值 · 庄家 S17（软 17 停）· 明牌 A/10 时 peek
@@ -3087,8 +3281,25 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '3.3.0';
+  var VERSION = '4.1.1';
   var CHANGELOG = [
+    { v: '4.1.1', t: '钓台转盘修正', li: [
+      '🎡 钓台上的红 / 黑 / 绿转盘：停在哪一格就报哪一色，不会再出现指针停在黑格、却报开红的情况'
+    ] },
+    { v: '4.1.0', t: '轮盘精简', li: [
+      '🧹 台面清爽了：只留下号码和红黑绿，点号码格就是押那个号码，最下面一排是红 / 黑 / 绿',
+      '🔵 转盘挪到屏幕中间并放大，开出来的号码看得更清楚',
+      '🗑️ 多了一个「清空」按钮：一下把台面上的注全撤掉'
+    ] },
+    { v: '4.0.0', t: '轮盘赌', li: [
+      '🎡 赌场里新开一张轮盘赌台：欧式单零 37 格的转盘，自己在台面上点格子押注',
+      '🔢 单号 35:1，红黑 1:1，押 0 也是 35:1',
+      '🧮 台面竖着摆，手机上正好放得下：0 在最上面一行，往下十二行是 1~36，再往下是红 / 黑 / 绿',
+      '🎯 点哪一格就押哪个号码，红 / 黑 / 绿 三个大格押颜色',
+      '↩️ 「下注 / 去注」一键切换，去注模式点格子原样退回，还有「清空」一键全撤',
+      '🍀 幸运越高，球越容易停在你押中的那一格上——赔率一个字不改',
+      '⏪ 后悔药水：这一把作废，注单原样保留、免费重转一次'
+    ] },
     { v: '3.3.0', t: '竿与线', li: [
       '🎣 竿子真的立在了岸上：抛竿时甩出去，咬钩时弯下腰',
       '🧵 竿尖到浮漂拉出一条钓线，随水波垂着',
@@ -3319,22 +3530,28 @@
     state.bet = b; renderBet(); save();
   }, false);
 
-  $claim.addEventListener('click', function () {
+  // 救济金：老虎机 / 黑杰克 / 轮盘赌三页共用同一份 1 小时冷却
+  function doClaim(extra) {
     if (Date.now() - state.claimAt < CLAIM_CD) return;
     if (state.gold >= 1) return;
     state.claimAt = Date.now();
     state.gold = clampGold(state.gold + CLAIM_GOLD);
     toast('领取了 100 金币');
-    renderStats(); renderBet(); save();
-  }, false);
+    renderStats(); renderBet(); renderClaim();
+    if (extra) extra();
+    save();
+  }
+
+  $claim.addEventListener('click', function () { doClaim(); }, false);
 
   // ❓ 是同一个按钮，规则内容按当前所在页面切换
   function openHelp() {
-    var slot = (page === 'slot'), bj = (page === 'bj');
-    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : (bj ? '❓ 黑杰克规则' : '❓ 钓鱼规则');
+    var slot = (page === 'slot'), bj = (page === 'bj'), fish = (page === 'fish');
+    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : (bj ? '❓ 黑杰克规则' : (fish ? '❓ 钓鱼规则' : '❓ 轮盘赌规则'));
     $helpSlot.style.display = slot ? '' : 'none';
     $helpBj.style.display = bj ? '' : 'none';
-    $helpFish.style.display = (page === 'fish') ? '' : 'none';
+    $helpFish.style.display = fish ? '' : 'none';
+    $helpWheel.style.display = (!slot && !bj && !fish) ? '' : 'none';
     openSheet('helpSheet');
   }
   $helpBtn.addEventListener('click', openHelp, false);
@@ -3394,7 +3611,7 @@
   $logBtn.addEventListener('click', function () { openSheet('logSheet'); }, false);
   document.getElementById('logSheet').addEventListener('click', function (e) { if (e.target === this) closeSheet('logSheet'); }, false);
 
-  // 大厅游戏入口：老虎机 / 黑杰克 / 钓鱼 / 商城已开放，养鸡场与幸运转盘还是占位
+  // 大厅游戏入口：老虎机 / 黑杰克 / 钓鱼 / 轮盘赌 / 商城已开放，养鸡场还是占位
   var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
@@ -3406,6 +3623,7 @@
           setPage('bj'); renderBj(); renderBjBet(); return;
         }
         if (g === 'FISH') { setPage('fish'); return; }                 // 进钓鱼
+        if (g === 'WH') { setPage('wheel'); return; }                  // 进轮盘赌
         if (g === 'SHOP') { toggleMiscPop(false); openSheet('shopSheet'); return; }   // 进商城
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
       }, false);
@@ -3413,14 +3631,7 @@
   }
   $backBtn.addEventListener('click', function () { setPage('home'); }, false);   // 回大厅
   $bjBack.addEventListener('click', function () { setPage('home'); }, false);
-  $bjClaim.addEventListener('click', function () {
-    if (Date.now() - state.claimAt < CLAIM_CD) return;
-    if (state.gold >= 1) return;
-    state.claimAt = Date.now();
-    state.gold = clampGold(state.gold + CLAIM_GOLD);
-    toast('领取了 100 金币');
-    renderStats(); renderBet(); renderBjBet(); renderClaim(); save();
-  }, false);
+  $bjClaim.addEventListener('click', function () { doClaim(renderBjBet); }, false);
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
@@ -3473,9 +3684,13 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, fish: freshFish()
+      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, fish: freshFish(),
+      wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }
     };
     rewindTarget = null; clearPotTimer(); fishIdle();
+    for (var wk in whTable) delete whTable[wk];
+    whLast = -1; whBusy = false; whAngle = 0;
+    whRenderTable(); whRenderCtl();
     save();
     BJ.deck = []; BJ.player = []; BJ.dealer = []; BJ.hole = true; BJ.bet = 1; BJ.doubled = false; BJ.phase = 'idle';
     fillGridIdle();
@@ -3533,6 +3748,308 @@
     state.cb = true;
     toast('获得隐藏词条「' + CAIBAO + '」：佩戴的光环 回报率 +10 个百分点');
     renderStats(); renderDex(); renderEquip(); save();
+  }, false);
+
+  /* ================= 🎡 轮盘赌 ================= */
+
+  // 欧式单零：真实转盘上 37 个格子的排列顺序（0 之后顺时针）
+  var WH_SEQ = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+  var WH_RED = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+  var WH_SPIN = 3200;                                  // 与 CSS 里 .whWheel 的 transition 对齐
+
+  // 台面：每个投注位覆盖哪些号码、命中时连本带利回收多少（欧式 36 ÷ 覆盖数）
+  var WH_DEF = {}, WH_ANCHOR = {};
+  (function () {
+    var nums, i;
+    function def(k, ns, nm) { WH_DEF[k] = { key: k, nums: ns, m: 36 / ns.length, nm: nm }; }
+    function anchor(k, n) { if (!WH_ANCHOR[n]) WH_ANCHOR[n] = []; WH_ANCHOR[n].push(k); }
+    for (i = 1; i <= 36; i++) { def('S' + i, [i], '单号 ' + i); anchor('S' + i, i); }
+    def('R', WH_RED, '红');
+    nums = []; for (i = 1; i <= 36; i++) if (WH_RED.indexOf(i) < 0) nums.push(i);
+    def('B', nums, '黑');
+    def('G', [0], '绿 0');
+    anchor('G', 0);                        // 押 0 的筹码就显示在台面最上面那个绿色 0 上
+  })();
+
+  var whTable = {};                       // 台面上的临时注单：key -> 押了多少（不存档）
+  var whAngle = 0;                        // 转盘累计角度
+  var whBusy = false;                     // 正在转
+  var whLast = -1;                        // 上一次开出的号码
+  var whTimer = 0;
+  var whCovNum = {};                      // 本局注单覆盖到的号码
+
+  // 本局注单覆盖了多少个号、共押了多少
+  function whCover() {
+    var k, i, n, C = 0, T = 0, nums = {}, bets = [];
+    for (k in whTable) {
+      if (!WH_DEF[k] || whTable[k] <= 0) continue;
+      T += whTable[k];
+      bets.push({ key: k, amt: whTable[k], d: WH_DEF[k] });
+      for (i = 0; i < WH_DEF[k].nums.length; i++) {
+        n = WH_DEF[k].nums[i];
+        if (!nums[n]) { nums[n] = 1; C++; }
+      }
+    }
+    whCovNum = nums;
+    return { C: C, T: T, nums: nums, bets: bets };
+  }
+
+  // 点号码格押的就是那个号码本身（0 号格＝绿注）
+  function whCellKey(n) { return n === 0 ? 'G' : ('S' + n); }
+
+  function whAdd(key) {
+    var d = WH_DEF[key], cv;
+    if (!d) return;
+    cv = whCover();
+    if (!afford(cv.T + state.wheel.chip)) { toast('金币不够，先去掉一些注或领救济金'); return; }
+    whTable[key] = (whTable[key] || 0) + state.wheel.chip;
+    buzz(6);
+    whRenderTable(); whRenderCtl();
+  }
+
+  function whTakeKey(key) {
+    var back = whTable[key] || 0;
+    if (!back) return 0;
+    delete whTable[key];
+    return back;
+  }
+
+  function whTakeCell(n) {
+    var list = WH_ANCHOR[n] || [], i, back = 0;
+    for (i = 0; i < list.length; i++) back += whTakeKey(list[i]);
+    if (back) { buzz(8); toast('已退回 ' + abbr(back) + ' 金币'); }
+    whRenderTable(); whRenderCtl();
+  }
+
+  function whKeyTap(key) {
+    var back;
+    if (whBusy || !WH_DEF[key]) return;
+    if (state.wheel.mode === 'take') {
+      back = whTakeKey(key);
+      if (back) { buzz(8); toast('已退回 ' + abbr(back) + ' 金币'); }
+    } else whAdd(key);
+    whRenderTable(); whRenderCtl();
+  }
+
+  function whCellTap(n) {
+    if (whBusy) return;
+    if (state.wheel.mode === 'take') { whTakeCell(n); return; }
+    whAdd(whCellKey(n));
+  }
+
+  // 台面上所有注一次撤掉（注要等转的时候才扣金币，所以这里没有退款）
+  function whClear() {
+    var k, n = 0, sum = 0;
+    for (k in whTable) if (whTable[k] > 0) { n++; sum += whTable[k]; }
+    if (!n) { toast('台面上还没有注'); return; }
+    for (k in whTable) delete whTable[k];
+    buzz(8); toast('已清空 ' + n + ' 注（共 ' + abbr(sum) + ' 金币）');
+    whRenderTable(); whRenderCtl();
+  }
+
+  // 先定结果再转：押中的号更容易开出来，但赔率一个字不改
+  function whPick(cv) {
+    var i, cov = [], un = [];
+    for (i = 0; i < 37; i++) { if (cv.nums[i]) cov.push(i); else un.push(i); }
+    if (!cov.length) return un[Math.floor(Math.random() * un.length)];
+    var q = Math.min(1, auraR() * cv.C / 36);
+    if (Math.random() < q || !un.length) return cov[Math.floor(Math.random() * cov.length)];
+    return un[Math.floor(Math.random() * un.length)];
+  }
+
+  function whNextAngle(idx) {
+    var seg = 360 / 37;
+    var want = -(idx + 0.5) * seg - (Math.random() * 8 - 4);
+    var k = Math.ceil((whAngle - want) / 360) + 4 + Math.floor(Math.random() * 2);
+    return want + 360 * k;
+  }
+
+  function whColor(n) { return n === 0 ? '#12703c' : (WH_RED.indexOf(n) >= 0 ? '#a3122a' : '#20242a'); }
+  function whHubBg(n) {
+    return n === 0 ? 'radial-gradient(circle at 34% 28%, #12703c, #0a4a27)'
+      : (WH_RED.indexOf(n) >= 0 ? 'radial-gradient(circle at 34% 28%, #a3122a, #6d0c1c)'
+        : 'radial-gradient(circle at 34% 28%, #20242a, #0f1216)');
+  }
+  function whColorName(n) { return n === 0 ? '🟢 绿 0' : (WH_RED.indexOf(n) >= 0 ? ('🔴 红 ' + n) : ('⚫ 黑 ' + n)); }
+
+  function whWheelCss() {
+    var seg = 360 / 37, s = [], i;
+    for (i = 0; i < 37; i++) {
+      s.push(whColor(WH_SEQ[i]) + ' ' + (i * seg).toFixed(2) + 'deg ' + ((i + 1) * seg).toFixed(2) + 'deg');
+    }
+    return 'conic-gradient(from 0deg, ' + s.join(',') + ')';
+  }
+
+  // —— 台面 ——
+  function whCellHtml(kind, v, label, cls) {
+    var attrs, on = '', chip = '', amt = 0, keys, i;
+    if (kind === 'num') {
+      attrs = ' data-num="' + v + '"';
+      if (whCovNum[v]) on += ' on';
+      if (v === whLast) on += ' pick';
+      keys = WH_ANCHOR[v];
+      if (keys) for (i = 0; i < keys.length; i++) amt += (whTable[keys[i]] || 0);
+    } else {
+      attrs = ' data-bet="' + v + '"';
+      if (whTable[v]) { on += ' on'; amt = whTable[v]; }
+    }
+    if (amt > 0) chip = '<span class="whChip">' + abbr(amt) + '</span>';
+    return '<div class="whCell' + cls + on + '"' + attrs + '>' + label + chip + '</div>';
+  }
+
+  function whRenderTable() {
+    if (!$whTable) return;
+    whCover();                             // 顺手刷一遍覆盖集：格子高亮跟着注单走
+    var html = '', r, j, n;
+    html += '<div class="whZeroRow">' + whCellHtml('num', 0, '0', ' green whZero') + '</div>';
+    for (r = 0; r < 12; r++) {
+      html += '<div class="whRow">';
+      for (j = 0; j < 3; j++) {
+        n = r * 3 + j + 1;
+        html += whCellHtml('num', n, String(n), WH_RED.indexOf(n) >= 0 ? ' red' : ' black');
+      }
+      html += '</div>';
+    }
+    html += '<div class="whOut">' + whCellHtml('bet', 'R', '红', ' red') + whCellHtml('bet', 'B', '黑', ' black') + whCellHtml('bet', 'G', '绿 0', ' green') + '</div>';
+    $whTable.innerHTML = html;
+  }
+
+  function whRenderCtl() {
+    var cv = whCover(), i, el, els, cnt = 0, k;
+    els = $whChips.getElementsByClassName('betBtn');
+    for (i = 0; i < els.length; i++) {
+      el = els[i];
+      el.className = (parseInt(el.getAttribute('data-bet'), 10) === state.wheel.chip) ? 'betBtn on' : 'betBtn';
+    }
+    els = $whModeRow.getElementsByClassName('whM');
+    for (i = 0; i < els.length; i++) {
+      el = els[i];
+      el.className = (el.getAttribute('data-mode') === state.wheel.mode) ? 'whM on' : 'whM';
+    }
+    for (k in whTable) if (whTable[k] > 0) cnt++;
+    $whStake.textContent = cnt ? ('本局注单 ' + cnt + ' 注 · 共 ' + abbr(cv.T) + ' 金币') : '先点格子押注，再点右下角「转」';
+    $whSpin.disabled = whBusy || !cv.T || !afford(cv.T);
+  }
+
+  function whSpin(free) {
+    var cv = whCover(), n;
+    if (whBusy) return;
+    if (!cv.T) { toast('先押注再转'); return; }
+    if (!free && !afford(cv.T)) { toast('金币不够：本局注单要 ' + abbr(cv.T) + ' 金币'); return; }
+    n = whPick(cv);
+    if (!free) {
+      state.gold = clampGold(state.gold - cv.T);
+      save();
+    }
+    whBusy = true;
+    whLast = -1;
+    whAngle = whNextAngle(WH_SEQ.indexOf(n));
+    $whWheel.style.transform = 'rotate(' + whAngle.toFixed(2) + 'deg)';
+    buzz(12);
+    whRenderTable(); whRenderCtl();
+    renderStats(); renderClaim();
+    $whRes.textContent = '转盘转动中…';
+    $whMsg.textContent = '本局覆盖 ' + cv.C + ' 个号 · 注单 ' + abbr(cv.T) + ' 金币';
+    clearTimeout(whTimer);
+    whTimer = setTimeout(function () { whSettle(n, cv); }, WH_SPIN + 160);
+  }
+
+  function whSettle(n, cv) {
+    var i, b, T = cv.T, payout = 0, hits = 0, lines = [], net, goldPot, shield;
+    for (i = 0; i < cv.bets.length; i++) {
+      b = cv.bets[i];
+      if (b.d.nums.indexOf(n) >= 0) {
+        payout += b.amt * b.d.m;
+        hits++;
+        if (hits <= 3) lines.push(b.d.nm + ' +' + abbr(Math.floor(b.amt * b.d.m)));
+      }
+    }
+    payout = Math.floor(payout);
+    goldPot = payout > 0 && potActive('gold');
+    if (goldPot) payout = Math.floor(payout * GOLD_MUL);
+    shield = payout < T && potActive('shield');
+    if (shield) payout = T;                       // 🛡️：这一把输了就把注全退回（净 0）
+    state.gold = clampGold(state.gold + payout);
+    state.wheel.spins++;
+    if (payout > state.wheel.best) state.wheel.best = payout;
+    rewindArm('wheel', T, payout);
+    if (potActive('luck')) potTick('luck');
+    if (potActive('gold')) potTick('gold');
+    if (shield) potTick('shield');
+    whBusy = false;
+    whLast = n;
+    $whHub.textContent = String(n);
+    $whHub.style.background = whHubBg(n);
+    whRenderTable(); whRenderCtl();
+    $whRes.textContent = whColorName(n);
+    net = payout - T;
+    $whMsg.textContent = (hits ? ('押中 ' + hits + ' 注（' + lines.join('、') + (hits > 3 ? ' 等' : '') + '）· 回收 ' + abbr(payout)) : '没押中 · 回收 0') +
+      '　本局 ' + (net > 0 ? '+' : '') + abbr(net) + '　已转 ' + state.wheel.spins + ' 局' + (shield ? '　🛡️ 退注' : '');
+    renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  // ⏪ 后悔药水：这一把作废，注单原样保留免费重转一次（投注不退）
+  function whRewind(t) {
+    if (whBusy) return;
+    state.gold = clampGold(state.gold - (t.back || 0));
+    if (state.wheel.spins > 0) state.wheel.spins--;
+    whLast = -1;
+    whRenderTable(); whRenderCtl();
+    $whHub.textContent = '—';
+    $whHub.style.background = '';
+    $whRes.textContent = '本局作废，免费重转…';
+    $whMsg.textContent = '⏪ 后悔药水：这一把不算数（注单保留，投注不退）';
+    renderStats(); renderClaim(); save();
+    whSpin(true);
+  }
+
+  function renderWheelPage() {
+    if (!$whWheel) return;
+    $whWheel.style.background = whWheelCss();
+    if (!whBusy) $whWheel.style.transform = 'rotate(' + whAngle.toFixed(2) + 'deg)';
+    renderStats();
+    whRenderTable(); whRenderCtl();
+    if (whBusy) return;
+    if (whLast >= 0) {
+      $whHub.textContent = String(whLast);
+      $whHub.style.background = whHubBg(whLast);
+      $whRes.textContent = '上次 ' + whColorName(whLast);
+    } else {
+      $whRes.textContent = '先点格子押注，再点「转」';
+    }
+    $whMsg.textContent = state.wheel.spins
+      ? ('已转 ' + state.wheel.spins + ' 局 · 单局最高回收 ' + abbr(state.wheel.best))
+      : '欧式单零 37 格 · 点号码押注，红 / 黑 / 绿在下面';
+  }
+
+  $wheelBack.addEventListener('click', function () { setPage('home'); }, false);
+  $whSpin.addEventListener('click', function () { whSpin(false); }, false);
+  $whClaim.addEventListener('click', function () { doClaim(); }, false);
+  $whTable.addEventListener('click', function (e) {
+    var t = e.target, num, key;
+    if (!t || !t.getAttribute) return;
+    num = t.getAttribute('data-num');
+    if (num !== null && num !== undefined) { whCellTap(parseInt(num, 10)); return; }
+    key = t.getAttribute('data-bet');
+    if (key) whKeyTap(key);
+  }, false);
+  $whChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (!v || BET_PRESETS.indexOf(v) < 0) return;
+    state.wheel.chip = v;
+    buzz(6); whRenderCtl(); save();
+  }, false);
+  $whModeRow.addEventListener('click', function (e) {
+    var t = e.target, m, a;
+    if (!t || !t.getAttribute) return;
+    a = t.getAttribute('data-act');
+    if (a === 'clear') { whClear(); return; }
+    m = t.getAttribute('data-mode');
+    if (m !== 'bet' && m !== 'take') return;
+    state.wheel.mode = m;
+    buzz(6); whRenderCtl(); save();
   }, false);
 
   /* ================= 钓鱼 ================= */
@@ -4470,11 +4987,11 @@
   function gmSpin(k) {
     if (gmBusy || !gmFishRef) return;
     var w = gmWheelById(k), pk = gmPockets(), cands = [], i;
-    for (i = 0; i < pk.length; i++) if (pk[i] === k) cands.push(i);
-    var r = Math.random(), pick;
-    if (r < FISH_WHEEL[2].p) pick = 'green';
-    else if (r < FISH_WHEEL[2].p + FISH_WHEEL[1].p) pick = 'red';
+    var gG = gmWheelById('green'), gR = gmWheelById('red'), r = Math.random(), pick;
+    if (r < gG.p) pick = 'green';
+    else if (r < gG.p + gR.p) pick = 'red';
     else pick = 'black';
+    for (i = 0; i < pk.length; i++) if (pk[i] === pick) cands.push(i);
     var idx = cands[Math.floor(Math.random() * cands.length)];
     var seg = 360 / FISH_WHEEL_N, to = -(idx * seg + seg / 2) - 360 * 4;
     var bg = 'background:' + gmWheelCss() + ';';
@@ -4491,10 +5008,10 @@
   }
 
   function gmSettle(k, pick, w) {
-    var it = gmFishRef, i;
+    var it = gmFishRef, i, wr = gmWheelById(pick);
     gmBusy = false;
-    $gmHub.textContent = w.n;
-    $gmHub.style.color = w.c;
+    $gmHub.textContent = wr.n;
+    $gmHub.style.color = wr.c;
     if (k === pick) {
       it.m = it.m * w.mul;
       it.b = 1;
