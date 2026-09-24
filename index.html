@@ -122,12 +122,12 @@
     background: rgba(212,175,55,.13); box-shadow: 0 0 12px rgba(212,175,55,.18);
   }
 
-  #backBtn, #bjBack {
+  #backBtn, #bjBack, #fishBack {
     display: inline-block; margin-bottom: 10px; padding: 5px 12px;
     border: 1px solid var(--gl); border-radius: 20px; background: transparent;
     color: var(--txd); font-size: 12px; font-weight: 700; touch-action: manipulation;
   }
-  #backBtn:active, #bjBack:active { color: var(--goldlit); border-color: var(--gold); }
+  #backBtn:active, #bjBack:active, #fishBack:active { color: var(--goldlit); border-color: var(--gold); }
 
   /* ================= 顶部数据条 ================= */
   .stats {
@@ -612,6 +612,441 @@
   }
   .bUse:active { border-color: var(--gold); }
   .bDrop { padding: 6px 9px; border: 1px solid var(--gl2); border-radius: 2px; background: transparent; color: var(--txd); font-size: 11px; touch-action: manipulation; }
+
+  /* ================= 钓鱼 ================= */
+  .fishWrap { max-width: 520px; margin: 0 auto; padding: 12px 12px calc(94px + env(safe-area-inset-bottom)); }
+  .fTop { display: flex; align-items: stretch; gap: 8px; margin-bottom: 10px; }
+  .fTop #fishBack { margin-bottom: 0; display: flex; align-items: center; }
+  .fTopStats { flex: 1; display: flex; gap: 6px; }
+  .fStat { flex: 1; min-width: 0; padding: 4px 8px 5px; border: 1px solid var(--gl2); border-radius: 2px;
+    background: linear-gradient(180deg, rgba(212,175,55,.08), rgba(0,0,0,.30));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
+  .fStat i { display: block; font-style: normal; font-size: 9px; letter-spacing: .12em; color: var(--txd);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fStat b { display: block; font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit);
+    text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .pond { position: relative; height: 44vh; min-height: 214px; border: 1px solid var(--gl); border-radius: 3px;
+    overflow: hidden; background: #050c0a;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.7), 0 0 0 1px rgba(212,175,55,.10), 0 10px 30px rgba(0,0,0,.55); }
+  .pondSky { position: absolute; left: 0; right: 0; top: 0; height: 44%;
+    background: linear-gradient(180deg, #050a09 0%, #08130f 62%, #0b1a14 100%); }
+  .pondStars { position: absolute; left: 0; right: 0; top: 0; height: 42%; opacity: .75;
+    background-image:
+      radial-gradient(1px 1px at 8% 26%, #fff, transparent),
+      radial-gradient(1px 1px at 21% 12%, #e9f2ff, transparent),
+      radial-gradient(1px 1px at 33% 34%, #fff, transparent),
+      radial-gradient(1px 1px at 46% 18%, #dff0ff, transparent),
+      radial-gradient(1px 1px at 58% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 71% 14%, #fff, transparent),
+      radial-gradient(1px 1px at 84% 32%, #e9f2ff, transparent),
+      radial-gradient(1px 1px at 93% 20%, #fff, transparent);
+    animation: starBlink 6s ease-in-out infinite; }
+  @keyframes starBlink { 0%, 100% { opacity: .55; } 50% { opacity: .9; } }
+  .pondMoon { position: absolute; right: 17%; top: 6%; width: 24px; height: 24px; border-radius: 50%;
+    background: radial-gradient(circle at 36% 34%, #fdf6dc, #d8cfa4 68%, #9c9068);
+    box-shadow: 0 0 26px 9px rgba(240,232,196,.24), 0 0 70px 26px rgba(220,210,170,.10); }
+  .pondReeds { position: absolute; left: 1%; bottom: 13%; width: 30%; height: 36%; z-index: 2;
+    background: repeating-linear-gradient(86deg, #061710 0 2px, transparent 2px 11px);
+    clip-path: polygon(0 100%, 0 44%, 6% 30%, 11% 48%, 17% 22%, 23% 42%, 29% 14%, 35% 40%,
+      41% 26%, 48% 50%, 54% 18%, 60% 42%, 66% 30%, 72% 54%, 78% 34%, 84% 48%, 90% 24%, 96% 44%, 100% 100%); }
+  .pondReeds.r { left: auto; right: 1%; width: 21%; height: 29%; transform: scaleX(-1); opacity: .9; }
+  .pondWater { position: absolute; left: 0; right: 0; bottom: 0; height: 64%; overflow: hidden;
+    background: linear-gradient(180deg, var(--pw1, #12463a), var(--pw2, #061714)); }
+  .pondWater::before { content: ''; position: absolute; inset: 0; opacity: .55;
+    background: repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,.05) 7px 8px); }
+  .pondWater::after { content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(255,255,255,.04) 22px 24px);
+    animation: pwMove 9s linear infinite; }
+  .pondWater.rough { animation: rough .28s ease-in-out infinite; }
+  @keyframes pwMove { from { background-position: 0 0; } to { background-position: 24px 0; } }
+  @keyframes rough { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+  .pondGlow { position: absolute; left: -12%; right: -12%; bottom: -34%; height: 80%;
+    background: radial-gradient(ellipse at 50% 100%, var(--pg, rgba(212,175,55,.40)), transparent 68%); }
+  .pondDock { position: absolute; left: 0; right: 0; bottom: 0; height: 15%; z-index: 3;
+    background: repeating-linear-gradient(90deg, #2b1e11 0 24px, #1a1209 24px 28px);
+    border-top: 1px solid rgba(212,175,55,.22); box-shadow: 0 -8px 18px rgba(0,0,0,.6); }
+  .pondDock::after { content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.06), transparent 46%, rgba(0,0,0,.45)); }
+  .pondLamp { position: absolute; left: 45%; top: 15%; z-index: 5; width: 10px; height: 14px;
+    border-radius: 2px 2px 5px 5px;
+    background: radial-gradient(circle at 50% 38%, #ffeeb4, #d4af37 62%, #6b5227);
+    box-shadow: 0 0 22px 10px rgba(255,214,110,.42), 0 0 80px 34px rgba(255,200,90,.14);
+    animation: lampFlicker 4.2s ease-in-out infinite; }
+  .pondLamp::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 30px;
+    background: linear-gradient(180deg, transparent, rgba(212,175,55,.55)); }
+  @keyframes lampFlicker { 0%, 100% { opacity: .9; } 50% { opacity: 1; } }
+  .pondName { position: absolute; left: 10px; top: 8px; z-index: 6; padding: 2px 8px; font-size: 11px;
+    letter-spacing: .08em; color: var(--txd); border: 1px solid var(--gl2); border-radius: 2px;
+    background: rgba(0,0,0,.42); }
+  .pondName b { color: var(--goldlit); font-weight: 700; }
+
+  .rippleLayer { position: absolute; inset: 0; }
+  .rippleLayer i { position: absolute; width: 130px; height: 42px; margin: -21px 0 0 -65px;
+    border: 1px solid rgba(255,255,255,.32); border-radius: 50%; animation: rip 1.7s ease-out forwards; }
+  @keyframes rip { from { transform: scale(.05); opacity: .9; } to { transform: scale(1); opacity: 0; } }
+
+  .splash { position: absolute; left: 38%; top: 42%; z-index: 4; width: 0; height: 0; pointer-events: none; }
+  .splash i { position: absolute; left: 0; top: 0; width: 118px; height: 34px; margin: -17px 0 0 -59px; opacity: 0;
+    border: 2px solid rgba(222,255,244,.75); border-radius: 50%; }
+  .splash i.b { width: 58px; height: 17px; margin: -8px 0 0 -29px; border-color: rgba(255,255,255,.5); }
+  .splash.on i { animation: splashRing .8s ease-out forwards; }
+  .splash.on i.b { animation-delay: .11s; }
+  @keyframes splashRing { from { transform: scale(.16); opacity: .95; } to { transform: scale(1.55); opacity: 0; } }
+
+  .rigLine { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; }
+  .rigLine path { fill: none; stroke: rgba(232,244,238,.6); stroke-width: 1.2;
+    vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 2px rgba(0,0,0,.7)); }
+
+  .float { position: absolute; left: 38%; top: 42%; z-index: 6; width: 8px; height: 16px; margin-left: -4px;
+    transition: top .5s cubic-bezier(.4, 0, .2, 1); }
+  .float i { position: absolute; inset: 0; border-radius: 4px;
+    background: linear-gradient(180deg, var(--fl1, #e8434f) 0 52%, var(--fl2, #f4efe3) 52% 100%);
+    box-shadow: 0 0 10px rgba(255,255,255,.22); }
+  .float::after { content: ''; position: absolute; left: 50%; top: 15px; width: 1px; height: 13px; margin-left: -.5px;
+    background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.04)); }
+  .hookBait { position: absolute; left: 50%; top: 27px; width: 18px; height: 18px; margin-left: -9px;
+    font-style: normal; font-size: 14px; line-height: 18px; text-align: center;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.85)); }
+  .hookBait:empty { display: none; }
+  .float.bob { animation: bob 1.7s ease-in-out infinite; }
+  .float.dip { animation: dip .34s ease-in-out infinite; }
+  .float.cast { transition: none; animation: castFly .56s cubic-bezier(.3, .05, .6, .5) forwards; }
+  .float.gone { opacity: 0; }
+  .float.fl-cyan { --fl1: #35d0d0; --fl2: #e9fbff; }
+  .float.fl-gold { --fl1: #d4af37; --fl2: #fdf3cf; }
+  .float.fl-star { --fl1: #8a6cff; --fl2: #e6ddff; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  @keyframes dip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
+  @keyframes castFly {
+    0%   { transform: translate(36px, -122px) scale(.4); opacity: 0; }
+    16%  { opacity: 1; }
+    62%  { transform: translate(-14px, 8px) scale(1.16); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  .rodPivot { position: absolute; left: 72%; bottom: 3%; z-index: 5; width: 0; height: 0; }
+  .rodPivot .rod { position: absolute; left: -3px; bottom: 0; }
+  .rod { position: relative; width: 6px; height: 78px; border-radius: 3px;
+    transform-origin: 50% 100%; transform: rotate(-17deg); transition: transform .18s ease;
+    background: linear-gradient(90deg, #6b5227, #b08c3e); }
+  .rod.lv1 { background: linear-gradient(90deg, #5d7c7d, #cfe6e6); }
+  .rod.lv2 { background: linear-gradient(90deg, #0f0f0f, #3c3c3c); box-shadow: inset -1px 0 0 var(--gold); }
+  .rod.lv3 { background: linear-gradient(90deg, #0b0b0b, #2a1f06); box-shadow: inset -1px 0 0 var(--goldlit), 0 0 14px rgba(212,175,55,.55); }
+  .rod.sk-frost { background: linear-gradient(90deg, #3f6f8c, #dff2ff); }
+  .rod.sk-gilt { background: linear-gradient(90deg, #8a7024, #f3d98b); }
+  .rod.sk-dark { background: linear-gradient(90deg, #1a0d0d, #4a2323); }
+  .rod.sk-orbit { background: linear-gradient(90deg, #241b46, #9f8cff); }
+  .rod.sk-void { background: linear-gradient(90deg, #08060c, #5a3d8a); }
+  .rod .rGrip { position: absolute; left: 50%; bottom: -2px; width: 11px; height: 24%; min-height: 16px; margin-left: -5.5px;
+    border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.38);
+    background: repeating-linear-gradient(90deg, #6b4a2a 0 2px, #8d6c44 2px 4px); }
+  .rod .rReel { position: absolute; left: 50%; bottom: 22%; width: 15px; height: 15px; margin-left: -19px;
+    border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.7), inset 0 0 0 1px rgba(0,0,0,.45);
+    background: radial-gradient(circle at 38% 32%, #f2ecd8, #8d8a78 58%, #33312b); }
+  .rod .rRing { position: absolute; left: 50%; bottom: 48%; width: 10px; height: 4px; margin-left: -5px;
+    border: 1px solid rgba(212,175,55,.8); border-radius: 50%; background: rgba(0,0,0,.35); }
+  .rod .rRing.b { bottom: 68%; }
+  .rod .rRing.c { bottom: 86%; }
+  .pond .rod.bend { transform: rotate(-28deg) scaleY(.93); }
+  .pond.biteAlert { animation: pondBite 1s ease-in-out infinite; }
+  @keyframes pondBite {
+    0%, 100% { box-shadow: inset 0 0 0 1px rgba(0,0,0,.7), 0 0 0 1px rgba(212,175,55,.10), 0 10px 30px rgba(0,0,0,.55); }
+    50% { box-shadow: inset 0 0 0 1px rgba(0,0,0,.7), 0 0 0 2px rgba(255,224,102,.8), 0 0 34px rgba(255,224,102,.45); }
+  }
+
+  .biteMark { position: absolute; left: 50%; top: 26%; z-index: 7; margin-left: -10px; font-family: var(--disp);
+    font-size: 30px; font-weight: 800; color: #ffe066; text-shadow: 0 0 18px rgba(255,224,102,.9); opacity: 0; }
+  .biteMark.on { opacity: 1; animation: bitePop .28s ease-out; }
+  @keyframes bitePop { from { transform: scale(.35); } to { transform: scale(1); } }
+
+  .shadowLayer { position: absolute; inset: 0; }
+  .swim { position: absolute; left: -60px; animation-name: shadowSwim; animation-timing-function: linear; animation-iteration-count: infinite; }
+  .swim > span { display: inline-block; }
+  .shadowLayer .fish { position: relative; filter: blur(4px) brightness(.32); }
+  @keyframes shadowSwim { from { transform: translateX(0); } to { transform: translateX(560px); } }
+
+  /* — 参数化鱼 — */
+  .fish { position: relative; width: 68px; height: 44px; --fc: #c8d0d8; }
+  .fish i { position: absolute; display: block; }
+  .fish .fbody { left: 15px; top: 7px; width: 40px; height: 30px; border-radius: 50%; background: var(--fc); }
+  .fish .fbody::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .fish .fbody::before { content: ''; position: absolute; display: none; }
+  .fish .ftail { left: 2px; top: 12px; width: 16px; height: 20px; background: var(--fc);
+    clip-path: polygon(100% 50%, 0 0, 0 100%); }
+  .fish .ffin { left: 26px; top: 0; width: 18px; height: 12px; background: var(--fc); opacity: .8;
+    clip-path: polygon(0 100%, 50% 0, 100% 100%); }
+  .fish .feye { left: 44px; top: 14px; width: 5px; height: 5px; border-radius: 50%; background: #0b0d0c; }
+  .fish .ffx { display: none; }
+
+  .fish.sh-tall .fbody { left: 17px; top: 4px; width: 36px; height: 36px; border-radius: 50% 50% 44% 44%; }
+  .fish.sh-tall .feye { left: 43px; top: 12px; }
+  .fish.sh-slim .fbody { left: 11px; top: 17px; width: 48px; height: 14px; border-radius: 8px; }
+  .fish.sh-slim .ftail { top: 15px; height: 18px; }
+  .fish.sh-slim .ffin { left: 24px; top: 8px; height: 11px; }
+  .fish.sh-slim .feye { left: 50px; top: 20px; }
+  .fish.sh-round .fbody { left: 20px; top: 6px; width: 32px; height: 32px; }
+  .fish.sh-round .feye { left: 42px; top: 15px; }
+  .fish.sh-flat .fbody { left: 14px; top: 3px; width: 42px; height: 38px; border-radius: 50%;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+  .fish.sh-flat .ftail { top: 17px; height: 10px; }
+  .fish.sh-flat .feye { left: 40px; top: 13px; }
+  .fish.sh-puff .fbody { left: 17px; top: 5px; width: 36px; height: 34px; border-radius: 50%;
+    clip-path: polygon(50% 0, 62% 10%, 78% 4%, 82% 18%, 100% 26%, 90% 42%, 100% 58%, 84% 68%, 80% 86%, 62% 80%, 50% 96%, 38% 80%, 20% 86%, 16% 68%, 0 58%, 10% 42%, 0 26%, 18% 18%, 22% 4%, 38% 10%); }
+  .fish.sh-puff .feye { left: 42px; top: 16px; }
+  .fish.sh-spear .fbody { left: 14px; top: 8px; width: 42px; height: 28px;
+    clip-path: polygon(0 16%, 68% 0, 100% 50%, 68% 100%, 0 84%); border-radius: 0; }
+  .fish.sh-spear .feye { left: 42px; top: 16px; }
+  .fish.sh-squid .fbody { left: 20px; top: 3px; width: 30px; height: 26px; border-radius: 50% 50% 34% 34%; }
+  .fish.sh-squid .ftail { left: 24px; top: 24px; width: 22px; height: 20px; clip-path: none;
+    background: repeating-linear-gradient(90deg, var(--fc) 0 3px, transparent 3px 7px); }
+  .fish.sh-squid .ffin { display: none; }
+  .fish.sh-squid .feye { left: 40px; top: 14px; }
+  .fish.sh-jelly .fbody { left: 18px; top: 2px; width: 34px; height: 24px; border-radius: 50% 50% 16% 16%; opacity: .82; }
+  .fish.sh-jelly .ftail { left: 22px; top: 22px; width: 26px; height: 22px; clip-path: none; opacity: .6;
+    background: repeating-linear-gradient(90deg, var(--fc) 0 2px, transparent 2px 6px); }
+  .fish.sh-jelly .ffin { display: none; }
+  .fish.sh-jelly .feye { display: none; }
+  .fish.sh-shell .fbody { left: 18px; top: 8px; width: 34px; height: 28px; border-radius: 50% 50% 46% 46%;
+    clip-path: polygon(50% 0, 88% 22%, 100% 62%, 72% 100%, 28% 100%, 0 62%, 12% 22%); }
+  .fish.sh-shell .ftail { display: none; }
+  .fish.sh-shell .ffin { display: none; }
+  .fish.sh-shell .feye { display: none; }
+  .fish.sh-crust .fbody { left: 14px; top: 12px; width: 42px; height: 18px; border-radius: 50% 50% 40% 40%;
+    clip-path: polygon(0 40%, 24% 0, 62% 8%, 100% 46%, 66% 100%, 20% 84%); }
+  .fish.sh-crust .ftail { left: 4px; top: 8px; width: 14px; height: 16px;
+    clip-path: polygon(100% 50%, 0 0, 40% 50%, 0 100%); }
+  .fish.sh-crust .feye { left: 46px; top: 16px; }
+  .fish.sh-shoe .fbody { left: 16px; top: 16px; width: 38px; height: 16px; border-radius: 3px 10px 3px 3px;
+    clip-path: polygon(0 34%, 46% 0, 62% 42%, 100% 62%, 100% 100%, 0 100%); }
+  .fish.sh-shoe .ftail { display: none; }
+  .fish.sh-shoe .ffin { display: none; }
+  .fish.sh-shoe .feye { display: none; }
+  .fish.sh-shoe .fbody::after { background: repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 5px); }
+  .fish.sh-can .fbody { left: 20px; top: 8px; width: 28px; height: 28px; border-radius: 3px;
+    clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%); }
+  .fish.sh-can .ftail { display: none; }
+  .fish.sh-can .ffin { display: none; }
+  .fish.sh-can .feye { display: none; }
+  .fish.sh-can .fbody::after { background: linear-gradient(180deg, rgba(255,255,255,.28) 0 22%, transparent 22% 30%, rgba(255,255,255,.18) 30% 34%, transparent 34%); }
+  .fish.sh-serpent .fbody { left: 8px; top: 14px; width: 54px; height: 16px; border-radius: 10px;
+    clip-path: polygon(0 50%, 10% 0, 30% 30%, 50% 0, 70% 30%, 90% 0, 100% 50%, 90% 100%, 70% 70%, 50% 100%, 30% 70%, 10% 100%); }
+  .fish.sh-serpent .feye { left: 52px; top: 18px; }
+  .fish.sh-worm .fbody { left: 8px; top: 19px; width: 52px; height: 10px; border-radius: 5px; }
+  .fish.sh-worm .ftail { top: 17px; height: 14px; }
+  .fish.sh-worm .ffin { display: none; }
+  .fish.sh-worm .feye { left: 53px; top: 21px; width: 4px; height: 4px; }
+  .fish.sh-crab .fbody { left: 16px; top: 11px; width: 36px; height: 22px; border-radius: 44% 44% 50% 50%;
+    clip-path: polygon(0 30%, 22% 0, 78% 0, 100% 30%, 88% 100%, 12% 100%); }
+  .fish.sh-crab .ftail { display: none; }
+  .fish.sh-crab .ffin { left: 7px; top: 30px; width: 13px; height: 12px; opacity: .7; }
+  .fish.sh-crab .feye { left: 46px; top: 18px; width: 4px; height: 4px; box-shadow: -15px 0 0 #0b0d0c; }
+  .fish.sh-star .fbody { left: 21px; top: 5px; width: 28px; height: 28px; border-radius: 0;
+    clip-path: polygon(50% 0, 62% 34%, 96% 36%, 68% 56%, 80% 92%, 50% 70%, 20% 92%, 32% 56%, 4% 36%, 38% 34%); }
+  .fish.sh-star .ftail { display: none; }
+  .fish.sh-star .ffin { display: none; }
+  .fish.sh-star .feye { display: none; }
+
+  .fish.pt-stripe .fbody::after { background: repeating-linear-gradient(90deg, rgba(0,0,0,.30) 0 4px, transparent 4px 9px); }
+  .fish.pt-band .fbody::after { background: repeating-linear-gradient(0deg, rgba(0,0,0,.30) 0 4px, transparent 4px 9px); }
+  .fish.pt-spot .fbody::after { background: radial-gradient(circle at 22% 34%, rgba(0,0,0,.34) 0 3px, transparent 3.4px),
+    radial-gradient(circle at 56% 66%, rgba(0,0,0,.34) 0 3px, transparent 3.4px),
+    radial-gradient(circle at 78% 28%, rgba(0,0,0,.30) 0 2.6px, transparent 3px); }
+  .fish.pt-scale .fbody::after { background:
+    repeating-linear-gradient(60deg, rgba(0,0,0,.24) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-60deg, rgba(0,0,0,.24) 0 1px, transparent 1px 6px); }
+  .fish.pt-glow .fbody::after { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.55), transparent 62%),
+    radial-gradient(circle at 30% 34%, rgba(255,255,255,.7) 0 2px, transparent 2.6px),
+    radial-gradient(circle at 68% 62%, rgba(255,255,255,.7) 0 2px, transparent 2.6px); }
+  .fish.pt-lava .fbody::after { background:
+    repeating-linear-gradient(72deg, rgba(255,120,40,.75) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(-48deg, rgba(255,60,20,.55) 0 1px, transparent 1px 11px); }
+
+  .fish.ft-whisker .fbody::before { display: block; left: 100%; top: 58%; width: 17px; height: 1px;
+    background: var(--fc); box-shadow: 0 -7px 0 -.2px var(--fc); }
+  .fish.ft-lure .ffx { display: block; left: 56px; top: 2px; width: 3px; height: 9px; background: rgba(255,255,255,.5); }
+  .fish.ft-lure .ffx::after { content: ''; position: absolute; left: -3px; top: 9px; width: 9px; height: 9px;
+    border-radius: 50%; background: #ffe066; box-shadow: 0 0 12px rgba(255,224,102,.95); }
+  .fish.ft-fin .ffin { left: 22px; top: -8px; width: 24px; height: 20px; }
+  .fish.ft-sail .ffin { left: 18px; top: -14px; width: 34px; height: 26px; opacity: .95; }
+  .fish.ft-crown .ffx { display: block; left: 30px; top: -9px; width: 16px; height: 9px; background: #ffd75c;
+    clip-path: polygon(0 100%, 12% 22%, 32% 62%, 50% 0, 68% 62%, 88% 22%, 100% 100%); }
+  .fish.ft-elec .ffx { display: block; left: 22px; top: 11px; width: 30px; height: 22px; opacity: .95;
+    background: repeating-linear-gradient(115deg, #ffe066 0 2px, transparent 2px 7px); }
+  .fish.ft-horn .ffx { display: block; left: 47px; top: -5px; width: 3px; height: 14px; background: var(--fc);
+    transform: rotate(18deg); box-shadow: -7px 0 0 var(--fc); }
+  .fish.ft-star .ffx { display: block; left: 24px; top: 4px; width: 22px; height: 22px;
+    background: radial-gradient(circle, rgba(255,255,255,.95) 0 1.4px, transparent 1.8px);
+    background-size: 9px 9px; animation: twinkle 1.6s ease-in-out infinite; }
+  .fish.ft-claw .ffx { display: block; left: 51px; top: 13px; width: 15px; height: 13px;
+    background: radial-gradient(circle at 50% 100%, var(--fc) 0 44%, transparent 47%),
+      radial-gradient(circle at 50% 0, var(--fc) 0 44%, transparent 47%); }
+  @keyframes twinkle { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+
+  .fish.big { transform: scale(1.7); }
+  .fish.sm { transform: scale(.62); }
+
+  .rig { margin-top: 10px; padding: 10px 10px 12px; border: 1px solid var(--gl2); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.05), rgba(0,0,0,.30));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
+  .rigLbl { margin-bottom: 6px; font-size: 10px; letter-spacing: .2em; color: var(--txd); }
+  .baitRow { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+  .baitBtn { flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--gl2); border-radius: 2px;
+    background: rgba(255,255,255,.02); color: var(--txd); font-size: 11px; touch-action: manipulation; }
+  .baitBtn.on { border-color: var(--gold); color: var(--goldlit); background: rgba(212,175,55,.12);
+    box-shadow: 0 0 12px rgba(212,175,55,.16); }
+  .baitBtn s { display: block; font-size: 9px; color: var(--txd); text-decoration: none; margin-top: 2px; }
+
+  .tensionWrap { display: none; margin-top: 12px; }
+  .tensionWrap.on { display: block; }
+  .tensionBar { position: relative; height: 30px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: linear-gradient(180deg, #0b100e, #050806); overflow: hidden; touch-action: none;
+    box-shadow: inset 0 0 14px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.6); }
+  .tensionBar::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(90deg, transparent 0 9.6%, rgba(212,175,55,.16) 9.6% 9.9%); }
+  .tZone { position: absolute; top: 0; bottom: 0; left: 0; width: 0;
+    background: linear-gradient(180deg, rgba(64,196,140,.48), rgba(30,120,84,.30));
+    border-left: 1px solid rgba(120,230,170,.75); border-right: 1px solid rgba(120,230,170,.75);
+    box-shadow: 0 0 14px rgba(80,220,160,.35); }
+  .tMark { position: absolute; top: -3px; bottom: -3px; left: 0; width: 3px; margin-left: -1.5px;
+    background: var(--goldlit); box-shadow: 0 0 12px rgba(243,217,139,.95); }
+  .tAcc { position: absolute; left: 0; bottom: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--golddim), var(--goldlit)); }
+  .tensionTip { margin-top: 7px; text-align: center; font-size: 11px; color: var(--txd); }
+
+  .castBtn { width: 100%; margin-top: 12px; padding: 16px; border: 1px solid var(--golddim); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.26), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .3em; text-indent: .3em;
+    touch-action: manipulation; box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 4px 14px rgba(0,0,0,.45); }
+  .castBtn:disabled { opacity: .42; }
+  .castBtn.bite { border-color: var(--goldlit); color: #fff8dd;
+    background: linear-gradient(180deg, rgba(255,224,102,.44), rgba(212,175,55,.14));
+    animation: biteGlow .5s ease-in-out infinite alternate; }
+  @keyframes biteGlow { from { box-shadow: 0 0 0 rgba(255,224,102,0); } to { box-shadow: 0 0 26px rgba(255,224,102,.55); } }
+
+  .fishFoot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px;
+    font-size: 12px; color: var(--txd); }
+  .bagPill { padding: 5px 11px; border: 1px solid var(--gl2); border-radius: 20px; background: rgba(255,255,255,.03);
+    font-family: var(--disp); font-size: 12px; color: var(--txd); }
+  .fMini { padding: 7px 14px; border: 1px solid var(--golddim); border-radius: 2px; background: rgba(212,175,55,.10);
+    color: var(--goldlit); font-size: 12px; font-weight: 700; touch-action: manipulation; }
+  .fishMsg { min-height: 18px; margin-top: 8px; text-align: center; font-size: 12px; color: var(--goldlit); }
+
+  .catchCard { position: absolute; inset: 0; z-index: 9; display: none; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 45%, rgba(0,0,0,.42), rgba(0,0,0,.88)); }
+  .catchCard.on { display: flex; animation: ccIn .26s ease-out; }
+  @keyframes ccIn { from { opacity: 0; } to { opacity: 1; } }
+  .ccInner { position: relative; padding: 16px 28px 18px; text-align: center;
+    border: 1px solid var(--golddim); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(20,15,6,.95), rgba(6,8,7,.97));
+    box-shadow: 0 0 0 1px rgba(0,0,0,.8), 0 0 44px rgba(212,175,55,.18), inset 0 1px 0 rgba(255,255,255,.06); }
+  .ccInner::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(212,175,55,.16);
+    border-radius: 2px; pointer-events: none; }
+  .ccTier { font-size: 12px; letter-spacing: .32em; text-indent: .32em; }
+  .ccFish { display: flex; align-items: center; justify-content: center; height: 84px; margin: 6px 0; }
+  .ccName { font-family: var(--disp); font-size: 21px; font-weight: 800; color: #fff; }
+  .ccW { margin-top: 3px; font-family: var(--disp); font-size: 14px; color: var(--goldlit); }
+  .ccShell { margin-top: 2px; font-size: 12px; color: var(--txd); }
+  .ccBtns { margin-top: 14px; }
+  .ccBtns button { padding: 9px 30px; border: 1px solid var(--golddim); border-radius: 2px; font-weight: 700;
+    letter-spacing: .2em; text-indent: .2em;
+    background: linear-gradient(180deg, rgba(212,175,55,.24), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-size: 13px; touch-action: manipulation; }
+
+  .fList { display: flex; flex-direction: column; }
+  .fRow { display: flex; align-items: center; gap: 9px; padding: 8px 0; border-bottom: 1px solid var(--gl2); }
+  .fRow:last-child { border-bottom: 0; }
+  .fIco { display: flex; align-items: center; justify-content: center; width: 46px; height: 32px; }
+  .fIco .fish { transform: scale(.6); }
+  .fInfo { flex: 1; min-width: 0; }
+  .fInfo b { display: block; font-size: 13px; }
+  .fInfo small { display: block; margin-top: 2px; font-size: 10px; color: var(--txd); }
+  .fBtn { padding: 6px 10px; border: 1px solid var(--gl2); border-radius: 2px; background: transparent;
+    color: var(--txd); font-size: 11px; white-space: nowrap; touch-action: manipulation; }
+  .fBtn.g { border-color: var(--golddim); color: var(--goldlit); background: rgba(212,175,55,.10); }
+  .fBtn:disabled { opacity: .4; }
+  .fGear { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gl2); }
+  .fGear:last-child { border-bottom: 0; }
+  .rodBox { display: flex; align-items: flex-end; justify-content: center; width: 40px; height: 54px; }
+  .rodBox .rod { transform: rotate(-22deg) scale(.62); }
+  .fNow { color: rgba(212,175,55,.55); }
+  .fInfo b, .fInfo small, .gNm, .gTag, .gMeta, .gStakeName, .gStakeVal, .ccName, .ccShell, .baitBtn
+    { overflow-wrap: anywhere; }
+
+  .tank { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px;
+    border: 1px solid var(--gl); border-radius: 3px;
+    background: linear-gradient(180deg, var(--tw1, #0b2436), var(--tw2, #05121c)); }
+  .tankCell { position: relative; display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,.08); border-radius: 2px; overflow: hidden;
+    background: rgba(255,255,255,.03); }
+  .tankCell.lit { box-shadow: inset 0 0 22px var(--tl, rgba(255,200,120,.28)); }
+  .tankCell .fish { animation: tankSwim 7s ease-in-out infinite; }
+  .tankCell .fish.jelly { animation-duration: 14s; }
+  .tankCell .fish.crust { animation-duration: 4s; }
+  @keyframes tankSwim { 0%, 100% { transform: translateX(-5px) scale(.52); } 50% { transform: translateX(5px) scale(.52); } }
+
+  .gTable { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+  .gWheelBox { position: relative; flex: 0 0 150px; width: 150px; height: 150px; }
+  .gWheel { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--golddim);
+    box-shadow: 0 0 0 2px rgba(0,0,0,.7), 0 0 26px rgba(212,175,55,.22), inset 0 0 20px rgba(0,0,0,.65); }
+  .gPin { position: absolute; left: 50%; top: -8px; margin-left: -7px; z-index: 3;
+    border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 12px solid var(--goldlit);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.85)); }
+  .gHub { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px; z-index: 2;
+    display: flex; align-items: center; justify-content: center; border: 2px solid var(--golddim); border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #17191e, #050807); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800;
+    box-shadow: 0 0 14px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06); }
+  .gStake { flex: 1; min-width: 0; text-align: center; padding: 10px 8px 12px;
+    border: 1px solid var(--gl2); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.06), rgba(0,0,0,.30)); }
+  .gStakeTag { font-size: 10px; letter-spacing: .22em; text-indent: .22em; color: var(--txd); }
+  .gStakeFish { display: flex; align-items: center; justify-content: center; height: 62px; margin: 4px 0 2px; }
+  .gStakeName { font-family: var(--disp); font-size: 15px; font-weight: 700; }
+  .gStakeVal { margin-top: 2px; font-size: 11px; color: var(--txd); }
+  .gMsg { min-height: 32px; margin-top: 12px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--txd); }
+
+  .gmRow { display: flex; gap: 8px; margin-top: 10px; }
+  .gmRow.off { opacity: .35; pointer-events: none; }
+  .gmBtn { flex: 1; padding: 12px 6px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: rgba(212,175,55,.08); color: var(--goldlit); touch-action: manipulation; }
+  .gmBtn b { display: block; font-family: var(--disp); font-size: 16px; }
+  .gmBtn s { display: block; margin-top: 3px; font-size: 10px; color: var(--txd); text-decoration: none; }
+  .gmBtn:disabled { opacity: .4; }
+  .gmBtn.red { border-color: #a3122a; color: #ffd9df;
+    background: linear-gradient(180deg, rgba(163,18,42,.42), rgba(163,18,42,.10)); }
+  .gmBtn.black { border-color: #3a3f46; color: #dfe4ea;
+    background: linear-gradient(180deg, rgba(42,46,53,.78), rgba(14,16,19,.60)); }
+  .gmBtn.green { border-color: #12703c; color: #ccf5dc;
+    background: linear-gradient(180deg, rgba(18,112,60,.42), rgba(18,112,60,.10)); }
+  .gmBtn.wide { padding: 14px; font-weight: 800; letter-spacing: .3em; text-indent: .3em; }
+
+  /* 窄屏：把容易挤爆的文字排开 */
+  @media (max-width: 380px) {
+    .wrap, .fishWrap { padding-left: 10px; padding-right: 10px; }
+    .tabs { flex-wrap: wrap; gap: 5px; }
+    .tab { flex: 1 1 44%; height: 34px; font-size: 12px; letter-spacing: 0; white-space: nowrap; }
+    .fTop { gap: 6px; }
+    .fTop #fishBack { padding: 0 10px; font-size: 12px; }
+    .fTopStats { gap: 4px; }
+    .fStat { padding: 4px 6px 5px; }
+    .fStat i { font-size: 8px; letter-spacing: 0; }
+    .fStat b { font-size: 13px; }
+    .gameBtn .nm { font-size: 15px; }
+    .fGear { gap: 8px; }
+    .fBtn { padding: 6px 8px; font-size: 10px; white-space: normal; }
+    .gTable { gap: 8px; }
+    .gWheelBox { flex: 0 0 116px; width: 116px; height: 116px; }
+    .gHub { width: 50px; height: 50px; margin: -25px 0 0 -25px; font-size: 14px; }
+    .gStake { padding: 8px 5px 10px; }
+    .gStakeFish { height: 50px; }
+    .gStakeName { font-size: 13px; }
+    .gStakeVal { font-size: 10px; }
+    .gmBtn { padding: 10px 4px; }
+    .gmBtn b { font-size: 14px; }
+    .ccInner { padding: 12px 16px 14px; }
+    .ccName { font-size: 18px; }
+  }
 </style>
 </head>
 <body>
@@ -620,12 +1055,15 @@
 <div id="homePage" class="grain">
   <div id="verTag">v0.0</div>
   <div class="lobbyTitle">赛博赌场</div>
-  <div class="lobbySub">金币 <b id="lobbyGold" style="color:#f3d98b">10</b></div>
+  <div class="lobbySub">💰 金币 <b id="lobbyGold" style="color:#f3d98b">10</b>　🐚 贝壳 <b id="lobbyShell" style="color:#9fe0c4">0</b></div>
   <button class="gameBtn" id="gameSlot" data-game="slot">
     <span class="ico">🎰</span><span class="nm">老虎机</span><span class="go">进入 ›</span>
   </button>
   <button class="gameBtn lock" id="bjEntry" data-game="BJ">
     <span class="ico">🃏</span><span class="nm">黑杰克</span><span class="go lock">🔒 1K</span>
+  </button>
+  <button class="gameBtn" id="fishEntry" data-game="FISH">
+    <span class="ico">🎣</span><span class="nm">钓鱼</span><span class="go">进入 ›</span>
   </button>
   <button class="gameBtn soon" data-game="CH">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
@@ -744,6 +1182,79 @@
   <div class="claimWrap"><button id="bjClaim">领取救济金 100</button></div>
 </div>
 
+<!-- 钓鱼 -->
+<div id="fishPage" style="display:none">
+  <div class="fishWrap">
+    <div class="fTop">
+      <button id="fishBack">‹ 返回大厅</button>
+      <div class="fTopStats">
+        <span class="fStat"><i>💰 金币</i><b id="fishGold">0</b></span>
+        <span class="fStat" id="shellBox"><i>🐚 贝壳</i><b id="fishShell">0</b></span>
+        <span class="fStat"><i>钓鱼幸运</i><b id="fishLuck">×1.00</b></span>
+      </div>
+    </div>
+
+    <div class="pond" id="pond">
+      <div class="pondSky"></div>
+      <div class="pondStars"></div>
+      <div class="pondMoon"></div>
+      <div class="pondReeds"></div>
+      <div class="pondReeds r"></div>
+      <div class="pondWater" id="pondWater">
+        <div class="pondGlow"></div>
+        <div class="shadowLayer" id="shadowLayer"></div>
+        <div class="rippleLayer" id="rippleLayer"></div>
+        <div class="biteMark" id="biteMark">❗</div>
+      </div>
+      <div class="pondDock"></div>
+      <div class="splash" id="splash"><i></i><i class="b"></i></div>
+      <svg class="rigLine" id="rigLine" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path id="fishLine" d="M62,78 Q52,58 38,42"></path>
+      </svg>
+      <div class="float bob" id="fishFloat"><i></i><em class="hookBait" id="hookBait"></em></div>
+      <div class="rodPivot" id="rodPivot">
+        <div class="rod lv0" id="fishRod">
+          <i class="rGrip"></i><i class="rReel"></i><i class="rRing"></i><i class="rRing b"></i><i class="rRing c"></i>
+        </div>
+      </div>
+      <div class="pondLamp"></div>
+      <div class="pondName" id="pondName"></div>
+      <div class="catchCard" id="catchCard">
+        <div class="ccInner">
+          <div class="ccTier" id="ccTier"></div>
+          <div class="ccFish" id="ccFish"></div>
+          <div class="ccName" id="ccName"></div>
+          <div class="ccW" id="ccW"></div>
+          <div class="ccShell" id="ccShell"></div>
+          <div class="ccBtns"><button id="ccOk">收 下</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rig">
+      <div class="rigLbl">🪝 鱼饵</div>
+      <div class="baitRow" id="baitRow"></div>
+
+      <div class="tensionWrap" id="tensionWrap">
+        <div class="tensionBar" id="tensionBar">
+          <div class="tZone" id="tZone"></div>
+          <div class="tAcc" id="tAcc"></div>
+          <div class="tMark" id="tMark"></div>
+        </div>
+        <div class="tensionTip">按住池子，让指针尽量停在绿区里</div>
+      </div>
+
+      <button class="castBtn" id="castBtn">抛 竿</button>
+    </div>
+
+    <div class="fishFoot">
+      <span class="bagPill" id="fishBagInfo">鱼篓 0/30</span>
+      <button class="fMini" id="fishSheetBtn">🎣 鱼篓</button>
+    </div>
+    <div class="fishMsg" id="fishMsg"></div>
+  </div>
+</div>
+
 <button class="corner" id="helpBtn" style="display:none">❓</button>
 <button class="corner" id="bagBtn" style="display:none">🎒</button>
 <button class="corner" id="rewindBtn" style="display:none">⏪</button>
@@ -860,6 +1371,34 @@
       · 金币和老虎机是共用的；金币不够 1 枚时，页面下方可以领 <b>100 金币救济金</b>（1 小时冷却）<br>
       · 所有进度自动保存在本机
     </div>
+
+    <div class="rules" id="helpFish" style="display:none">
+      <h3>钓鱼 · 怎么玩</h3>
+      · 点 <b>抛竿</b> 把浮漂甩进池子，浮漂下沉、<b>❗</b> 冒出来的那一瞬间再点一次就是咬钩<br>
+      · 错过那一下鱼就跑了（饵照扣）<br>
+      · 咬钩后进入 <b>拉锯</b>：按住池子让指针往上升，松手它会往下掉<br>
+      · 让指针停在<b>绿区</b>里攒够进度就把鱼拉上来；指针掉到底就算脱钩
+
+      <h3>鱼与贝壳</h3>
+      · 每条鱼都有 <b>重量</b>（0.85 ~ 1.15 浮动），越重越值钱<br>
+      · 鱼在鱼篓里可以 <b>卖掉换 🐚 贝壳</b>，也可以送上 <b>🎰 鱼桌</b> 赌一把<br>
+      · 鱼桌是一条红黑轮盘：把鱼押在红或黑上，押中翻一倍；押中绿翻十六倍，押错鱼就留在桌上<br>
+      · 卖掉的鱼会留在图鉴里，图鉴记的是你见过和钓到过的最大重量<br>
+      · 🐚 贝壳只能买饵、涂装、鱼缸、自动抛竿和永久幸运，<b>不能换金币</b>
+
+      <h3>鱼竿 / 涂装 / 饵</h3>
+      · <b>鱼竿等级</b>越高，拉锯时的绿区越宽，竿子本身也越气派（升级用 💰 金币，在鱼篓的「渔具」里）<br>
+      · <b>涂装</b>只改竿子长什么样，不影响手感；先在商城用 🐚 贝壳买，再去渔具里换上<br>
+      · <b>饵</b>按竿消耗，能让大鱼更容易上钩，空钩也能钓、只是偏小
+
+      <h3>出竿场所</h3>
+      · 入场免费，<b>钓场要用 💰 金币解锁</b>，越贵的池子越容易出稀有鱼<br>
+      · 鱼篓满了就钓不了，记得卖鱼、扩容或者养进鱼缸
+
+      <h3>药水与幸运</h3>
+      · 身上的幸运加成、<b>🍀 幸运药水</b> 和「⭐ 永久钓鱼幸运」会一起算进钓鱼幸运：绿区更宽、鱼挣扎更慢、也更容易遇到稀有的<br>
+      · 🍀 幸运药水在钓鱼里按「钓上一条算一局」消耗，💰 金币药水与 🛡️ 无敌药水对钓鱼无效
+    </div>
   </div>
 </div>
 
@@ -953,11 +1492,11 @@
       <div class="cardList" id="shopItems"></div>
     </div>
     <div class="tabPage" id="page-look">
-      <div class="empty" style="padding:26px 0;text-align:center">
-        <div style="font-size:40px">🎨</div>
-        <div style="font-size:15px;font-weight:700;margin-top:8px;color:#cdc7b8">敬请期待</div>
-        <div style="margin-top:6px">外观（皮肤 / 牌背 / 桌布）以后会摆在这里</div>
+      <div class="rules" style="font-size:12px;color:#8d8778;line-height:1.7;margin:0 0 8px">
+        外观用 <b>🐚 贝壳</b> 买，买完去 🎣 鱼篓 → 🛠️ 渔具 里换上。<br>
+        鱼竿涂装要先有对应等级的鱼竿才装得上。
       </div>
+      <div class="cardList" id="lookList"></div>
     </div>
   </div>
 </div>
@@ -991,6 +1530,61 @@
     </div>
     <div class="promptRow"><button class="ghost" id="promptCancel" style="flex:1">取消</button></div>
     <div class="promptTip" id="promptTip"></div>
+  </div>
+</div>
+
+<!-- 🎣 鱼篓弹层 -->
+<div class="sheet" id="fishSheet">
+  <div class="panel">
+    <span class="close" data-close="fishSheet">×</span>
+    <h2>🎣 鱼篓</h2>
+    <div class="shopGold" id="fishSheetTop">贝壳 0</div>
+    <div class="tabs">
+      <button class="tab on" data-tab="fbBag">🐟 鱼篓</button>
+      <button class="tab" data-tab="fbTank">🐠 鱼缸</button>
+      <button class="tab" data-tab="fbDex">📖 图鉴</button>
+      <button class="tab" data-tab="fbGear">🛠️ 渔具</button>
+    </div>
+    <div class="tabPage on" id="page-fbBag">
+      <div class="sectTitle"><span id="fbBagTitle">鱼篓 0 / 30</span><button class="fBtn g" id="fbSellAll">全部卖出</button></div>
+      <div class="fList" id="fbBagList"></div>
+    </div>
+    <div class="tabPage" id="page-fbTank">
+      <div class="tank" id="fbTank"></div>
+      <div class="sectTitle"><span>水色与灯光</span><span id="fbTankInfo"></span></div>
+      <div class="fList" id="fbTankGear"></div>
+    </div>
+    <div class="tabPage" id="page-fbDex">
+      <div class="sectTitle"><span id="fbDexTitle">图鉴</span><span id="fbDexCount"></span></div>
+      <div class="fList" id="fbDexList"></div>
+    </div>
+    <div class="tabPage" id="page-fbGear">
+      <div class="sectTitle"><span id="fbGearTitle">渔具</span><span id="fbGearInfo"></span></div>
+      <div class="fList" id="fbGearList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 🎰 鱼桌弹层（红黑轮盘赌） -->
+<div class="sheet" id="gambleSheet">
+  <div class="panel">
+    <span class="close" data-close="gambleSheet">×</span>
+    <h2>🎰 鱼桌 · 红黑轮盘</h2>
+    <div class="gTable">
+      <div class="gWheelBox">
+        <div class="gWheel" id="gmWheel"></div>
+        <div class="gPin"></div>
+        <div class="gHub" id="gmHub">押</div>
+      </div>
+      <div class="gStake">
+        <div class="gStakeTag">押上的鱼</div>
+        <div class="gStakeFish" id="gmFish"></div>
+        <div class="gStakeName" id="gmFishName"></div>
+        <div class="gStakeVal" id="gmFishVal"></div>
+      </div>
+    </div>
+    <div class="gMsg" id="gmMsg"></div>
+    <div class="gmRow" id="gmRow"></div>
   </div>
 </div>
 
@@ -1142,7 +1736,8 @@
     bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
     codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
     bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
-    pot: {}                                      // 生效中的药水：{ 药水key: 剩余局数 }
+    pot: {},                                     // 生效中的药水：{ 药水key: 剩余局数 }
+    fish: freshFish()                            // 钓鱼：鱼篓 / 图鉴 / 鱼缸 / 渔具
   };
   var potTimer = {};                             // 只是给徽标做倒计时的显示定时器，不进存档
 
@@ -1210,6 +1805,59 @@
       }
       state.bag = bag;
       state.pot = pot;
+
+      // 钓鱼：认不出来的鱼 / 皮肤 / 钓场一律丢掉，数值全部夹回合法范围
+      var fs = d.fish, nf = freshFish(), fi, fv, fid, b2;
+      if (fs && typeof fs === 'object') {
+        if (typeof fs.shells === 'number' && fs.shells > 0) nf.shells = Math.min(Math.floor(fs.shells), GOLD_MAX);
+        if (typeof fs.pond === 'number' && fs.pond >= 0 && fs.pond < FISH_PONDS.length) nf.pond = Math.floor(fs.pond);
+        if (fs.ponds && typeof fs.ponds === 'object') {
+          for (fi = 0; fi < FISH_PONDS.length; fi++) if (fs.ponds[fi]) nf.ponds[fi] = true;
+        }
+        nf.ponds[0] = true;
+        if (typeof fs.rod === 'number' && fs.rod >= 0 && fs.rod < FISH_RODS.length) nf.rod = Math.floor(fs.rod);
+        if (typeof fs.bagLv === 'number' && fs.bagLv >= 0 && fs.bagLv < FISH_BAG_MAX.length) nf.bagLv = Math.floor(fs.bagLv);
+        if (typeof fs.tankLv === 'number' && fs.tankLv >= 0 && fs.tankLv < FISH_TANK_MAX.length) nf.tankLv = Math.floor(fs.tankLv);
+        if (typeof fs.rodSkin === 'string' && fishSkinById(fs.rodSkin)) nf.rodSkin = fs.rodSkin;
+        if (typeof fs.float === 'string' && fishFloatById(fs.float)) nf.float = fs.float;
+        if (typeof fs.pondSkin === 'string' && fishPondSkinById(fs.pondSkin)) nf.pondSkin = fs.pondSkin;
+        if (typeof fs.tankWater === 'string' && fishWaterById(fs.tankWater).id === fs.tankWater) nf.tankWater = fs.tankWater;
+        if (typeof fs.tankLight === 'string' && fishLightById(fs.tankLight).id === fs.tankLight) nf.tankLight = fs.tankLight;
+        if (fs.own && typeof fs.own === 'object') {
+          var lks = lookList();
+          for (fi = 0; fi < lks.length; fi++) if (fs.own[lks[fi].id] === true) nf.own[lks[fi].id] = true;
+        }
+        if (typeof fs.bait === 'string' && fishBaitById(fs.bait).id === fs.bait) nf.bait = fs.bait;
+        if (typeof fs.auto === 'number' && fs.auto > 0) nf.auto = Math.floor(fs.auto);
+        if (fs.autoOn === true) nf.autoOn = true;
+        if (typeof fs.permLuck === 'number' && fs.permLuck > 0) nf.permLuck = Math.min(Math.floor(fs.permLuck), FISH_PERM_MAX);
+        if (fs.baits && typeof fs.baits === 'object') {
+          for (fi = 0; fi < FISH_BAITS.length; fi++) {
+            fid = FISH_BAITS[fi].id;
+            if (fid && typeof fs.baits[fid] === 'number' && fs.baits[fid] > 0) nf.baits[fid] = Math.floor(fs.baits[fid]);
+          }
+        }
+        if (fs.dex && typeof fs.dex === 'object') {
+          for (fi = 0; fi < FISH_LIST.length; fi++) {
+            fid = FISH_LIST[fi].id; fv = fs.dex[fid];
+            if (fv && typeof fv === 'object') nf.dex[fid] = {
+              n: (typeof fv.n === 'number' && fv.n > 0) ? Math.floor(fv.n) : 0,
+              best: (typeof fv.best === 'number' && fv.best > 0) ? fv.best : 0
+            };
+          }
+        }
+        if (isArr(fs.bag)) {
+          for (fi = 0; fi < fs.bag.length && nf.bag.length < FISH_BAG_MAX[nf.bagLv]; fi++) {
+            b2 = fishBagItem(fs.bag[fi]);
+            if (b2) nf.bag.push(b2);
+          }
+        }
+        nf.tank = [];
+        for (fi = 0; fi < FISH_TANK_MAX[nf.tankLv]; fi++) {
+          nf.tank.push(isArr(fs.tank) ? fishBagItem(fs.tank[fi]) : null);
+        }
+      }
+      state.fish = nf;
     } catch (e) {}
   }
 
@@ -1468,6 +2116,7 @@
   var $homePage = document.getElementById('homePage');
   var $gamePage = document.getElementById('gamePage');
   var $lobbyGold = document.getElementById('lobbyGold');
+  var $lobbyShell = document.getElementById('lobbyShell');
   var $backBtn = document.getElementById('backBtn');
   var $gameSlot = document.getElementById('gameSlot');
   var $bjEntry = document.getElementById('bjEntry');
@@ -1497,8 +2146,65 @@
   var $helpTitle = document.getElementById('helpTitle');
   var $helpSlot = document.getElementById('helpSlot');
   var $helpBj = document.getElementById('helpBj');
+  var $helpFish = document.getElementById('helpFish');
 
-  var page = 'home';                        // home / slot / bj
+  /* ---- 钓鱼 ---- */
+  var $fishPage = document.getElementById('fishPage');
+  var $fishBack = document.getElementById('fishBack');
+  var $fishGold = document.getElementById('fishGold');
+  var $fishShell = document.getElementById('fishShell');
+  var $fishLuck = document.getElementById('fishLuck');
+  var $pond = document.getElementById('pond');
+  var $pondWater = document.getElementById('pondWater');
+  var $pondName = document.getElementById('pondName');
+  var $shadowLayer = document.getElementById('shadowLayer');
+  var $rippleLayer = document.getElementById('rippleLayer');
+  var $fishRod = document.getElementById('fishRod');
+  var $fishFloat = document.getElementById('fishFloat');
+  var $fishLine = document.getElementById('fishLine');
+  var $splash = document.getElementById('splash');
+  var $hookBait = document.getElementById('hookBait');
+  var $biteMark = document.getElementById('biteMark');
+  var $catchCard = document.getElementById('catchCard');
+  var $ccTier = document.getElementById('ccTier');
+  var $ccFish = document.getElementById('ccFish');
+  var $ccName = document.getElementById('ccName');
+  var $ccW = document.getElementById('ccW');
+  var $ccShell = document.getElementById('ccShell');
+  var $ccOk = document.getElementById('ccOk');
+  var $baitRow = document.getElementById('baitRow');
+  var $tensionWrap = document.getElementById('tensionWrap');
+  var $tensionBar = document.getElementById('tensionBar');
+  var $tZone = document.getElementById('tZone');
+  var $tAcc = document.getElementById('tAcc');
+  var $tMark = document.getElementById('tMark');
+  var $castBtn = document.getElementById('castBtn');
+  var $fishBagInfo = document.getElementById('fishBagInfo');
+  var $fishSheetBtn = document.getElementById('fishSheetBtn');
+  var $fishMsg = document.getElementById('fishMsg');
+  var $fishSheetTop = document.getElementById('fishSheetTop');
+  var $fbBagTitle = document.getElementById('fbBagTitle');
+  var $fbBagList = document.getElementById('fbBagList');
+  var $fbSellAll = document.getElementById('fbSellAll');
+  var $fbTank = document.getElementById('fbTank');
+  var $fbTankInfo = document.getElementById('fbTankInfo');
+  var $fbTankGear = document.getElementById('fbTankGear');
+  var $fbDexTitle = document.getElementById('fbDexTitle');
+  var $fbDexCount = document.getElementById('fbDexCount');
+  var $fbDexList = document.getElementById('fbDexList');
+  var $fbGearTitle = document.getElementById('fbGearTitle');
+  var $fbGearInfo = document.getElementById('fbGearInfo');
+  var $fbGearList = document.getElementById('fbGearList');
+  var $gmFish = document.getElementById('gmFish');
+  var $gmRow = document.getElementById('gmRow');
+  var $gmWheel = document.getElementById('gmWheel');
+  var $gmHub = document.getElementById('gmHub');
+  var $gmMsg = document.getElementById('gmMsg');
+  var $gmFishName = document.getElementById('gmFishName');
+  var $gmFishVal = document.getElementById('gmFishVal');
+  var $shellBox = document.getElementById('shellBox');
+
+  var page = 'home';                        // home / slot / bj / fish
   var atHome = true;                        // 一进来是「赛博赌场」大厅
 
   // 大厅 ⇄ 老虎机 ⇄ 黑杰克：只切 display，别的逻辑都不动；❓ 规则只有进了游戏才有
@@ -1510,6 +2216,8 @@
     $homePage.style.display = (p === 'home') ? '' : 'none';
     $gamePage.style.display = (p === 'slot') ? '' : 'none';
     $bjPage.style.display = (p === 'bj') ? '' : 'none';
+    $fishPage.style.display = (p === 'fish') ? '' : 'none';
+    if (p === 'fish') renderFishPage();
     refreshCorners();
   }
 
@@ -1601,6 +2309,8 @@
     renderPotBadges(); renderBagRow(); renderStats(); renderShop(); renderBag();
   }
   function buyItem(id) {
+    var lk = lookById(id);
+    if (lk) { buyLook(lk); return; }
     var it = itemById(id);
     if (!it) return;
     if (!afford(it.price)) { toast('金币不足，还差 ' + abbr(it.price - state.gold)); return; }
@@ -1665,7 +2375,8 @@
       box.innerHTML = h;
     }
     var st = document.getElementById('shopGold');
-    if (st) st.textContent = '金币 ' + abbr(state.gold);
+    if (st) st.textContent = '💰 ' + abbr(state.gold) + '　🐚 ' + abbr(shellNum());
+    renderLook();
     var bb = document.getElementById('bagBtn');
     if (bb) {
       var n = bagNum();
@@ -1786,6 +2497,7 @@
     var col = TIER_COLOR[AURAS[idxOf(state.eq)].t];
     $sGold.textContent = abbr(state.gold);
     $lobbyGold.textContent = abbr(state.gold);
+    if ($lobbyShell) $lobbyShell.textContent = abbr(shellNum());
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
     $sEq.style.color = col;
@@ -2375,8 +3087,35 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '2.5.1';
+  var VERSION = '3.3.0';
   var CHANGELOG = [
+    { v: '3.3.0', t: '竿与线', li: [
+      '🎣 竿子真的立在了岸上：抛竿时甩出去，咬钩时弯下腰',
+      '🧵 竿尖到浮漂拉出一条钓线，随水波垂着',
+      '🪱 钩子上挂着你正在用的饵',
+      '💧 落水、咬钩、挣扎各自有水花与涟漪，鱼竿四级的竿身、握把与卷线器都不一样',
+      '📱 窄屏手机上文字不再挤成一团',
+      '🔧 商城与渔具里的鱼竿一栏改成显示下一根竿，并标出当前用的是哪根'
+    ] },
+    { v: '3.2.0', t: '鱼种翻倍', li: [
+      '🐟 鱼种从 30 种加到 60 种，每个档位都有新面孔',
+      '🦀 多出三种新体型：长虫形、蟹形、海星形，多出一种钳子特征',
+      '📖 图鉴跟着扩到 60 格'
+    ] },
+    { v: '3.1.0', t: '鱼桌与夜钓', li: [
+      '🎰 赌鱼重做成红黑轮盘：押红黑翻一倍，押中绿翻十六倍',
+      '🌙 钓场重画：星空、月亮、芦苇、栈桥与岸边灯笼，池面有了波纹与灯光倒影',
+      '🔧 放慢出竿节奏，咬钩窗口给足反应时间，开局指针就落在绿区里',
+      '🔧 修掉「收下」按钮按不动、鱼的展示卡残留到下一杆的问题',
+      '💰 每一处花费都标清是金币还是贝壳'
+    ] },
+    { v: '3.0.0', t: '钓鱼', li: [
+      '🎣 首页新开「钓鱼」，四个钓场、30 种鱼、图鉴与鱼篓',
+      '🪱 商城能买鱼竿和鱼饵：鱼竿等级越高竿越气派，绿区也更宽',
+      '🎨 外观 Tab 开张：鱼竿涂装、浮漂、钓场水色、鱼缸水色与灯光',
+      '🐠 钓到的鱼可以卖贝壳、放进鱼缸养、或者拿它赌一把',
+      '⭐ 贝壳还能买永久钓鱼幸运与自动抛竿，钓场解锁用金币'
+    ] },
     { v: '2.5.1', t: '修修补补', li: [
       '🔧 修复若干小问题：角落按钮在手机上偶尔叠在一起、点不到',
       '🎒 背包按钮回到右下角，和 🎁 排成一列',
@@ -2445,14 +3184,15 @@
   function selectTab(name) {
     var i;
     for (i = 0; i < tabBtns.length; i++) tabBtns[i].className = 'tab' + (tabBtns[i].getAttribute('data-tab') === name ? ' on' : '');
-    var pages = ['draw', 'dex', 'equip', 'items', 'look'];
+    var pages = ['draw', 'dex', 'equip', 'items', 'look', 'fbBag', 'fbTank', 'fbDex', 'fbGear'];
     for (i = 0; i < pages.length; i++) {
       var pg = document.getElementById('page-' + pages[i]);
       if (pg) pg.className = 'tabPage' + (pages[i] === name ? ' on' : '');
     }
     if (name === 'dex') renderDex();
     if (name === 'equip') renderEquip();
-    if (name === 'items') renderShop();
+    if (name === 'items' || name === 'look') renderShop();
+    if (name === 'fbBag' || name === 'fbTank' || name === 'fbDex' || name === 'fbGear') renderFishSheet();
   }
 
   /* ================= 数字输入 ================= */
@@ -2590,10 +3330,11 @@
 
   // ❓ 是同一个按钮，规则内容按当前所在页面切换
   function openHelp() {
-    var slot = (page === 'slot');
-    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : '❓ 黑杰克规则';
+    var slot = (page === 'slot'), bj = (page === 'bj');
+    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : (bj ? '❓ 黑杰克规则' : '❓ 钓鱼规则');
     $helpSlot.style.display = slot ? '' : 'none';
-    $helpBj.style.display = slot ? 'none' : '';
+    $helpBj.style.display = bj ? '' : 'none';
+    $helpFish.style.display = (page === 'fish') ? '' : 'none';
     openSheet('helpSheet');
   }
   $helpBtn.addEventListener('click', openHelp, false);
@@ -2653,7 +3394,7 @@
   $logBtn.addEventListener('click', function () { openSheet('logSheet'); }, false);
   document.getElementById('logSheet').addEventListener('click', function (e) { if (e.target === this) closeSheet('logSheet'); }, false);
 
-  // 大厅游戏入口：老虎机 / 黑杰克 / 商城已开放，养鸡场与幸运转盘还是占位
+  // 大厅游戏入口：老虎机 / 黑杰克 / 钓鱼 / 商城已开放，养鸡场与幸运转盘还是占位
   var homeBtns = document.getElementById('homePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
@@ -2664,6 +3405,7 @@
           if (!bjTryUnlock()) return;                                   // 没买断：门口拦下来
           setPage('bj'); renderBj(); renderBjBet(); return;
         }
+        if (g === 'FISH') { setPage('fish'); return; }                 // 进钓鱼
         if (g === 'SHOP') { toggleMiscPop(false); openSheet('shopSheet'); return; }   // 进商城
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
       }, false);
@@ -2731,9 +3473,9 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}
+      codes: {}, bjBet: 1, bjUnlocked: false, bag: {}, pot: {}, fish: freshFish()
     };
-    rewindTarget = null; clearPotTimer();
+    rewindTarget = null; clearPotTimer(); fishIdle();
     save();
     BJ.deck = []; BJ.player = []; BJ.dealer = []; BJ.hole = true; BJ.bet = 1; BJ.doubled = false; BJ.phase = 'idle';
     fillGridIdle();
@@ -2747,6 +3489,7 @@
     $tierLine.textContent = ''; $oddsLine.textContent = '';
     $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
     renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
+    renderFishPage(); renderFishSheet(); save();
     closeSheet('setPop');
     toast('已重置');
   }, false);
@@ -2792,6 +3535,1130 @@
     renderStats(); renderDex(); renderEquip(); save();
   }, false);
 
+  /* ================= 钓鱼 ================= */
+
+  function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
+
+  // 抛竿 -> 等 -> 咬钩 -> 拉锯 的节奏，全在这几个数上（毫秒）
+  var FISH_T = {
+    cast: 560,      // 甩出去到浮漂落定
+    waitMin: 1500,  // 咬钩前最短等待
+    waitMax: 6000,  // 咬钩前最长等待
+    bite: 2300,     // 咬钩窗口（普通鱼）
+    biteRare: 1500, // 咬钩窗口（稀有鱼，稍紧一点）
+    fight: 2000,    // 拉锯需要累计「待在绿区里」的时间
+    land: 700,      // 收线到下一次自动抛竿之间
+    tick: 30,       // 拉锯的步长（页面里没有 requestAnimationFrame，一律 setTimeout 步进）
+    spin: 3200      // 轮盘转一圈的时间
+  };
+
+  var FISH_PONDS = [
+    { n: '庭院锦鲤池', ico: '🪷', price: 0,       w: [52, 26, 12, 6.5, 2.5, 0.8, 0.18, 0.02], c: ['#12463a', '#061714', 'rgba(212,175,55,.34)'] },
+    { n: '近海深水区', ico: '🌊', price: 50000,   w: [30, 26, 20, 14, 6.5, 2.5, 0.8, 0.2],    c: ['#0f2c4a', '#04101c', 'rgba(120,190,255,.30)'] },
+    { n: '熔岩裂谷',   ico: '🌋', price: 500000,  w: [14, 20, 24, 20, 13, 6, 2.2, 0.8],       c: ['#4a1408', '#180500', 'rgba(255,110,40,.42)'] },
+    { n: '星海尽头',   ico: '🌌', price: 5000000, w: [6, 12, 20, 24, 20, 12, 4.5, 1.5],       c: ['#2a1148', '#0a0418', 'rgba(190,120,255,.38)'] }
+  ];
+
+  var FISH_POND_SKINS = [
+    { id: 'p0a', pond: 0, n: '苔影', price: 12000, c: ['#123a2c', '#04120d', 'rgba(120,200,140,.28)'] },
+    { id: 'p0b', pond: 0, n: '暮金', price: 12000, c: ['#3a2f10', '#140f04', 'rgba(240,200,90,.34)'] },
+    { id: 'p1a', pond: 1, n: '幽蓝', price: 12000, c: ['#0f2b4a', '#04101c', 'rgba(120,180,255,.30)'] },
+    { id: 'p1b', pond: 1, n: '深碧', price: 12000, c: ['#0d3a3a', '#041414', 'rgba(120,255,220,.26)'] },
+    { id: 'p2a', pond: 2, n: '赤炎', price: 12000, c: ['#4a1408', '#180500', 'rgba(255,110,40,.42)'] },
+    { id: 'p2b', pond: 2, n: '硫黄', price: 12000, c: ['#3a3208', '#141102', 'rgba(255,225,60,.34)'] },
+    { id: 'p3a', pond: 3, n: '星紫', price: 12000, c: ['#2a1148', '#0a0418', 'rgba(190,120,255,.38)'] },
+    { id: 'p3b', pond: 3, n: '银河', price: 12000, c: ['#101a3a', '#04060f', 'rgba(150,190,255,.36)'] }
+  ];
+
+  // m = 对每一档稀有度权重的乘数（0 普通 ~ 7 隐秘）
+  var FISH_BAITS = [
+    { id: '',       n: '空钩', ico: '➖', price: 0,   m: [1, 1, 1, 1, 1, 1, 1, 1] },
+    { id: 'worm',   n: '蚯蚓', ico: '🪱', price: 22,  m: [1, 1.05, 1.15, 1.3, 1.5, 1.6, 1.7, 1.8] },
+    { id: 'shrimp', n: '虾饵', ico: '🦐', price: 120, m: [0.8, 0.9, 1, 1.25, 1.6, 1.9, 2.2, 2.5] },
+    { id: 'secret', n: '秘制', ico: '✨', price: 600, m: [0.5, 0.7, 0.9, 1.2, 1.7, 2.2, 2.8, 3.4] }
+  ];
+
+  // 鱼竿等级：数值（绿区宽度）+ 外观一起升
+  var FISH_RODS = [
+    { n: '竹竿',     price: 0,         zone: 0.34, tag: '一根普通竹竿，绿区最窄' },
+    { n: '玻璃钢竿', price: 15000,     zone: 0.40, tag: '半透明竿身，绿区宽一点' },
+    { n: '碳素竿',   price: 120000,    zone: 0.46, tag: '哑光黑配金环，绿区明显更宽' },
+    { n: '神话竿',   price: 1200000,   zone: 0.52, tag: '竿身有金纹流动，绿区最宽' }
+  ];
+  var FISH_ROD_SKINS = [
+    { id: 'frost', n: '霜刃', lv: 1, price: 8000 },
+    { id: 'gilt',  n: '鎏金', lv: 2, price: 15000 },
+    { id: 'dark',  n: '暗纹', lv: 2, price: 25000 },
+    { id: 'orbit', n: '星轨', lv: 3, price: 45000 },
+    { id: 'void',  n: '虚渊', lv: 3, price: 90000 }
+  ];
+
+  var FISH_FLOATS = [
+    { id: '',     n: '经典红白', price: 0 },
+    { id: 'cyan', n: '夜光青',   price: 4000 },
+    { id: 'gold', n: '鎏金',     price: 6000 },
+    { id: 'star', n: '星轨',     price: 10000 }
+  ];
+
+  var FISH_BAG_MAX = [30, 60, 120, 300];
+  var FISH_BAG_PRICE = [3000, 15000, 60000];
+
+  var FISH_TANK_MAX = [4, 8, 16, 32];
+  var FISH_TANK_PRICE = [2000, 10000, 40000];
+  var FISH_TANK_WATER = [
+    { id: '',     n: '原色', price: 0,     c: ['#0b2436', '#05121c'] },
+    { id: 'blue', n: '幽蓝', price: 6000,  c: ['#0d3350', '#04121f'] },
+    { id: 'gold', n: '熔金', price: 8000,  c: ['#3a2a08', '#150e02'] },
+    { id: 'star', n: '星海', price: 15000, c: ['#1b1040', '#070318'] }
+  ];
+  var FISH_TANK_LIGHT = [
+    { id: '',       n: '暖灯', price: 0,     c: 'rgba(255,200,120,.26)' },
+    { id: 'purple', n: '紫光', price: 8000,  c: 'rgba(170,110,255,.34)' },
+    { id: 'wood',   n: '沉木', price: 12000, c: 'rgba(120,190,120,.26)' },
+    { id: 'dust',   n: '星屑', price: 20000, c: 'rgba(200,220,255,.34)' }
+  ];
+
+  var FISH_AUTO = [{ n: 10, price: 1200 }, { n: 50, price: 5000 }];
+  var FISH_PERM_STEP = 0.2;                       // 永久钓鱼幸运：每档 +0.2
+  var FISH_PERM_MAX = 10;
+  var FISH_PERM_PRICE = [1500, 2400, 3840, 6100, 9800, 15700, 25000, 40000, 64000, 102000];
+
+  // 鱼桌轮盘：40 个口袋（19 红 / 19 黑 / 2 绿），押中哪个颜色就按那个倍数算
+  var FISH_WHEEL = [
+    { k: 'red',   n: '红', mul: 2,  p: 0.475, c: '#a3122a' },
+    { k: 'black', n: '黑', mul: 2,  p: 0.475, c: '#1b1d21' },
+    { k: 'green', n: '绿', mul: 16, p: 0.05,  c: '#12703c' }
+  ];
+  var FISH_WHEEL_N = 40;
+
+  var FISH_BASE = [5, 16, 50, 160, 520, 1800, 6500, 28000];   // 各档基础贝壳
+
+  // t 档位 / sh 体型 / pt 花纹 / ft 特征，三个旋钮拼出 60 种鱼
+  var FISH_LIST = [
+    { id: 'f01', t: 0, n: '小鲫鱼',     sh: 'oval',    pt: 'none',   ft: '' },
+    { id: 'f02', t: 0, n: '泥鳅',       sh: 'slim',    pt: 'none',   ft: 'whisker' },
+    { id: 'f03', t: 0, n: '河虾',       sh: 'crust',   pt: 'band',   ft: '' },
+    { id: 'f04', t: 0, n: '白条',       sh: 'slim',    pt: 'stripe', ft: '' },
+    { id: 'f05', t: 0, n: '破鞋',       sh: 'shoe',    pt: 'none',   ft: '' },
+    { id: 'f06', t: 0, n: '易拉罐',     sh: 'can',     pt: 'none',   ft: '' },
+    { id: 'f31', t: 0, n: '麦穗鱼',     sh: 'oval',    pt: 'stripe', ft: '' },
+    { id: 'f32', t: 0, n: '水蛇',       sh: 'serpent', pt: 'spot',   ft: '' },
+    { id: 'f33', t: 0, n: '田螺',       sh: 'shell',   pt: 'spot',   ft: '' },
+    { id: 'f34', t: 0, n: '塑料瓶',     sh: 'can',     pt: 'band',   ft: '' },
+    { id: 'f35', t: 0, n: '旧轮胎',     sh: 'can',     pt: 'spot',   ft: '' },
+    { id: 'f36', t: 0, n: '水藻',       sh: 'worm',    pt: 'glow',   ft: '' },
+    { id: 'f07', t: 1, n: '鲤鱼',       sh: 'tall',    pt: 'scale',  ft: 'whisker' },
+    { id: 'f08', t: 1, n: '罗非鱼',     sh: 'round',   pt: 'band',   ft: 'fin' },
+    { id: 'f09', t: 1, n: '河蚌',       sh: 'shell',   pt: 'band',   ft: '' },
+    { id: 'f10', t: 1, n: '黄颡鱼',     sh: 'slim',    pt: 'spot',   ft: 'whisker' },
+    { id: 'f37', t: 1, n: '草鱼',       sh: 'tall',    pt: 'scale',  ft: '' },
+    { id: 'f38', t: 1, n: '鳊鱼',       sh: 'flat',    pt: 'stripe', ft: '' },
+    { id: 'f39', t: 1, n: '鲶鱼',       sh: 'slim',    pt: 'scale',  ft: 'whisker' },
+    { id: 'f40', t: 1, n: '河蟹',       sh: 'crab',    pt: 'none',   ft: 'claw' },
+    { id: 'f11', t: 2, n: '黑鱼',       sh: 'slim',    pt: 'spot',   ft: 'fin' },
+    { id: 'f12', t: 2, n: '鳜鱼',       sh: 'tall',    pt: 'spot',   ft: 'fin' },
+    { id: 'f13', t: 2, n: '甲鱼',       sh: 'shell',   pt: 'none',   ft: '' },
+    { id: 'f14', t: 2, n: '锦鲤',       sh: 'tall',    pt: 'band',   ft: 'crown' },
+    { id: 'f41', t: 2, n: '鲈鱼',       sh: 'tall',    pt: 'band',   ft: 'fin' },
+    { id: 'f42', t: 2, n: '鳝鱼',       sh: 'worm',    pt: 'none',   ft: '' },
+    { id: 'f43', t: 2, n: '珍珠贝',     sh: 'shell',   pt: 'glow',   ft: '' },
+    { id: 'f44', t: 2, n: '海星',       sh: 'star',    pt: 'none',   ft: '' },
+    { id: 'f15', t: 3, n: '中华鲟',     sh: 'spear',   pt: 'scale',  ft: 'horn' },
+    { id: 'f16', t: 3, n: '电鳗',       sh: 'slim',    pt: 'none',   ft: 'elec' },
+    { id: 'f17', t: 3, n: '大青鱼',     sh: 'tall',    pt: 'scale',  ft: 'fin' },
+    { id: 'f18', t: 3, n: '蓝鳍金枪鱼', sh: 'spear',   pt: 'none',   ft: 'fin' },
+    { id: 'f45', t: 3, n: '巨骨舌鱼',   sh: 'serpent', pt: 'scale',  ft: '' },
+    { id: 'f46', t: 3, n: '哲罗鲑',     sh: 'spear',   pt: 'stripe', ft: 'fin' },
+    { id: 'f47', t: 3, n: '魟鱼',       sh: 'flat',    pt: 'spot',   ft: '' },
+    { id: 'f48', t: 3, n: '六须鲇',     sh: 'slim',    pt: 'none',   ft: '' },
+    { id: 'f19', t: 4, n: '旗鱼',       sh: 'spear',   pt: 'none',   ft: 'sail' },
+    { id: 'f20', t: 4, n: '深海鮟鱇',   sh: 'puff',    pt: 'glow',   ft: 'lure' },
+    { id: 'f21', t: 4, n: '巨型乌贼',   sh: 'squid',   pt: 'spot',   ft: '' },
+    { id: 'f22', t: 4, n: '皇带鱼',     sh: 'slim',    pt: 'band',   ft: 'sail' },
+    { id: 'f49', t: 4, n: '吸血乌贼',   sh: 'squid',   pt: 'none',   ft: 'horn' },
+    { id: 'f50', t: 4, n: '深海龙鱼',   sh: 'worm',    pt: 'glow',   ft: 'lure' },
+    { id: 'f51', t: 4, n: '巨螯蟹',     sh: 'crab',    pt: 'band',   ft: 'claw' },
+    { id: 'f52', t: 4, n: '腔棘鱼',     sh: 'round',   pt: 'scale',  ft: 'fin' },
+    { id: 'f23', t: 5, n: '白金鳐',     sh: 'flat',    pt: 'none',   ft: '' },
+    { id: 'f24', t: 5, n: '熔岩龙鱼',   sh: 'tall',    pt: 'lava',   ft: 'horn' },
+    { id: 'f25', t: 5, n: '星辰水母',   sh: 'jelly',   pt: 'glow',   ft: 'star' },
+    { id: 'f53', t: 5, n: '琉璃鲸',     sh: 'tall',    pt: 'glow',   ft: '' },
+    { id: 'f54', t: 5, n: '极光鳐',     sh: 'flat',    pt: 'glow',   ft: 'star' },
+    { id: 'f55', t: 5, n: '珊瑚龙',     sh: 'spear',   pt: 'scale',  ft: 'crown' },
+    { id: 'f26', t: 6, n: '深渊利维坦', sh: 'serpent', pt: 'scale',  ft: 'horn' },
+    { id: 'f27', t: 6, n: '太虚鲲',     sh: 'tall',    pt: 'glow',   ft: 'fin' },
+    { id: 'f56', t: 6, n: '冥河鲨',     sh: 'spear',   pt: 'stripe', ft: 'horn' },
+    { id: 'f57', t: 6, n: '蜃楼水母',   sh: 'jelly',   pt: 'band',   ft: 'star' },
+    { id: 'f58', t: 6, n: '苍海巨鲲',   sh: 'tall',    pt: 'scale',  ft: 'crown' },
+    { id: 'f28', t: 7, n: '以太之鱼',   sh: 'oval',    pt: 'glow',   ft: 'crown' },
+    { id: 'f29', t: 7, n: '无相鲲',     sh: 'serpent', pt: 'glow',   ft: 'crown' },
+    { id: 'f30', t: 7, n: '归墟',       sh: 'jelly',   pt: 'none',   ft: 'star' },
+    { id: 'f59', t: 7, n: '终焉之鳞',   sh: 'serpent', pt: 'glow',   ft: '' },
+    { id: 'f60', t: 7, n: '鸿蒙',       sh: 'round',   pt: 'lava',   ft: 'horn' }
+  ];
+
+  function freshFish() {
+    return {
+      shells: 0, ponds: { '0': true }, pond: 0, rod: 0, rodSkin: '', float: '', pondSkin: '',
+      bait: '', baits: {}, bag: [], dex: {}, bagLv: 0,
+      tank: [null, null, null, null], tankLv: 0, tankWater: '', tankLight: '',
+      auto: 0, autoOn: false, permLuck: 0, own: {}
+    };
+  }
+
+  function fishById(id) {
+    for (var i = 0; i < FISH_LIST.length; i++) if (FISH_LIST[i].id === id) return FISH_LIST[i];
+    return FISH_LIST[0];
+  }
+  function fishBaitById(id) {
+    for (var i = 0; i < FISH_BAITS.length; i++) if (FISH_BAITS[i].id === id) return FISH_BAITS[i];
+    return FISH_BAITS[0];
+  }
+  function fishSkinById(id) {
+    for (var i = 0; i < FISH_ROD_SKINS.length; i++) if (FISH_ROD_SKINS[i].id === id) return FISH_ROD_SKINS[i];
+    return null;
+  }
+  function fishFloatById(id) {
+    for (var i = 0; i < FISH_FLOATS.length; i++) if (FISH_FLOATS[i].id === id) return FISH_FLOATS[i];
+    return null;
+  }
+  function fishPondSkinById(id) {
+    if (!id) return null;
+    for (var i = 0; i < FISH_POND_SKINS.length; i++) if (FISH_POND_SKINS[i].id === id) return FISH_POND_SKINS[i];
+    return null;
+  }
+  function fishWaterById(id) {
+    for (var i = 0; i < FISH_TANK_WATER.length; i++) if (FISH_TANK_WATER[i].id === id) return FISH_TANK_WATER[i];
+    return FISH_TANK_WATER[0];
+  }
+  function fishLightById(id) {
+    for (var i = 0; i < FISH_TANK_LIGHT.length; i++) if (FISH_TANK_LIGHT[i].id === id) return FISH_TANK_LIGHT[i];
+    return FISH_TANK_LIGHT[0];
+  }
+  function fishBagItem(o) {
+    if (!o || typeof o !== 'object' || typeof o.id !== 'string') return null;
+    var i, ok = false;
+    for (i = 0; i < FISH_LIST.length; i++) if (FISH_LIST[i].id === o.id) ok = true;
+    if (!ok) return null;
+    return {
+      id: o.id,
+      w: (typeof o.w === 'number' && o.w > 0.1 && o.w < 10) ? o.w : 1,
+      m: (typeof o.m === 'number' && o.m >= 1 && o.m < 1e9) ? o.m : 1,
+      b: o.b ? 1 : 0
+    };
+  }
+
+  function shellNum() { return (state.fish && state.fish.shells) ? state.fish.shells : 0; }
+  function clampShell(v) { return v > GOLD_MAX ? GOLD_MAX : (v < 0 ? 0 : v); }
+  function fishBagMax() { return FISH_BAG_MAX[state.fish.bagLv]; }
+  function fishTankMax() { return FISH_TANK_MAX[state.fish.tankLv]; }
+  function fishRod() { return FISH_RODS[state.fish.rod]; }
+  function fishShells(id, w, m) { return Math.round(FISH_BASE[fishById(id).t] * w * (m || 1)); }
+
+  // 钓鱼幸运 = 1 + √(光环 L + 药水 5) + 永久档 × 0.2；永久那部分故意放在根号外面
+  function fishLuck() {
+    var L = AURAS[idxOf(state.eq)].L || 0;
+    if (potActive('luck')) L += LUCK_ADD;
+    return 1 + Math.sqrt(L) + (state.fish ? state.fish.permLuck : 0) * FISH_PERM_STEP;
+  }
+  function fishZone() {
+    var z = fishRod().zone * (1 + (fishLuck() - 1) * 0.04);
+    return z > 0.70 ? 0.70 : z;
+  }
+  function fishPull(t) {
+    var v = (0.30 + t * 0.11) * (1 - (fishLuck() - 1) * 0.03);
+    return v < 0.22 ? 0.22 : v;
+  }
+  function fishGreenSpeed(t) {
+    var v = (0.06 + t * 0.020) * (1 - (fishLuck() - 1) * 0.02);
+    return v < 0.035 ? 0.035 : v;
+  }
+
+  // 稀有度权重：饵的乘数 + 幸运往高档偏，最后归一化
+  function fishWeights(pond, baitId) {
+    var base = FISH_PONDS[pond].w, m = fishBaitById(baitId).m, lk = fishLuck();
+    var out = [], i, s = 0;
+    for (i = 0; i < 8; i++) {
+      out[i] = base[i] * m[i] * (1 + (lk - 1) * 0.08 * i);
+      s += out[i];
+    }
+    for (i = 0; i < 8; i++) out[i] = out[i] / s;
+    return out;
+  }
+  function pickFishTier(pond, baitId) {
+    var w = fishWeights(pond, baitId), r = Math.random(), acc = 0, i;
+    for (i = 0; i < 8; i++) {
+      acc += w[i];
+      if (r < acc) return i;
+    }
+    return 0;
+  }
+  function pickFish(pond, baitId) {
+    var t = pickFishTier(pond, baitId), pool = [], i;
+    for (i = 0; i < FISH_LIST.length; i++) if (FISH_LIST[i].t === t) pool.push(FISH_LIST[i]);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  /* ---- 展示 ---- */
+
+  function fishHtml(f, extra) {
+    return '<div class="fish t' + f.t + ' sh-' + f.sh + ' pt-' + f.pt + (f.ft ? ' ft-' + f.ft : '') +
+      (extra ? ' ' + extra : '') + '" style="--fc:' + TIER_COLOR[f.t] + '">' +
+      '<i class="fbody"></i><i class="ftail"></i><i class="ffin"></i><i class="feye"></i><i class="ffx"></i></div>';
+  }
+
+  function floatCls() { return state.fish.float ? ' fl-' + state.fish.float : ''; }
+  function rodClsOf(lv, skin) { return 'rod lv' + lv + (skin ? ' sk-' + skin : ''); }
+  function rodCls() { return rodClsOf(state.fish.rod, state.fish.rodSkin); }
+
+  var ROD_PX = 0.72, ROD_PY = 0.97, ROD_R = 0.70, ROD_MIN = 110, ROD_MAX = 330;
+  var ROD_A = 17, ROD_AB = 28, FLT_X = 0.38, rodPx = 0;
+
+  function drawRig() {
+    if (!$fishLine || !$fishLine.setAttribute || !$pond || !$pond.clientWidth) return;
+    var W = $pond.clientWidth, H = $pond.clientHeight;
+    var bend = (FG.phase === 'fight');
+    var L = Math.max(ROD_MIN, Math.min(ROD_MAX, H * ROD_R));
+    if (rodPx !== L && $fishRod && $fishRod.style) {
+      $fishRod.style.height = Math.round(L) + 'px';
+      rodPx = L;
+    }
+    var a = (bend ? ROD_AB : ROD_A) * Math.PI / 180, len = L * (bend ? 0.93 : 1);
+    var tx = ROD_PX * W - Math.sin(a) * len, ty = ROD_PY * H - Math.cos(a) * len;
+    var fx = FLT_X * W, fy = (FG.phase === 'cast' ? 0.30 : FG.fy) * H + 8;
+    var mx = (tx + fx) / 2 + 3, my = (ty + fy) / 2 + 9 + Math.hypot(fx - tx, fy - ty) * 0.06;
+    if (FG.phase === 'fight') my += 5 + Math.random() * 6;
+    $fishLine.setAttribute('d', 'M' + (tx / W * 100).toFixed(2) + ',' + (ty / H * 100).toFixed(2) +
+      ' Q' + (mx / W * 100).toFixed(2) + ',' + (my / H * 100).toFixed(2) +
+      ' ' + (fx / W * 100).toFixed(2) + ',' + (fy / H * 100).toFixed(2));
+  }
+
+  function splashAt() {
+    if (!$splash) return;
+    $splash.setAttribute('style', 'top:' + (FG.fy * 100).toFixed(1) + '%');
+    $splash.className = 'splash on';
+  }
+
+  function renderFishPage() {
+    if (!state.fish || !$fishPage) return;
+    $fishGold.textContent = abbr(state.gold);
+    $fishShell.textContent = abbr(state.fish.shells);
+    $fishLuck.textContent = '×' + fishLuck().toFixed(2);
+    $fishBagInfo.textContent = '鱼篓 ' + state.fish.bag.length + ' / ' + fishBagMax();
+    $pondName.innerHTML = FISH_PONDS[state.fish.pond].ico + ' <b>' + FISH_PONDS[state.fish.pond].n + '</b>';
+    $fishRod.className = rodCls();
+    renderBaits();
+    paintPond();
+    spawnShadows();
+    if (FG.phase === 'idle') $fishFloat.className = 'float bob' + floatCls();
+    drawRig();
+  }
+
+  function paintPond() {
+    var sk = fishPondSkinById(state.fish.pondSkin);
+    var base = FISH_PONDS[state.fish.pond].c;
+    var c = (sk && sk.pond === state.fish.pond) ? sk.c : base;
+    if ($pondWater && $pondWater.setAttribute) {
+      $pondWater.setAttribute('style', '--pw1:' + c[0] + ';--pw2:' + c[1] + ';--pg:' + c[2]);
+    }
+  }
+
+  function spawnShadows() {
+    if (!$shadowLayer) return;
+    var h = '', i;
+    for (i = 0; i < 4; i++) {
+      var f = FISH_LIST[Math.floor(Math.random() * FISH_LIST.length)];
+      h += '<span class="swim" style="top:' + (6 + Math.random() * 52).toFixed(1) + '%;' +
+        'animation-duration:' + (11 + Math.random() * 9).toFixed(1) + 's;' +
+        'animation-delay:-' + (Math.random() * 10).toFixed(1) + 's">' +
+        '<span style="transform:scale(' + (0.9 + Math.random() * 0.7).toFixed(2) + ');transform-origin:0 0">' + fishHtml(f) + '</span></span>';
+    }
+    $shadowLayer.innerHTML = h;
+  }
+
+  function renderBaits() {
+    if (!$baitRow) return;
+    var h = '', i;
+    for (i = 0; i < FISH_BAITS.length; i++) {
+      var b = FISH_BAITS[i], own = b.id ? (state.fish.baits[b.id] || 0) : -1;
+      h += '<button class="baitBtn' + (state.fish.bait === b.id ? ' on' : '') + '" data-bait="' + b.id + '"' +
+        ((b.id && own <= 0) ? ' disabled' : '') + '>' + b.ico + ' ' + b.n +
+        '<s>' + (b.id ? (own > 0 ? own + ' 个' : '用完了') : '不消耗') + '</s></button>';
+    }
+    $baitRow.innerHTML = h;
+    if ($hookBait) $hookBait.textContent = state.fish.bait ? fishBaitById(state.fish.bait).ico : '';
+  }
+
+  /* ---- 外观（商城的 🎨 外观 Tab 用同一份数据） ---- */
+
+  function lookById(id) {
+    if (typeof id !== 'string') return null;
+    var i, s;
+    for (i = 0; i < FISH_ROD_SKINS.length; i++) {
+      s = FISH_ROD_SKINS[i];
+      if ('rk_' + s.id === id) return { id: id, kind: 'rod', val: s.id, n: s.n, price: s.price, lv: s.lv, ico: '🎣', kindName: '鱼竿涂装', tag: '需要 ' + FISH_RODS[s.lv].n };
+    }
+    for (i = 1; i < FISH_FLOATS.length; i++) {
+      s = FISH_FLOATS[i];
+      if ('fl_' + s.id === id) return { id: id, kind: 'float', val: s.id, n: s.n, price: s.price, ico: '🔴', kindName: '浮漂', tag: '只改浮漂外观' };
+    }
+    for (i = 0; i < FISH_POND_SKINS.length; i++) {
+      s = FISH_POND_SKINS[i];
+      if ('pk_' + s.id === id) return { id: id, kind: 'pond', val: s.id, n: s.n, price: s.price, pi: s.pond, ico: '🌊', kindName: '钓场水色', tag: FISH_PONDS[s.pond].n + ' 专用' };
+    }
+    for (i = 1; i < FISH_TANK_WATER.length; i++) {
+      s = FISH_TANK_WATER[i];
+      if ('wt_' + s.id === id) return { id: id, kind: 'water', val: s.id, n: s.n, price: s.price, ico: '🐠', kindName: '鱼缸水色', tag: '只改鱼缸配色' };
+    }
+    for (i = 1; i < FISH_TANK_LIGHT.length; i++) {
+      s = FISH_TANK_LIGHT[i];
+      if ('lt_' + s.id === id) return { id: id, kind: 'light', val: s.id, n: s.n, price: s.price, ico: '💡', kindName: '鱼缸灯光', tag: '只改鱼缸灯光' };
+    }
+    return null;
+  }
+  function lookList() {
+    var out = [], i;
+    for (i = 0; i < FISH_ROD_SKINS.length; i++) out.push(lookById('rk_' + FISH_ROD_SKINS[i].id));
+    for (i = 1; i < FISH_FLOATS.length; i++) out.push(lookById('fl_' + FISH_FLOATS[i].id));
+    for (i = 0; i < FISH_POND_SKINS.length; i++) out.push(lookById('pk_' + FISH_POND_SKINS[i].id));
+    for (i = 1; i < FISH_TANK_WATER.length; i++) out.push(lookById('wt_' + FISH_TANK_WATER[i].id));
+    for (i = 1; i < FISH_TANK_LIGHT.length; i++) out.push(lookById('lt_' + FISH_TANK_LIGHT[i].id));
+    return out;
+  }
+  function fishOwn(id) { return state.fish.own[id] === true; }
+  function lookUsable(lk) {
+    if (lk.kind === 'rod') return state.fish.rod >= lk.lv;
+    if (lk.kind === 'pond') return !!state.fish.ponds[lk.pi];
+    return true;
+  }
+  function lookWorn(lk) {
+    if (lk.kind === 'rod') return state.fish.rodSkin === lk.val;
+    if (lk.kind === 'float') return state.fish.float === lk.val;
+    if (lk.kind === 'pond') return state.fish.pondSkin === lk.val;
+    if (lk.kind === 'water') return state.fish.tankWater === lk.val;
+    return state.fish.tankLight === lk.val;
+  }
+  function fishWear(lk) {
+    if (lk.kind === 'rod') state.fish.rodSkin = lk.val;
+    else if (lk.kind === 'float') state.fish.float = lk.val;
+    else if (lk.kind === 'pond') state.fish.pondSkin = lk.val;
+    else if (lk.kind === 'water') state.fish.tankWater = lk.val;
+    else state.fish.tankLight = lk.val;
+    save(); renderFishPage(); renderFishSheet(); renderLook();
+  }
+  function buyLook(lk) {
+    if (!lookUsable(lk)) { toast(lk.tag); return; }
+    if (!fishOwn(lk.id)) {
+      if (!spendShell(lk.price)) return;
+      state.fish.own[lk.id] = true;
+      toast('买下 ' + lk.n);
+    }
+    fishWear(lk);
+  }
+  function wearById(id) {
+    if (id === 'none:rod') { state.fish.rodSkin = ''; }
+    else if (id === 'none:float') { state.fish.float = ''; }
+    else if (id === 'none:pond') { state.fish.pondSkin = ''; }
+    else if (id === 'none:water') { state.fish.tankWater = ''; }
+    else if (id === 'none:light') { state.fish.tankLight = ''; }
+    else {
+      var lk = lookById(id);
+      if (!lk || !fishOwn(id)) return;
+      if (!lookUsable(lk)) { toast(lk.tag); return; }
+      fishWear(lk);
+      return;
+    }
+    save(); renderFishPage(); renderFishSheet(); renderLook();
+  }
+
+  function renderLook() {
+    var box = document.getElementById('lookList');
+    if (!box || !state.fish) return;
+    var list = lookList(), h = '', i;
+    for (i = 0; i < list.length; i++) {
+      var lk = list[i];
+      if (!lk) continue;
+      var own = fishOwn(lk.id), ok = lookUsable(lk), worn = own && lookWorn(lk);
+      h += '<div class="gItem' + (ok ? '' : ' off') + '" data-item="' + lk.id + '">' +
+             '<div class="gTop"><span class="gIco">' + lk.ico + '</span>' +
+               '<span class="gNm">' + lk.n + '<i>' + lk.kindName + '</i></span></div>' +
+             '<div class="gTag">' + lk.tag + '</div>' +
+             '<div class="gMeta">' + (own ? ('已拥有' + (worn ? '　·　使用中' : '')) : ('🐚 ' + abbr(lk.price))) + '</div>' +
+             '<div class="gFoot"><span class="gPrice">' + (own ? '已拥有' : '🐚 ' + abbr(lk.price)) + '</span>' +
+               '<button class="gBuy" data-buy="' + lk.id + '"' + (ok ? '' : ' disabled') + '>' +
+                 (own ? (worn ? '使用中' : '换上') : '购买') + '</button></div>' +
+           '</div>';
+    }
+    box.innerHTML = h;
+  }
+
+  function spendShell(n) {
+    if (shellNum() < n) { toast('🐚 贝壳不够，还差 ' + abbr(n - shellNum())); return false; }
+    state.fish.shells = clampShell(state.fish.shells - n);
+    return true;
+  }
+  function spendGold(n) {
+    if (!afford(n)) { toast('💰 金币不够，还差 ' + abbr(n - state.gold)); return false; }
+    state.gold = clampGold(state.gold - n);
+    return true;
+  }
+
+  /* ---- 鱼篓弹层 ---- */
+
+  function renderFishSheet() {
+    if (!state.fish || !$fishSheetTop) return;
+    $fishSheetTop.textContent = '🐚 ' + abbr(state.fish.shells) + '　鱼篓 ' + state.fish.bag.length + ' / ' + fishBagMax();
+    fishTabBag(); fishTabTank(); fishTabDex(); fishTabGear();
+  }
+
+  function fishTabBag() {
+    var bag = state.fish.bag, h = '', i;
+    $fbBagTitle.textContent = '鱼篓 ' + bag.length + ' / ' + fishBagMax();
+    if (!bag.length) h = '<div class="empty">鱼篓是空的，去池边抛两竿</div>';
+    for (i = 0; i < bag.length; i++) {
+      var it = bag[i], f = fishById(it.id);
+      h += '<div class="fRow">' +
+        '<span class="fIco">' + fishHtml(f) + '</span>' +
+        '<span class="fInfo"><b style="color:' + TIER_COLOR[f.t] + '">' + f.n +
+          (it.b ? ' <span style="font-size:10px;color:#f3d98b">金鳞</span>' : '') + '</b>' +
+          '<small>' + TIER_NAME[f.t] + ' · ' + it.w.toFixed(2) + ' kg · 值 ' + abbr(fishShells(it.id, it.w, it.m)) + ' 🐚</small></span>' +
+        '<button class="fBtn g" data-fsell="' + i + '">卖出</button>' +
+        '<button class="fBtn" data-fgamble="' + i + '"' + (it.b ? ' disabled' : '') + '>赌</button>' +
+        '<button class="fBtn" data-ftank="' + i + '">入缸</button>' +
+        '</div>';
+    }
+    $fbBagList.innerHTML = h;
+    $fbSellAll.disabled = !bag.length;
+  }
+
+  function fishTabTank() {
+    var tk = state.fish.tank, max = fishTankMax(), w = fishWaterById(state.fish.tankWater), lt = fishLightById(state.fish.tankLight);
+    var h = '', i;
+    for (i = 0; i < max; i++) {
+      var it = tk[i], f = it ? fishById(it.id) : null;
+      h += '<div class="tankCell' + (lt.id ? ' lit' : '') + '" style="--tl:' + lt.c + '"' +
+        (it ? ' data-ttake="' + i + '"' : '') + '>' +
+        (it ? fishHtml(f, f.sh === 'jelly' ? 'jelly' : '') : '') + '</div>';
+    }
+    $fbTank.innerHTML = h;
+    if ($fbTank.setAttribute) $fbTank.setAttribute('style', '--tw1:' + w.c[0] + ';--tw2:' + w.c[1]);
+    $fbTankInfo.textContent = max + ' 展位 · ' + w.n + ' · ' + lt.n;
+
+    var g = '', j;
+    if (state.fish.tankLv + 1 < FISH_TANK_MAX.length) {
+      g += '<div class="fGear"><span class="fInfo"><b>扩建鱼缸</b><small>' + max + ' → ' + FISH_TANK_MAX[state.fish.tankLv + 1] + ' 个展位</small></span>' +
+        '<button class="fBtn g" data-fbuy="tank:1">🐚 ' + abbr(FISH_TANK_PRICE[state.fish.tankLv]) + '</button></div>';
+    }
+    for (j = 1; j < FISH_TANK_WATER.length; j++) {
+      var ww = FISH_TANK_WATER[j], ow = fishOwn('wt_' + ww.id);
+      g += '<div class="fGear"><span class="fInfo"><b>' + ww.n + ' 水色</b><small>' + (ow ? '已拥有' : '🐚 ' + abbr(ww.price)) + '</small></span>' +
+        (ow ? '<button class="fBtn' + (state.fish.tankWater === ww.id ? ' g' : '') + '" data-ffree="' + (state.fish.tankWater === ww.id ? 'none:water' : 'wt_' + ww.id) + '">' +
+                (state.fish.tankWater === ww.id ? '换回原色' : '换上') + '</button>'
+            : '<button class="fBtn g" data-fbuy="look:wt_' + ww.id + '">买下</button>') + '</div>';
+    }
+    for (j = 1; j < FISH_TANK_LIGHT.length; j++) {
+      var ll = FISH_TANK_LIGHT[j], ol = fishOwn('lt_' + ll.id);
+      g += '<div class="fGear"><span class="fInfo"><b>' + ll.n + ' 灯光</b><small>' + (ol ? '已拥有' : '🐚 ' + abbr(ll.price)) + '</small></span>' +
+        (ol ? '<button class="fBtn' + (state.fish.tankLight === ll.id ? ' g' : '') + '" data-ffree="' + (state.fish.tankLight === ll.id ? 'none:light' : 'lt_' + ll.id) + '">' +
+                (state.fish.tankLight === ll.id ? '换回暖灯' : '换上') + '</button>'
+            : '<button class="fBtn g" data-fbuy="look:lt_' + ll.id + '">买下</button>') + '</div>';
+    }
+    if (max < FISH_TANK_MAX[FISH_TANK_MAX.length - 1]) g += '<div class="empty" style="padding:10px 0">展位里的鱼不会被卖掉，也不会被拿去赌</div>';
+    $fbTankGear.innerHTML = g;
+  }
+
+  function fishTabDex() {
+    var h = '', i, got = 0;
+    for (i = 0; i < FISH_LIST.length; i++) {
+      var f = FISH_LIST[i], d = state.fish.dex[f.id], seen = !!(d && d.n > 0);
+      if (seen) got++;
+      h += '<div class="fRow"' + (seen ? '' : ' style="opacity:.40"') + '>' +
+        '<span class="fIco">' + (seen ? fishHtml(f) : '<div class="fish sh-oval"><i class="fbody" style="background:#3d3f3e"></i></div>') + '</span>' +
+        '<span class="fInfo"><b style="color:' + (seen ? TIER_COLOR[f.t] : '#6b6a63') + '">' + (seen ? f.n : '？？？') + '</b>' +
+        '<small>' + TIER_NAME[f.t] + ' · ' + (seen ? ('钓到 ' + d.n + ' 条 · 最大 ' + d.best.toFixed(2) + ' kg') : '还没见过') + '</small></span></div>';
+    }
+    $fbDexTitle.textContent = '图鉴 ' + got + ' / ' + FISH_LIST.length;
+    $fbDexCount.textContent = FISH_LIST.length + ' 种';
+    $fbDexList.innerHTML = h;
+  }
+
+  function fishTabGear() {
+    var g = state.fish, h = '', i, j;
+
+    for (i = 0; i < FISH_PONDS.length; i++) {
+      var pd = FISH_PONDS[i], un = !!g.ponds[i], here = (g.pond === i);
+      h += '<div class="fGear"><span class="fInfo"><b>' + pd.ico + ' ' + pd.n + '</b><small>' +
+        (un ? (here ? '正在这里钓' : '已解锁') : ('解锁要 💰 ' + abbr(pd.price))) + '</small></span>' +
+        (un ? (here ? '' : '<button class="fBtn g" data-ffree="pond:' + i + '">去这里</button>')
+            : '<button class="fBtn g" data-fbuy="pond:' + i + '">解锁</button>') + '</div>';
+    }
+
+    var rn = g.rod + 1, nr = FISH_RODS[rn] || null;
+    h += '<div class="fGear"><span class="rodBox"><span class="' + (nr ? rodClsOf(rn, '') : rodCls()) + '"></span></span>' +
+      '<span class="fInfo"><b>' + (nr ? nr.n : fishRod().n) + '</b>' +
+      '<small>' + (nr ? (nr.tag + ' · 绿区 ' + Math.round(fishRod().zone * 100) + '% → ' + Math.round(nr.zone * 100) + '%') : fishRod().tag) + '</small>' +
+      '<small class="fNow">当前 ' + fishRod().n + '</small></span>' +
+      (nr ? '<button class="fBtn g" data-fbuy="rod:1">💰 ' + abbr(nr.price) + '</button>'
+          : '<span class="fBtn" style="opacity:.5">已满级</span>') + '</div>';
+
+    h += '<div class="fGear"><span class="fInfo"><b>鱼竿涂装</b><small>只改花色，不影响手感</small></span>';
+    h += '<button class="fBtn' + (!g.rodSkin ? ' g' : '') + '" data-ffree="none:rod">原色</button>';
+    for (j = 0; j < FISH_ROD_SKINS.length; j++) {
+      var s = FISH_ROD_SKINS[j], sid = 'rk_' + s.id, own = fishOwn(sid);
+      h += own ? '<button class="fBtn' + (g.rodSkin === s.id ? ' g' : '') + '" data-ffree="' + sid + '">' + s.n + '</button>'
+               : '<button class="fBtn" data-fbuy="look:' + sid + '"' + (g.rod >= s.lv ? '' : ' disabled') + '>' + s.n + ' ' + abbr(s.price) + '</button>';
+    }
+    h += '</div>';
+
+    h += '<div class="fGear"><span class="fInfo"><b>浮漂</b><small>只改浮漂外观</small></span>';
+    h += '<button class="fBtn' + (!g.float ? ' g' : '') + '" data-ffree="none:float">经典红白</button>';
+    for (j = 1; j < FISH_FLOATS.length; j++) {
+      var fl = FISH_FLOATS[j], fid = 'fl_' + fl.id, fo = fishOwn(fid);
+      h += fo ? '<button class="fBtn' + (g.float === fl.id ? ' g' : '') + '" data-ffree="' + fid + '">' + fl.n + '</button>'
+              : '<button class="fBtn" data-fbuy="look:' + fid + '">' + fl.n + ' ' + abbr(fl.price) + '</button>';
+    }
+    h += '</div>';
+
+    for (j = 0; j < FISH_BAITS.length; j++) {
+      var b = FISH_BAITS[j];
+      if (!b.id) {
+        h += '<div class="fGear"><span class="fInfo"><b>➖ 空钩</b><small>不消耗，但大鱼少</small></span>' +
+          (g.bait === '' ? '' : '<button class="fBtn g" data-ffree="bait:">换上</button>') + '</div>';
+        continue;
+      }
+      var own2 = g.baits[b.id] || 0;
+      h += '<div class="fGear"><span class="fInfo"><b>' + b.ico + ' ' + b.n + '</b><small>持有 ' + own2 + ' 个 · 10 个 🐚 ' + abbr(b.price * 10) + '</small></span>' +
+        (g.bait === b.id ? '' : (own2 > 0 ? '<button class="fBtn g" data-ffree="bait:' + b.id + '">换上</button>' : '')) +
+        '<button class="fBtn g" data-fbuy="bait:' + b.id + '">买 10 个</button></div>';
+    }
+
+    if (g.bagLv + 1 < FISH_BAG_MAX.length) {
+      h += '<div class="fGear"><span class="fInfo"><b>鱼篓扩容</b><small>' + FISH_BAG_MAX[g.bagLv] + ' → ' + FISH_BAG_MAX[g.bagLv + 1] + ' 格</small></span>' +
+        '<button class="fBtn g" data-fbuy="bag:1">🐚 ' + abbr(FISH_BAG_PRICE[g.bagLv]) + '</button></div>';
+    }
+
+    h += '<div class="fGear"><span class="fInfo"><b>🎣 自动抛竿</b><small>剩 ' + g.auto + ' 次' + (g.autoOn ? ' · 已开启' : '') + '，只自动到咬钩，拉锯还得自己来</small></span>' +
+      (g.auto > 0 ? '<button class="fBtn' + (g.autoOn ? ' g' : '') + '" data-ffree="auto">' + (g.autoOn ? '关闭' : '开启') + '</button>' : '');
+    for (j = 0; j < FISH_AUTO.length; j++) {
+      h += '<button class="fBtn g" data-fbuy="auto:' + FISH_AUTO[j].n + '">+' + FISH_AUTO[j].n + ' 次 · 🐚 ' + abbr(FISH_AUTO[j].price) + '</button>';
+    }
+    h += '</div>';
+
+    var pl = g.permLuck;
+    h += '<div class="fGear"><span class="fInfo"><b>⭐ 永久钓鱼幸运</b><small>' +
+      (pl >= FISH_PERM_MAX ? ('已满档 +' + (FISH_PERM_MAX * FISH_PERM_STEP).toFixed(1))
+                           : ('当前 +' + (pl * FISH_PERM_STEP).toFixed(1) + ' → +' + ((pl + 1) * FISH_PERM_STEP).toFixed(1))) +
+      '</small></span>' +
+      (pl < FISH_PERM_MAX ? '<button class="fBtn g" data-fbuy="perm">🐚 ' + abbr(FISH_PERM_PRICE[pl]) + '</button>' : '') + '</div>';
+
+    $fbGearTitle.textContent = '渔具';
+    $fbGearInfo.textContent = '🐚 ' + abbr(g.shells);
+    $fbGearList.innerHTML = h;
+  }
+
+  /* ---- 抛竿 / 拉锯 ---- */
+
+  var FG = { phase: 'idle', target: null, hold: false, pos: 0, g: 0, gdir: 1, acc: 0, zone: 0, pull: 0, gv: 0, auto: false, fy: 0.42, t1: 0, t2: 0 };
+  var gmIdx = -1, gmFishRef = null, gmBusy = false, catchPending = false, shellTaps = 0;
+
+  function fishMsg(t) { if ($fishMsg) $fishMsg.textContent = t; }
+
+  function fishCastClick() {
+    if (FG.phase === 'idle') doCast();
+    else if (FG.phase === 'bite') fishTake();
+  }
+
+  function doCast() {
+    if (FG.phase !== 'idle') return;
+    if (state.fish.bag.length >= fishBagMax()) { fishMsg('鱼篓满了，先去卖鱼或者扩容'); return; }
+    var bait = state.fish.bait;
+    if (bait && (state.fish.baits[bait] || 0) <= 0) { state.fish.bait = ''; bait = ''; renderBaits(); }
+    if (bait) {
+      state.fish.baits[bait] -= 1;
+      if (state.fish.baits[bait] <= 0) delete state.fish.baits[bait];
+    }
+    FG.target = pickFish(state.fish.pond, bait);
+    FG.auto = !!(state.fish.autoOn && state.fish.auto > 0);
+    if (FG.auto) state.fish.auto -= 1;
+
+    FG.phase = 'cast';
+    $castBtn.disabled = true;
+    $castBtn.className = 'castBtn';
+    $castBtn.textContent = '抛 竿';
+    $biteMark.className = 'biteMark';
+    fishMsg('抛出…');
+    FG.fy = 0.40 + Math.random() * 0.16;
+    $fishFloat.setAttribute('style', 'top:' + (FG.fy * 100).toFixed(1) + '%');
+    $fishFloat.className = 'float cast' + floatCls();
+    fishRipple(1);
+    drawRig();
+    save(); renderFishPage(); renderFishSheet();
+
+    FG.t1 = setTimeout(function () {
+      $fishFloat.className = 'float bob' + floatCls();
+      fishRipple(2);
+      splashAt();
+      drawRig();
+      fishMsg('等鱼上钩…');
+      FG.phase = 'wait';
+      fishWait();
+    }, FISH_T.cast);
+  }
+
+  function fishWait() {
+    var d = FISH_T.waitMin + Math.random() * (FISH_T.waitMax - FISH_T.waitMin);
+    if (FG.target.t >= 5) d *= 1.35;
+    FG.t2 = setTimeout(fishBite, d);
+  }
+
+  function fishBite() {
+    if (FG.phase !== 'wait') return;
+    FG.phase = 'bite';
+    $biteMark.className = 'biteMark on';
+    $fishFloat.className = 'float dip' + floatCls();
+    $castBtn.disabled = false;
+    $castBtn.className = 'castBtn bite';
+    $castBtn.textContent = '咬 钩 ！';
+    fishMsg('就是现在，点一下！');
+    $pond.className = 'pond biteAlert';
+    fishRipple(3);
+    splashAt();
+    drawRig();
+    buzz(24);
+    FG.t2 = setTimeout(fishMiss, FG.target.t >= 4 ? FISH_T.biteRare : FISH_T.bite);
+    if (FG.auto) FG.t2b = setTimeout(function () { if (FG.phase === 'bite') fishTake(); }, 240);
+  }
+
+  function fishMiss() {
+    if (FG.phase !== 'bite') return;
+    fishFail('慢了一点点，鱼跑了…');
+  }
+
+  function fishTake() {
+    if (FG.phase !== 'bite') return;
+    clearTimeout(FG.t2);
+    if (FG.t2b) clearTimeout(FG.t2b);
+    $biteMark.className = 'biteMark';
+    $castBtn.disabled = true;
+    fishFightStart();
+  }
+
+  function fishFightStart() {
+    FG.phase = 'fight';
+    FG.hold = false;
+    FG.acc = 0;
+    FG.pos = 0.45;
+    FG.zone = fishZone();
+    FG.pull = fishPull(FG.target.t);
+    FG.gv = fishGreenSpeed(FG.target.t);
+    FG.g = Math.max(0, Math.min(1 - FG.zone, FG.pos - FG.zone / 2));
+    FG.gdir = Math.random() < 0.5 ? -1 : 1;
+    $pond.className = 'pond';
+    $tensionWrap.className = 'tensionWrap on';
+    $pondWater.className = 'pondWater rough';
+    $fishRod.className = rodCls() + ' bend';
+    $fishFloat.className = 'float dip' + floatCls();
+    $castBtn.className = 'castBtn';
+    $castBtn.textContent = '上 钩 中';
+    fishMsg('按住池子，把指针稳在绿区里');
+    paintTension();
+    drawRig();
+    FG.t1 = setTimeout(fishTick, FISH_T.tick);
+  }
+
+  function paintTension() {
+    $tZone.style.left = (FG.g * 100).toFixed(1) + '%';
+    $tZone.style.width = (FG.zone * 100).toFixed(1) + '%';
+    $tMark.style.left = (FG.pos * 100).toFixed(1) + '%';
+    $tAcc.style.width = Math.min(100, FG.acc / FISH_T.fight * 100).toFixed(1) + '%';
+  }
+
+  function fishTick() {
+    if (FG.phase !== 'fight') return;
+    var dt = FISH_T.tick / 1000;
+    FG.g += FG.gv * FG.gdir * dt;
+    if (FG.g <= 0) { FG.g = 0; FG.gdir = 1; }
+    if (FG.g >= 1 - FG.zone) { FG.g = 1 - FG.zone; FG.gdir = -1; }
+    if (FG.hold) FG.pos += 1.2 * dt;
+    else FG.pos -= FG.pull * dt;
+    if (FG.pos <= 0) { FG.pos = 0; paintTension(); fishFail('线松了，鱼跑掉了…'); return; }
+    if (FG.pos >= 1) FG.pos = 1;
+    if (FG.pos >= FG.g && FG.pos <= FG.g + FG.zone) FG.acc += FISH_T.tick;
+    paintTension();
+    drawRig();
+    if (FG.acc >= FISH_T.fight) { fishLand(); return; }
+    FG.t1 = setTimeout(fishTick, FISH_T.tick);
+  }
+
+  function fishIdle() {
+    clearTimeout(FG.t1); clearTimeout(FG.t2);
+    if (FG.t2b) clearTimeout(FG.t2b);
+    FG.phase = 'idle';
+    FG.hold = false;
+    $pond.className = 'pond';
+    $tensionWrap.className = 'tensionWrap';
+    $pondWater.className = 'pondWater';
+    $fishRod.className = rodCls();
+    drawRig();
+  }
+
+  function fishFail(msg) {
+    fishIdle();
+    $biteMark.className = 'biteMark';
+    $fishRod.className = rodCls();
+    $fishFloat.className = 'float bob' + floatCls();
+    $castBtn.disabled = false;
+    $castBtn.className = 'castBtn';
+    $castBtn.textContent = '抛 竿';
+    fishMsg(msg);
+    save(); renderFishPage();
+    fishAutoNext();
+  }
+
+  function fishLand() {
+    fishIdle();
+    var f = FG.target;
+    var w = Math.round((0.85 + Math.random() * 0.30) * 100) / 100;
+    $biteMark.className = 'biteMark';
+    $fishRod.className = rodCls();
+    $fishFloat.className = 'float bob' + floatCls();
+    $castBtn.disabled = false;
+    $castBtn.className = 'castBtn';
+    $castBtn.textContent = '抛 竿';
+
+    if (state.fish.bag.length >= fishBagMax()) {
+      fishMsg('鱼篓满了，这条鱼跑了');
+    } else {
+      state.fish.bag.push({ id: f.id, w: w, m: 1, b: 0 });
+      var d = state.fish.dex[f.id];
+      if (!d) { d = { n: 0, best: 0 }; state.fish.dex[f.id] = d; }
+      d.n += 1;
+      if (w > d.best) d.best = w;
+      showCatch(f, w);
+    }
+    if (potActive('luck')) potTick('luck');       // 🍀 幸运药水：钓上一条算一局
+    fishMsg('钓上来了！');
+    save(); renderFishPage(); renderFishSheet();
+    if (!catchPending) fishAutoNext();
+  }
+
+  function showCatch(f, w) {
+    $ccTier.textContent = TIER_NAME[f.t];
+    $ccTier.style.color = TIER_COLOR[f.t];
+    $ccFish.innerHTML = fishHtml(f, 'big');
+    $ccName.textContent = f.n;
+    $ccW.textContent = w.toFixed(2) + ' kg';
+    $ccShell.textContent = '值 ' + abbr(fishShells(f.id, w, 1)) + ' 🐚';
+    $catchCard.className = 'catchCard on';
+    $castBtn.disabled = true;
+    catchPending = true;
+    buzz(18);
+    if (FG.auto) setTimeout(dismissCatch, 950);
+  }
+  function dismissCatch() {
+    if (!catchPending) return;
+    catchPending = false;
+    $catchCard.className = 'catchCard';
+    $ccFish.innerHTML = '';
+    if (FG.phase === 'idle') $castBtn.disabled = false;
+    fishAutoNext();
+  }
+  function fishAutoNext() {
+    if (!FG.auto) return;
+    if (!state.fish.autoOn || state.fish.auto <= 0) return;
+    FG.auto = false;
+    setTimeout(function () { doCast(); }, FISH_T.land);
+  }
+
+  function fishRipple(n) {
+    if (!$rippleLayer) return;
+    var h = '', i;
+    for (i = 0; i < n; i++) {
+      h += '<i style="left:' + (32 + Math.random() * 34).toFixed(1) + '%;top:' + (42 + Math.random() * 30).toFixed(1) + '%;animation-delay:' + (i * 0.16).toFixed(2) + 's"></i>';
+    }
+    $rippleLayer.innerHTML = h;
+  }
+
+  /* ---- 卖 / 赌 / 鱼缸 ---- */
+
+  function fishSell(i) {
+    var it = state.fish.bag[i];
+    if (!it) return;
+    var v = fishShells(it.id, it.w, it.m);
+    state.fish.shells = clampShell(state.fish.shells + v);
+    state.fish.bag.splice(i, 1);
+    toast('🐚 +' + abbr(v));
+    save(); renderFishSheet(); renderFishPage(); renderShop();
+  }
+  function fishSellAll() {
+    var bag = state.fish.bag, t = 0, i;
+    if (!bag.length) return;
+    for (i = 0; i < bag.length; i++) t += fishShells(bag[i].id, bag[i].w, bag[i].m);
+    state.fish.shells = clampShell(state.fish.shells + t);
+    state.fish.bag = [];
+    toast('🐚 +' + abbr(t));
+    save(); renderFishSheet(); renderFishPage(); renderShop();
+  }
+  function tankPut(i) {
+    var it = state.fish.bag[i];
+    if (!it) return;
+    var tk = state.fish.tank, j;
+    for (j = 0; j < tk.length; j++) if (!tk[j]) break;
+    if (j >= tk.length) { toast('鱼缸满了，先去扩建'); return; }
+    tk[j] = it;
+    state.fish.bag.splice(i, 1);
+    toast('放进鱼缸了');
+    save(); renderFishSheet(); renderFishPage();
+  }
+  function tankTake(slot) {
+    var it = state.fish.tank[slot];
+    if (!it) return;
+    if (state.fish.bag.length >= fishBagMax()) { toast('鱼篓满了'); return; }
+    state.fish.bag.push(it);
+    state.fish.tank[slot] = null;
+    toast('取回鱼篓');
+    save(); renderFishSheet(); renderFishPage();
+  }
+  function gmPockets() {
+    var out = [], i, c = 0;
+    for (i = 0; i < FISH_WHEEL_N; i++) {
+      if (i === 0 || i === FISH_WHEEL_N / 2) out.push('green');
+      else out.push((c++ % 2) ? 'black' : 'red');
+    }
+    return out;
+  }
+  function gmWheelCss() {
+    var pk = gmPockets(), seg = 360 / FISH_WHEEL_N, h = [], col = {}, i;
+    for (i = 0; i < FISH_WHEEL.length; i++) col[FISH_WHEEL[i].k] = FISH_WHEEL[i].c;
+    for (i = 0; i < pk.length; i++) {
+      h.push(col[pk[i]] + ' ' + (i * seg).toFixed(2) + 'deg ' + ((i + 1) * seg).toFixed(2) + 'deg');
+    }
+    return 'conic-gradient(from 0deg,' + h.join(',') + ')';
+  }
+  function gmWheelById(k) {
+    var i;
+    for (i = 0; i < FISH_WHEEL.length; i++) if (FISH_WHEEL[i].k === k) return FISH_WHEEL[i];
+    return FISH_WHEEL[0];
+  }
+  function gmMoney(it) { return fishShells(it.id, it.w, it.m); }
+
+  function openGamble(i) {
+    var it = state.fish.bag[i];
+    if (!it) return;
+    if (it.b) { toast('这条鱼已经赌过了'); return; }
+    var f = fishById(it.id), h = '', j;
+    gmIdx = i;
+    gmFishRef = it;
+    gmBusy = false;
+    $gmFish.innerHTML = fishHtml(f, 'big');
+    $gmFishName.textContent = f.n;
+    $gmFishName.style.color = TIER_COLOR[f.t];
+    $gmFishVal.textContent = TIER_NAME[f.t] + ' · ' + it.w.toFixed(2) + ' kg · 值 ' + abbr(gmMoney(it)) + ' 🐚';
+    $gmWheel.setAttribute('style', 'background:' + gmWheelCss() + ';transform:rotate(0deg);transition:none');
+    $gmHub.textContent = '押';
+    $gmHub.style.color = 'var(--goldlit)';
+    $gmMsg.textContent = '押一个颜色。押中红黑翻一倍，押中绿直接翻十六倍；猜错的话鱼就留在桌上。';
+    $gmRow.className = 'gmRow';
+    for (j = 0; j < FISH_WHEEL.length; j++) {
+      var w = FISH_WHEEL[j];
+      h += '<button class="gmBtn ' + w.k + '" data-gm="' + w.k + '"><b>×' + w.mul + '</b><s>' + w.n + '色</s></button>';
+    }
+    $gmRow.innerHTML = h;
+    openSheet('gambleSheet');
+  }
+
+  function gmSpin(k) {
+    if (gmBusy || !gmFishRef) return;
+    var w = gmWheelById(k), pk = gmPockets(), cands = [], i;
+    for (i = 0; i < pk.length; i++) if (pk[i] === k) cands.push(i);
+    var r = Math.random(), pick;
+    if (r < FISH_WHEEL[2].p) pick = 'green';
+    else if (r < FISH_WHEEL[2].p + FISH_WHEEL[1].p) pick = 'red';
+    else pick = 'black';
+    var idx = cands[Math.floor(Math.random() * cands.length)];
+    var seg = 360 / FISH_WHEEL_N, to = -(idx * seg + seg / 2) - 360 * 4;
+    var bg = 'background:' + gmWheelCss() + ';';
+    gmBusy = true;
+    $gmRow.className = 'gmRow off';
+    $gmMsg.textContent = '转起来了…';
+    $gmWheel.setAttribute('style', bg + 'transform:rotate(0deg);transition:none');
+    setTimeout(function () {
+      $gmWheel.setAttribute('style', bg + 'transform:rotate(' + to.toFixed(1) + 'deg);transition:transform ' +
+        (FISH_T.spin / 1000) + 's cubic-bezier(.12,.72,.12,1)');
+    }, 20);
+    buzz(10);
+    setTimeout(function () { gmSettle(k, pick, w); }, FISH_T.spin + 160);
+  }
+
+  function gmSettle(k, pick, w) {
+    var it = gmFishRef, i;
+    gmBusy = false;
+    $gmHub.textContent = w.n;
+    $gmHub.style.color = w.c;
+    if (k === pick) {
+      it.m = it.m * w.mul;
+      it.b = 1;
+      $gmFishVal.textContent = '值 🐚 ' + abbr(gmMoney(it));
+      $gmMsg.textContent = '开 ' + w.n + ' 色！这条鱼涨到了 ' + abbr(gmMoney(it)) + ' 🐚，回鱼篓卖掉落袋。';
+      buzz(30);
+    } else {
+      i = state.fish.bag.indexOf(it);
+      if (i >= 0) state.fish.bag.splice(i, 1);
+      $gmFish.innerHTML = '';
+      $gmFishName.textContent = '';
+      $gmFishVal.textContent = '鱼没了';
+      $gmMsg.textContent = '开 ' + gmWheelById(pick).n + ' 色，鱼留在桌上了…';
+      buzz(70);
+    }
+    gmFishRef = null;
+    gmIdx = -1;
+    $gmRow.className = 'gmRow';
+    $gmRow.innerHTML = '<button class="gmBtn wide" data-gmclose="1">收 牌</button>';
+    save(); renderFishSheet(); renderFishPage(); renderShop();
+  }
+
+  function fishBuy(v) {
+    var a = String(v).split(':'), k = a[0], p = a.slice(1).join(':');
+    if (k === 'look') { var lk0 = lookById(p); if (lk0) buyLook(lk0); return; }
+    if (k === 'pond') {
+      var pi = parseInt(p, 10);
+      if (!(pi > 0 && pi < FISH_PONDS.length)) return;
+      if (!state.fish.ponds[pi]) {
+        if (!spendGold(FISH_PONDS[pi].price)) return;
+        state.fish.ponds[pi] = true;
+        toast('解锁 ' + FISH_PONDS[pi].n);
+      }
+      state.fish.pond = pi;
+      state.fish.pondSkin = '';
+    } else if (k === 'rod') {
+      var rl = state.fish.rod + 1;
+      if (rl >= FISH_RODS.length) return;
+      if (!spendGold(FISH_RODS[rl].price)) return;
+      state.fish.rod = rl;
+      toast('换上 ' + FISH_RODS[rl].n + '，绿区更宽了');
+    } else if (k === 'bag') {
+      var bl = state.fish.bagLv + 1;
+      if (bl >= FISH_BAG_MAX.length) return;
+      if (!spendShell(FISH_BAG_PRICE[state.fish.bagLv])) return;
+      state.fish.bagLv = bl;
+      toast('鱼篓扩到 ' + FISH_BAG_MAX[bl] + ' 格');
+    } else if (k === 'tank') {
+      var tl = state.fish.tankLv + 1;
+      if (tl >= FISH_TANK_MAX.length) return;
+      if (!spendShell(FISH_TANK_PRICE[state.fish.tankLv])) return;
+      state.fish.tankLv = tl;
+      while (state.fish.tank.length < FISH_TANK_MAX[tl]) state.fish.tank.push(null);
+      toast('鱼缸扩到 ' + FISH_TANK_MAX[tl] + ' 个展位');
+    } else if (k === 'bait') {
+      var bd = fishBaitById(p);
+      if (!bd.id) return;
+      if (!spendShell(bd.price * 10)) return;
+      state.fish.baits[bd.id] = (state.fish.baits[bd.id] || 0) + 10;
+      if (!state.fish.bait) state.fish.bait = bd.id;
+      toast(bd.n + ' ×10');
+    } else if (k === 'auto') {
+      var an = parseInt(p, 10), pk = null, j;
+      for (j = 0; j < FISH_AUTO.length; j++) if (FISH_AUTO[j].n === an) pk = FISH_AUTO[j];
+      if (!pk) return;
+      if (!spendShell(pk.price)) return;
+      state.fish.auto += pk.n;
+      state.fish.autoOn = true;
+      toast('自动抛竿 +' + pk.n + ' 次');
+    } else if (k === 'perm') {
+      if (state.fish.permLuck >= FISH_PERM_MAX) return;
+      if (!spendShell(FISH_PERM_PRICE[state.fish.permLuck])) return;
+      state.fish.permLuck += 1;
+      toast('永久钓鱼幸运 +' + FISH_PERM_STEP.toFixed(1));
+    } else {
+      return;
+    }
+    save(); renderFishPage(); renderFishSheet(); renderShop();
+  }
+
+  function fishFree(v) {
+    var a = String(v).split(':'), k = a[0], p = a.slice(1).join(':');
+    if (k === 'pond') {
+      var pi = parseInt(p, 10);
+      if (!state.fish.ponds[pi]) return;
+      state.fish.pond = pi;
+      state.fish.pondSkin = '';
+      toast('换到 ' + FISH_PONDS[pi].n);
+    } else if (k === 'bait') {
+      state.fish.bait = p;
+      var bd = fishBaitById(p);
+      toast('换上 ' + bd.ico + ' ' + bd.n);
+    } else if (k === 'auto') {
+      state.fish.autoOn = !state.fish.autoOn;
+      toast(state.fish.autoOn ? '自动抛竿已开启' : '自动抛竿已关闭');
+    } else {
+      wearById(v);
+      return;
+    }
+    save(); renderFishPage(); renderFishSheet();
+  }
+
+  function fishClick(e) {
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (el.getAttribute) {
+        var v;
+        if ((v = el.getAttribute('data-bait')) !== null) { fishFree('bait:' + v); return; }
+        if ((v = el.getAttribute('data-fsell')) !== null) { fishSell(parseInt(v, 10)); return; }
+        if ((v = el.getAttribute('data-fgamble')) !== null) { openGamble(parseInt(v, 10)); return; }
+        if ((v = el.getAttribute('data-ftank')) !== null) { tankPut(parseInt(v, 10)); return; }
+        if ((v = el.getAttribute('data-ttake')) !== null) { tankTake(parseInt(v, 10)); return; }
+        if ((v = el.getAttribute('data-fbuy')) !== null) { fishBuy(v); return; }
+        if ((v = el.getAttribute('data-ffree')) !== null) { fishFree(v); return; }
+        if ((v = el.getAttribute('data-gm')) !== null) { gmSpin(v); return; }
+        if (el.getAttribute('data-gmclose') !== null) { closeSheet('gambleSheet'); return; }
+      }
+      el = el.parentNode;
+    }
+  }
+
+  function fishDown(e) {
+    if (catchPending) return;
+    if (FG.phase === 'fight') FG.hold = true;
+    else if (FG.phase === 'bite') fishTake();
+    if (e && e.preventDefault) e.preventDefault();
+  }
+  function fishUp() { FG.hold = false; }
+  function fishHold(v) { FG.hold = !!v; }
+
+  function fishBindHold(el) {
+    if (!el || !el.addEventListener) return;
+    el.addEventListener('pointerdown', fishDown, false);
+    el.addEventListener('mousedown', fishDown, false);
+    el.addEventListener('touchstart', fishDown, false);
+  }
+
+  function shellTap() {
+    shellTaps += 1;
+    if (shellTaps < 10) return;
+    shellTaps = 0;
+    var i, f;
+    for (i = 0; i < FISH_LIST.length; i++) {
+      f = FISH_LIST[i];
+      if (!state.fish.dex[f.id]) state.fish.dex[f.id] = { n: 1, best: 1 };
+    }
+    save(); renderFishSheet(); renderFishPage();
+    toast('图鉴都记上了');
+  }
+
+  $fishBack.addEventListener('click', function () { setPage('home'); }, false);
+  $fishSheetBtn.addEventListener('click', function () { renderFishSheet(); openSheet('fishSheet'); }, false);
+  $castBtn.addEventListener('click', fishCastClick, false);
+  $ccOk.addEventListener('click', dismissCatch, false);
+  $shellBox.addEventListener('click', shellTap, false);
+  $fbSellAll.addEventListener('click', fishSellAll, false);
+  fishBindHold($pond);
+  fishBindHold($tensionBar);
+  document.addEventListener('pointerup', fishUp, false);
+  document.addEventListener('mouseup', fishUp, false);
+  document.addEventListener('touchend', fishUp, false);
+  document.addEventListener('touchcancel', fishUp, false);
+  document.addEventListener('click', fishClick, false);
+
   /* ================= 启动 ================= */
   var legend = '';
   for (var li = 0; li < TIER_NAME.length; li++) {
@@ -2805,10 +4672,12 @@
   if (!state.codes || typeof state.codes !== 'object') state.codes = {};
   if (!state.bag || typeof state.bag !== 'object') state.bag = {};
   if (!state.pot || typeof state.pot !== 'object') state.pot = {};
+  if (!state.fish || typeof state.fish !== 'object') state.fish = freshFish();
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
   renderBj(); renderBjBet();
   refreshPots();                                  // 商城 / 背包 / 生效中药水徽标
+  renderFishPage(); renderFishSheet();
   setPage('home');                                // 从「赛博赌场」大厅开始
   setInterval(renderClaim, 1000);
 
@@ -2821,6 +4690,8 @@
     }
     window.addEventListener('offline', function () { toast('已断网 · 离线也能继续玩'); });
     window.addEventListener('online', function () { toast('已恢复联网'); });
+    window.addEventListener('resize', drawRig);
+    setTimeout(drawRig, 60);
   } catch (e) {}
 })();
 </script>
