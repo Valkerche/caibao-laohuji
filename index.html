@@ -563,7 +563,6 @@
   .betcircle span { font-size: 8px; color: rgba(212,175,55,.55); letter-spacing: 1px; }
   .betcircle b { font-family: var(--disp); font-size: 20px; font-weight: 800; color: var(--goldlit); }
 
-  /* 扑克牌 */
   .pcard {
     position: relative; flex: none; width: 56px; height: 80px; border-radius: 4px;
     background: var(--cream); border: 1px solid #b9b0a0; font-family: var(--print);
@@ -1158,9 +1157,351 @@
   .whSpin:disabled { opacity: .4; }
   .whGo #whClaim { flex: 1; margin: 0; }
 
+  /* ================= 🦆 赛鸭场 ================= */
+  .duckWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .dkTrack { position: relative; margin-top: 8px; padding: 5px; border: 1px solid var(--golddim); border-radius: 4px;
+    background: linear-gradient(#0b1a13, #061210);
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,.14), inset 0 0 30px rgba(0,0,0,.5); }
+  .dkLane { position: relative; height: 46px; border-bottom: 1px dashed rgba(212,175,55,.16);
+    touch-action: manipulation; cursor: pointer; }
+  .dkLane:last-child { border-bottom: 0; }
+  .dkLane.pick { background: linear-gradient(90deg, rgba(212,175,55,.18), rgba(212,175,55,0));
+    box-shadow: inset 0 0 0 1px var(--goldlit); }
+  .dkLane.win { background: linear-gradient(90deg, rgba(243,217,139,.22), rgba(212,175,55,0)); }
+  .dkTag { position: absolute; left: 8px; top: 3px; font-family: var(--disp); font-size: 10px; font-weight: 800;
+    color: var(--txd); letter-spacing: .4px; }
+  .dkLane.pick .dkTag { color: var(--goldlit); }
+  /* 小鸭：纯 CSS 拼的（身子 + 头 + 嘴），硬边 + 金线，不用 emoji */
+  .dkDuck { position: absolute; left: 0; bottom: 3px; width: 34px; height: 26px; }
+  .dkDuck i, .dkDuck b, .dkDuck u { position: absolute; display: block; }
+  .dkDuck i { left: 0; bottom: 0; width: 29px; height: 16px; border-radius: 62% 42% 40% 55%;
+    border: 1px solid rgba(0,0,0,.6); background: #999; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); }
+  .dkDuck b { left: 16px; bottom: 10px; width: 12px; height: 12px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.6); background: #999; }
+  .dkDuck b::after { content: ''; position: absolute; left: 3px; top: 3px; width: 3px; height: 3px;
+    border-radius: 50%; background: #14181c; }
+  .dkDuck u { left: 26px; bottom: 13px; width: 8px; height: 5px; background: #e8b64a;
+    clip-path: polygon(0 0, 100% 50%, 0 100%); }
+  .dkLane.c0 .dkDuck i, .dkLane.c0 .dkDuck b { background: linear-gradient(180deg, #d94a44, #a3241f); }
+  .dkLane.c1 .dkDuck i, .dkLane.c1 .dkDuck b { background: linear-gradient(180deg, #ecc94b, #b8860b); }
+  .dkLane.c2 .dkDuck i, .dkLane.c2 .dkDuck b { background: linear-gradient(180deg, #5b9bd5, #2f6389); }
+  .dkLane.c3 .dkDuck i, .dkLane.c3 .dkDuck b { background: linear-gradient(180deg, #52b788, #2d6a4f); }
+  .dkDuck.run i, .dkDuck.run b, .dkDuck.run u { animation: dkBob .30s linear infinite; }
+  @keyframes dkBob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
+  .dkFin { position: absolute; top: 5px; bottom: 5px; left: 82%; width: 8px;
+    background: repeating-linear-gradient(180deg, #ece7d8 0 6px, #23272c 6px 12px);
+    border: 1px solid var(--golddim); border-radius: 2px; box-shadow: 0 0 6px rgba(0,0,0,.6); }
+  .dkGate { position: absolute; left: 5px; top: 5px; bottom: 5px; width: 4px;
+    background: linear-gradient(#f3d98b, #7d611b); box-shadow: 0 0 8px rgba(243,217,139,.55);
+    transition: transform .35s, opacity .35s; }
+  .dkGate.open { transform: translateX(-16px); opacity: 0; }
+  .dkCount { position: absolute; left: 50%; top: 50%; z-index: 4; width: 64px; height: 64px; margin: -32px 0 0 -32px;
+    display: none; align-items: center; justify-content: center; border-radius: 50%;
+    background: rgba(4,10,7,.72); border: 1px solid var(--golddim);
+    font-family: var(--disp); font-size: 34px; font-weight: 800; color: var(--goldlit);
+    text-shadow: 0 2px 8px #000, 0 0 18px rgba(243,217,139,.6); }
+  .dkCount.show { display: flex; }
+  .dkInfo { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.06), rgba(0,0,0,.30)); }
+  .dkRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dkMsg { margin-top: 4px; font-size: 11px; line-height: 1.45; color: var(--txd); min-height: 16px; }
+  .dkStake { margin-top: 4px; font-size: 11px; color: var(--txd); }
+  .dkStake b { font-family: var(--disp); color: var(--goldlit); }
+  .dkChips { display: flex; gap: 7px; justify-content: center; margin-top: 8px; }
+  .dkChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .dkGo { display: flex; gap: 8px; margin-top: 7px; }
+  .dkStart { flex: 2; padding: 13px 6px; border: 1px solid var(--golddim); border-radius: 2px;
+    background: linear-gradient(180deg, rgba(212,175,55,.22), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .28em; text-indent: .28em;
+    touch-action: manipulation; }
+  .dkStart:disabled { opacity: .4; }
+  .dkGo #dkClaim { flex: 1; margin: 0; }
+  .dkLane.win .dkDuck i { box-shadow: inset 0 -3px 0 rgba(0,0,0,.18), 0 0 10px rgba(243,217,139,.85); }
+
+  /* ================= 🐉 火龙塔 ================= */
+  .dtWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .dtTower { position: relative; max-width: 420px; margin: 10px auto 0; padding: 8px 8px 10px; border: 1px solid var(--gl2); border-radius: 4px;
+    background: linear-gradient(180deg, rgba(78,20,10,.55), rgba(12,10,8,.92)); box-shadow: inset 0 0 46px rgba(0,0,0,.62); overflow: hidden; }
+  .dtDragon { display: flex; align-items: center; justify-content: center; height: 44px; font-size: 30px; line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(255,120,40,.35)); transition: transform .18s; }
+  .dtTower.fire .dtDragon { transform: scale(1.22); filter: drop-shadow(0 0 16px rgba(255,90,20,.95)); }
+  .dtFire { position: absolute; left: 50%; top: 40px; width: 30px; height: 0; margin-left: -15px; border-radius: 45% 45% 55% 55%;
+    background: linear-gradient(180deg, #ffefb4, #ff8a2b 42%, rgba(190,26,8,0)); opacity: 0; pointer-events: none; }
+  .dtTower.fire .dtFire { animation: dtFlame 900ms ease-out; }
+  @keyframes dtFlame {
+    0% { opacity: .1; height: 0; }
+    25% { opacity: 1; height: 150px; }
+    100% { opacity: 0; height: 190px; }
+  }
+  .dtCrenel { height: 9px; margin: 0 13% 4px; border-radius: 2px 2px 0 0;
+    background: repeating-linear-gradient(90deg, rgba(212,175,55,.45) 0 13px, rgba(212,175,55,.07) 13px 24px); }
+  .dtRows { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+  .dtRow { display: flex; align-items: center; gap: 5px; height: 38px; width: var(--dtW, 100%);
+    border-left: 1px solid rgba(212,175,55,.16); border-right: 1px solid rgba(212,175,55,.16);
+    box-shadow: inset 7px 0 11px -7px rgba(0,0,0,.85), inset -7px 0 11px -7px rgba(0,0,0,.85); }
+  .dtRow + .dtRow { margin-top: 4px; }
+  #dtRow0 { --dtW: 100%; }
+  #dtRow1 { --dtW: 95.7%; }
+  #dtRow2 { --dtW: 91.4%; }
+  #dtRow3 { --dtW: 87.1%; }
+  #dtRow4 { --dtW: 82.8%; }
+  #dtRow5 { --dtW: 78.5%; }
+  #dtRow6 { --dtW: 74.2%; }
+  #dtRow7 { --dtW: 70%; }
+  .dtBase { position: relative; z-index: 1; height: 9px; margin-top: 6px; border-radius: 2px;
+    background: linear-gradient(180deg, rgba(212,175,55,.34), rgba(212,175,55,.05)); box-shadow: 0 2px 6px rgba(0,0,0,.5); }
+  .dtDots { flex: 0 0 26px; font-size: 8px; font-style: normal; letter-spacing: 0; line-height: 1.1; color: #d1583a;
+    text-align: center; word-break: break-all; opacity: .85; }
+  .dtCell { flex: 1 1 0; min-width: 0; height: 32px; padding: 0; border: 1px solid rgba(212,175,55,.28); border-radius: 5px;
+    background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.42)); color: var(--txd);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.1), inset 0 -3px 7px rgba(0,0,0,.55);
+    font-family: var(--disp); font-size: 12px; font-weight: 800; touch-action: manipulation; transition: background .12s; }
+  .dtRow.cur .dtCell { border-color: var(--goldlit); box-shadow: 0 0 8px rgba(243,217,139,.3); }
+  .dtRow.cur .dtCell:active { background: linear-gradient(180deg, rgba(243,217,139,.35), rgba(212,175,55,.1)); }
+  .dtCell.safe { border-color: var(--goldlit); background: linear-gradient(180deg, rgba(243,217,139,.55), rgba(212,175,55,.2)); color: #2b2008; }
+  .dtCell.safe::after { content: '✓'; }
+  .dtRow.dead .dtCell.safe { opacity: .32; }
+  .dtCell.trap { border-color: #ff8a4a; background: radial-gradient(circle at 50% 45%, #ff7a33, #7d1305 72%); box-shadow: 0 0 12px rgba(255,96,26,.85); }
+  .dtCell.trap::after { content: '●'; color: #2a0a02; }
+  .dtCell.seen { border-style: dashed; border-color: rgba(212,175,55,.22); }
+  .dtCell.dead { opacity: .3; }
+  .dtTower.idle .dtCell { opacity: .45; }
+  .dtInfo { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .dtRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit); line-height: 1.35; }
+  .dtMsg { margin-top: 3px; font-size: 11px; color: var(--txd); line-height: 1.45; }
+  .dtStake { margin-top: 5px; font-size: 11px; color: var(--txd); }
+  .dtStake b { font-family: var(--disp); color: #f3d98b; }
+  .dtChips { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+  .dtChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .dtGo { display: flex; gap: 8px; margin-top: 8px; }
+  .dtStart { flex: 2; margin: 0; padding: 13px 6px; border: 1px solid var(--golddim); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.22), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .28em; text-indent: .28em;
+    touch-action: manipulation; }
+  .dtStart:disabled { opacity: .4; }
+  .dtCash { flex: 1; margin: 0; padding: 13px 6px; border: 1px solid rgba(120,200,150,.5); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(120,200,150,.2), rgba(120,200,150,.05)); color: #9fe0c4;
+    font-family: var(--disp); font-size: 15px; font-weight: 800; touch-action: manipulation; }
+  .dtCash:disabled { opacity: .35; }
+  .dtGo2 { margin-top: 8px; }
+  .dtGo2 #dtClaim { width: 100%; margin: 0; }
+
+  /* ================= 💣 扫雷 ================= */
+  .mnWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .mnSet { max-width: 400px; margin: 10px auto 0; padding: 8px 10px 4px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .mnSetTop { display: flex; align-items: baseline; gap: 6px; font-size: 11px; color: var(--txd); }
+  .mnSetTop b { font-family: var(--disp); font-size: 17px; color: #f3d98b; }
+  .mnSetTop span:last-child { margin-left: auto; font-family: var(--disp); font-size: 11px; font-weight: 700; color: var(--goldlit); }
+  .mnQuick { display: flex; gap: 6px; margin-top: 7px; }
+  .mnQ { flex: 1 1 0; min-width: 0; height: 34px; padding: 0 2px; border: 1px solid rgba(212,175,55,.3); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.36)); color: var(--txd);
+    font-family: var(--disp); font-size: 12px; font-weight: 700; white-space: nowrap; touch-action: manipulation; }
+  .mnQ.on { border-color: var(--goldlit); background: linear-gradient(180deg, rgba(243,217,139,.32), rgba(212,175,55,.08)); color: #2b2008; }
+  .mnQ:disabled { opacity: .38; }
+  .mnRange { display: block; width: 100%; height: 22px; margin: 8px 0 4px; background: transparent; accent-color: #d4af37; touch-action: manipulation; }
+  .mnRange:disabled { opacity: .38; }
+  .mnBoard { position: relative; max-width: 400px; margin: 10px auto 0; padding: 9px 9px 11px; border: 1px solid var(--gl2); border-radius: 4px;
+    background: linear-gradient(180deg, rgba(26,32,28,.92), rgba(9,11,10,.95)); box-shadow: inset 0 0 46px rgba(0,0,0,.6); }
+  .mnBoard.live { border-color: rgba(212,175,55,.5); box-shadow: inset 0 0 46px rgba(0,0,0,.6), 0 0 12px rgba(212,175,55,.16); }
+  .mnBoard.boom { border-color: rgba(255,120,40,.68); box-shadow: inset 0 0 46px rgba(0,0,0,.6), 0 0 14px rgba(255,96,26,.35); }
+  .mnHead { display: flex; justify-content: space-between; padding: 0 2px 7px; border-bottom: 1px solid rgba(212,175,55,.16); }
+  .mnHead i { font-style: normal; font-family: var(--disp); font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--txd); }
+  .mnGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-top: 9px; }
+  .mnCell { position: relative; aspect-ratio: 1 / 1; padding: 0; border: 1px solid rgba(212,175,55,.3); border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(0,0,0,.46)); color: var(--txd);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.1), inset 0 -3px 7px rgba(0,0,0,.55);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; line-height: 1; touch-action: manipulation; transition: background .12s; }
+  .mnBoard.live .mnCell:not([disabled]):active { background: linear-gradient(180deg, rgba(243,217,139,.35), rgba(212,175,55,.1)); }
+  .mnCell[disabled] { opacity: 1; }
+  .mnCell.safe { border-color: var(--goldlit); background: linear-gradient(180deg, rgba(243,217,139,.52), rgba(212,175,55,.18)); color: #2b2008; }
+  .mnCell.safe::after { content: '✓'; }
+  .mnCell.bomb { border-color: #ff8a4a; background: radial-gradient(circle at 50% 45%, #ff7a33, #7d1305 72%); box-shadow: 0 0 14px rgba(255,96,26,.85); }
+  .mnCell.bomb::after { content: '💥'; display: inline-block; font-size: 30px; line-height: 1; animation: mnBoom .45s ease-out; }
+  @keyframes mnBoom {
+    0%   { transform: scale(.35) rotate(-14deg); }
+    60%  { transform: scale(1.35) rotate(7deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .mnCell.mine { border-style: dashed; border-color: rgba(255,120,40,.38); background: rgba(64,22,9,.55); }
+  .mnCell.mine::after { content: '💣'; font-size: 15px; opacity: .55; }
+  .mnBoard:not(.live) .mnCell { opacity: .45; }
+  .mnInfo { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .mnRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit); line-height: 1.35; }
+  .mnMsg { margin-top: 3px; font-size: 11px; color: var(--txd); line-height: 1.45; }
+  .mnStake { margin-top: 5px; font-size: 11px; color: var(--txd); }
+  .mnStake b { font-family: var(--disp); color: #f3d98b; }
+  .mnChips { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+  .mnChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .mnGo { display: flex; gap: 8px; margin-top: 8px; }
+  .mnStart { flex: 2; margin: 0; padding: 13px 6px; border: 1px solid var(--golddim); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(212,175,55,.22), rgba(212,175,55,.06)); color: var(--goldlit);
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .28em; text-indent: .28em; touch-action: manipulation; }
+  .mnStart:disabled { opacity: .4; }
+  .mnCash { flex: 1; margin: 0; padding: 13px 6px; border: 1px solid rgba(120,200,150,.5); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(120,200,150,.2), rgba(120,200,150,.05)); color: #9fe0c4;
+    font-family: var(--disp); font-size: 15px; font-weight: 800; touch-action: manipulation; }
+  .mnCash:disabled { opacity: .35; }
+  .mnGo2 { margin-top: 8px; }
+  .mnGo2 #mnClaim { width: 100%; margin: 0; }
+
+  /* ================= 🐧 企鹅过河 ================= */
+  .pgWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .pgIce { position: relative; max-width: 460px; margin: 10px auto 0; padding: 10px 10px 12px; overflow: hidden;
+    border: 1px solid rgba(150,215,255,.3); border-radius: 8px;
+    background:
+      radial-gradient(120% 55% at 50% -12%, rgba(150,225,255,.2), rgba(150,225,255,0) 62%),
+      radial-gradient(80% 45% at 10% 108%, rgba(46,132,190,.3), rgba(46,132,190,0) 72%),
+      linear-gradient(180deg, #0f2a44 0%, #0a1d33 45%, #061424 100%);
+    box-shadow: inset 0 0 46px rgba(0,0,0,.6), inset 0 1px 0 rgba(190,235,255,.16); }
+  .pgIce::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(180deg, rgba(170,230,255,.07) 0 1px, rgba(170,230,255,0) 1px 10px);
+    animation: pgWater 9s linear infinite; }
+  @keyframes pgWater { from { background-position: 0 0; } to { background-position: 0 40px; } }
+  .pgIce.live { border-color: rgba(150,215,255,.5); box-shadow: inset 0 0 46px rgba(0,0,0,.6), 0 0 12px rgba(120,190,255,.18); }
+  .pgIce.sink { border-color: rgba(255,120,40,.68); box-shadow: inset 0 0 46px rgba(0,0,0,.6), 0 0 14px rgba(255,96,26,.35); }
+  .pgHead { position: relative; display: flex; justify-content: space-between; padding: 0 2px 7px; border-bottom: 1px solid rgba(150,215,255,.16); }
+  .pgHead i { font-style: normal; font-family: var(--disp); font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--txd); }
+  .pgTrack { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 16px; margin-top: 14px; }
+  .pgTrack > .pgCell:nth-child(1) { grid-area: 1 / 1; }
+  .pgTrack > .pgCell:nth-child(2) { grid-area: 1 / 2; }
+  .pgTrack > .pgCell:nth-child(3) { grid-area: 1 / 3; }
+  .pgTrack > .pgCell:nth-child(4) { grid-area: 2 / 3; }
+  .pgTrack > .pgCell:nth-child(5) { grid-area: 2 / 2; }
+  .pgTrack > .pgCell:nth-child(6) { grid-area: 2 / 1; }
+  .pgTrack > .pgCell:nth-child(7) { grid-area: 3 / 1; }
+  .pgTrack > .pgCell:nth-child(8) { grid-area: 3 / 2; }
+  .pgTrack > .pgCell:nth-child(9) { grid-area: 3 / 3; }
+  .pgTrack > .pgCell:nth-child(10) { grid-area: 4 / 3; }
+  .pgShore { grid-area: 4 / 1 / 5 / 3; align-self: center; text-align: center; font-family: var(--disp);
+    font-size: 11px; font-weight: 700; letter-spacing: .3em; text-indent: .3em; color: rgba(175,220,255,.45); }
+  .pgCell { position: relative; overflow: visible; aspect-ratio: 1 / .8; padding: 0; border: 1px solid rgba(228,247,255,.55); border-radius: 14px;
+    color: #fff; font-size: 24px; line-height: 1; text-shadow: 0 2px 4px rgba(0,20,40,.45); touch-action: manipulation;
+    background:
+      radial-gradient(72% 58% at 34% 20%, rgba(255,255,255,.8), rgba(255,255,255,0) 68%),
+      repeating-linear-gradient(118deg, rgba(255,255,255,.16) 0 2px, rgba(255,255,255,0) 2px 10px),
+      linear-gradient(158deg, #dff2ff 0%, #a8d5f4 44%, #6fa9d6 100%);
+    box-shadow: 0 3px 0 rgba(18,66,104,.55), 0 8px 16px rgba(0,15,30,.45), inset 0 -5px 9px rgba(30,90,140,.4), inset 0 2px 0 rgba(255,255,255,.85);
+    transition: filter .12s, transform .12s, box-shadow .12s; }
+  .pgCell::after { content: ''; position: absolute; pointer-events: none; border-radius: 7px;
+    background: linear-gradient(180deg, #e6f6ff, #a5cfea); box-shadow: 0 2px 5px rgba(0,15,30,.35); }
+  .pgCell.linkR::after, .pgCell.linkL::after { top: 50%; height: 13px; margin-top: -7px; width: 26px; }
+  .pgCell.linkR::after { left: calc(100% - 4px); }
+  .pgCell.linkL::after { right: calc(100% - 4px); }
+  .pgCell.linkD::after { left: 50%; margin-left: -7px; width: 13px; height: 34px; top: calc(100% - 4px);
+    background: linear-gradient(90deg, #e6f6ff, #a5cfea); }
+  .pgCell[disabled] { opacity: 1; }
+  .pgCell.safe { border-color: rgba(200,235,255,.4); background:
+      radial-gradient(70% 55% at 34% 20%, rgba(255,255,255,.45), rgba(255,255,255,0) 68%),
+      repeating-linear-gradient(118deg, rgba(255,255,255,.1) 0 2px, rgba(255,255,255,0) 2px 10px),
+      linear-gradient(158deg, #9dc4de 0%, #6f9cbe 46%, #4d7897 100%);
+    box-shadow: 0 2px 0 rgba(18,66,104,.45), 0 5px 10px rgba(0,15,30,.4), inset 0 -5px 9px rgba(20,70,110,.5), inset 0 3px 6px rgba(10,45,75,.3); }
+  .pgCell.safe::before { content: ''; position: absolute; inset: 22% 26%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(12,50,80,.4), rgba(12,50,80,0)); }
+  .pgCell.cur { animation: pgBob 1.9s ease-in-out infinite;
+    box-shadow: 0 3px 0 rgba(18,66,104,.55), 0 0 20px rgba(170,230,255,.55), inset 0 -5px 9px rgba(30,90,140,.4), inset 0 2px 0 rgba(255,255,255,.9); }
+  @keyframes pgBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  .pgIce.live .pgCell.next { border-color: #f2feff; animation: pgNext 1.15s ease-in-out infinite; }
+  @keyframes pgNext {
+    0%, 100% { box-shadow: 0 3px 0 rgba(18,66,104,.55), 0 0 10px rgba(150,215,255,.35), inset 0 -5px 9px rgba(30,90,140,.4), inset 0 2px 0 rgba(255,255,255,.85); }
+    50% { box-shadow: 0 3px 0 rgba(18,66,104,.55), 0 0 24px rgba(180,240,255,.9), inset 0 -5px 9px rgba(30,90,140,.4), inset 0 2px 0 rgba(255,255,255,.95); } }
+  .pgIce.live .pgCell.next:active { filter: brightness(1.14); }
+  .pgCell.goal { border-color: #ffe9a3; box-shadow: 0 3px 0 rgba(120,80,10,.5), 0 0 22px rgba(255,215,120,.55), inset 0 -5px 9px rgba(120,80,10,.3), inset 0 2px 0 rgba(255,255,255,.9); }
+  .pgCell.boom { border-color: rgba(255,150,70,.7); background: radial-gradient(circle at 50% 46%, #1d5c80 0%, #0a2233 58%, #04121d 100%);
+    box-shadow: inset 0 0 22px rgba(0,0,0,.85), 0 0 16px rgba(255,140,60,.4); font-size: 26px; animation: pgSink .55s ease-out; }
+  @keyframes pgSink {
+    0%   { transform: scale(1) rotate(0deg); }
+    45%  { transform: scale(.68) rotate(-10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .pgInfo { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .pgRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit); line-height: 1.35; }
+  .pgMsg { margin-top: 3px; font-size: 11px; color: var(--txd); line-height: 1.45; }
+  .pgStake { margin-top: 5px; font-size: 11px; color: var(--txd); }
+  .pgStake b { font-family: var(--disp); color: #f3d98b; }
+  .pgChips { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+  .pgChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .pgGo { display: flex; gap: 8px; margin-top: 8px; }
+  .pgStart { flex: 2; margin: 0; padding: 13px 6px; border: 1px solid rgba(150,215,255,.45); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(150,215,255,.22), rgba(150,215,255,.05)); color: #d6ecff;
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .2em; text-indent: .2em; touch-action: manipulation; }
+  .pgStart:disabled { opacity: .4; }
+  .pgCash { flex: 1; margin: 0; padding: 13px 6px; border: 1px solid rgba(120,200,150,.5); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(120,200,150,.2), rgba(120,200,150,.05)); color: #9fe0c4;
+    font-family: var(--disp); font-size: 15px; font-weight: 800; touch-action: manipulation; }
+  .pgCash:disabled { opacity: .35; }
+  .pgGo2 { margin-top: 8px; }
+  .pgGo2 #pgClaim { width: 100%; margin: 0; }
+
+  /* ================= 🚀 登月 ================= */
+  .mlWrap { max-width: 520px; margin: 0 auto; padding: 12px 10px calc(94px + env(safe-area-inset-bottom)); }
+  .mlSpace { position: relative; max-width: 460px; height: 258px; margin: 10px auto 0; overflow: hidden;
+    border: 1px solid rgba(190,170,255,.3); border-radius: 8px;
+    background:
+      radial-gradient(90% 62% at 50% 116%, rgba(255,140,60,.2), rgba(255,140,60,0) 70%),
+      radial-gradient(120% 62% at 50% -16%, rgba(120,110,255,.26), rgba(120,110,255,0) 66%),
+      linear-gradient(180deg, #0b0c22 0%, #06061a 52%, #03030f 100%);
+    box-shadow: inset 0 0 52px rgba(0,0,0,.7), inset 0 1px 0 rgba(200,195,255,.14);
+    transition: border-color .18s, box-shadow .18s; }
+  .mlStars { position: absolute; left: 0; right: 0; top: -60px; bottom: 0; pointer-events: none; opacity: .75;
+    background-image:
+      radial-gradient(1.4px 1.4px at 22px 14px, rgba(255,255,255,.85), rgba(255,255,255,0) 100%),
+      radial-gradient(1.2px 1.2px at 68px 42px, rgba(190,215,255,.7), rgba(190,215,255,0) 100%),
+      radial-gradient(1px 1px at 122px 24px, rgba(255,240,200,.7), rgba(255,240,200,0) 100%),
+      radial-gradient(1.6px 1.6px at 154px 54px, rgba(255,255,255,.6), rgba(255,255,255,0) 100%);
+    background-size: 180px 60px; background-repeat: repeat; }
+  .mlSpace.live { border-color: rgba(190,170,255,.52); box-shadow: inset 0 0 52px rgba(0,0,0,.7), 0 0 14px rgba(140,130,255,.2); }
+  .mlSpace.boom { border-color: rgba(255,120,40,.7); box-shadow: inset 0 0 52px rgba(0,0,0,.7), 0 0 18px rgba(255,96,26,.4); }
+  .mlRocket { position: absolute; left: 50%; bottom: 12%; width: 46px; margin-left: -23px; font-size: 34px; line-height: 1; text-align: center;
+    filter: drop-shadow(0 0 10px rgba(255,190,90,.5)); transition: bottom .09s linear; }
+  .mlSpace.live .mlRocket { animation: mlShake .16s linear infinite; }
+  @keyframes mlShake { 0%, 100% { transform: translateX(-1.5px); } 50% { transform: translateX(1.5px); } }
+  .mlRocket::after { content: ''; position: absolute; left: 50%; top: 100%; width: 12px; height: 32px; margin: -5px 0 0 -6px; border-radius: 50% 50% 40% 40%;
+    background: linear-gradient(180deg, rgba(255,240,180,.95), rgba(255,150,50,.66) 44%, rgba(255,60,30,0) 100%);
+    opacity: 0; transition: opacity .2s; }
+  .mlSpace.live .mlRocket::after { opacity: 1; animation: mlFlame .12s linear infinite; }
+  @keyframes mlFlame { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.16, .76); } }
+  .mlMult { position: absolute; left: 0; right: 0; top: 33%; text-align: center; font-family: var(--disp);
+    font-size: 42px; font-weight: 800; letter-spacing: .02em; color: var(--goldlit); text-shadow: 0 2px 12px rgba(0,0,0,.85); transition: opacity .16s; }
+  .mlSpace.live .mlMult { animation: mlPulse .5s ease-in-out infinite; }
+  @keyframes mlPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+  .mlSpace.count .mlMult { opacity: 0; }
+  .mlSub { position: absolute; left: 0; right: 0; top: 57%; text-align: center; font-size: 11px; color: var(--txd); }
+  .mlCount { position: absolute; left: 0; right: 0; top: 30%; text-align: center; font-family: var(--disp);
+    font-size: 62px; font-weight: 800; color: #cfd6ff; text-shadow: 0 0 18px rgba(140,150,255,.6); opacity: 0; }
+  .mlBoom { position: absolute; left: 0; right: 0; top: 28%; text-align: center; font-size: 74px; line-height: 1; opacity: 0; }
+  .mlSpace.boom .mlBoom { opacity: 1; animation: mlBlast .72s ease-out forwards; }
+  @keyframes mlBlast { 0% { transform: scale(.3); opacity: 0; } 30% { transform: scale(1.35); opacity: 1; } 100% { transform: scale(1.9); opacity: 0; } }
+  .mlInfo { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--gl2); border-radius: 3px; }
+  .mlRes { font-family: var(--disp); font-size: 15px; font-weight: 800; color: var(--goldlit); line-height: 1.35; }
+  .mlMsg { margin-top: 3px; font-size: 11px; color: var(--txd); line-height: 1.45; }
+  .mlStake { margin-top: 5px; font-size: 11px; color: var(--txd); }
+  .mlStake b { font-family: var(--disp); color: #f3d98b; }
+  .mlChips { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+  .mlChips .betBtn { width: 46px; height: 46px; font-size: 13px; }
+  .mlGo { display: flex; gap: 8px; margin-top: 8px; }
+  .mlStart { flex: 2; margin: 0; padding: 13px 6px; border: 1px solid rgba(190,170,255,.5); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(190,170,255,.24), rgba(190,170,255,.05)); color: #ddd6ff;
+    font-family: var(--disp); font-size: 17px; font-weight: 800; letter-spacing: .2em; text-indent: .2em; touch-action: manipulation; }
+  .mlStart:disabled { opacity: .4; }
+  .mlCash { flex: 1; margin: 0; padding: 13px 6px; border: 1px solid rgba(120,200,150,.5); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(120,200,150,.2), rgba(120,200,150,.05)); color: #9fe0c4;
+    font-family: var(--disp); font-size: 15px; font-weight: 800; touch-action: manipulation; }
+  .mlCash:disabled { opacity: .35; }
+  .mlGo2 { margin-top: 8px; }
+  .mlGo2 #mlClaim { width: 100%; margin: 0; }
+
   /* 窄屏：把容易挤爆的文字排开 */
   @media (max-width: 380px) {
-    .wrap, .fishWrap { padding-left: 10px; padding-right: 10px; }
+    .wrap, .fishWrap, .duckWrap, .dtWrap, .mnWrap, .pgWrap, .mlWrap { padding-left: 10px; padding-right: 10px; }
+    .mlSpace { height: 222px; }
+    .mlMult { font-size: 34px; }
+    .mlCount { font-size: 52px; }
+    .mlChips .betBtn { width: 42px; height: 42px; font-size: 12px; }
+    .dtRow { height: 34px; gap: 4px; }
+    .dtCell { height: 28px; }
+    .dtDots { flex-basis: 22px; }
+    .dtChips .betBtn { width: 42px; height: 42px; font-size: 12px; }
     .tabs { flex-wrap: wrap; gap: 5px; }
     .tab { flex: 1 1 44%; height: 34px; font-size: 12px; letter-spacing: 0; white-space: nowrap; }
     .fTop { gap: 6px; }
@@ -1189,9 +1530,14 @@
     .whHub { width: 56px; height: 56px; margin: -28px 0 0 -28px; font-size: 19px; }
     .whCell { height: 22px; font-size: 11px; }
     .whChips .betBtn { width: 42px; height: 42px; font-size: 12px; }
+    .dkLane { height: 42px; }
+    .dkChips .betBtn { width: 42px; height: 42px; font-size: 12px; }
+    .dkStart { font-size: 15px; padding: 11px 6px; }
   }
   /* 矮屏（横过来 / 小屏手机）：盘与格子再收一点，尽量一屏放得下 */
   @media (max-height: 730px) {
+    .mlSpace { height: 206px; }
+    .mlMult { font-size: 34px; }
     .whWheelBox { width: min(50vw, 188px); height: min(50vw, 188px); }
     .whCell { height: 21px; font-size: 11px; }
     .whChips .betBtn { width: 42px; height: 42px; }
@@ -1236,23 +1582,24 @@
   <button class="gameBtn lock" id="whEntry" data-game="WH">
     <span class="ico">🎡</span><span class="nm">轮盘赌</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn soon" data-game="CH">
+  <!-- 🐔 养鸡场：还没做，先不摆出来（做出来把这行 style 删掉就回来了） -->
+  <button class="gameBtn soon" data-game="CH" style="display:none">
     <span class="ico">🐔</span><span class="nm">养鸡场</span><span class="go soon">敬请期待</span>
   </button>
-  <button class="gameBtn soon" data-game="DK">
-    <span class="ico">🦆</span><span class="nm">赛鸭场</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="dkEntry" data-game="DK">
+    <span class="ico">🦆</span><span class="nm">赛鸭场</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn soon" data-game="DT">
-    <span class="ico">🐉</span><span class="nm">火龙塔</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="dtEntry" data-game="DT">
+    <span class="ico">🐉</span><span class="nm">火龙塔</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn soon" data-game="MS">
-    <span class="ico">💣</span><span class="nm">扫雷</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="mnEntry" data-game="MS">
+    <span class="ico">💣</span><span class="nm">扫雷</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn soon" data-game="PG">
-    <span class="ico">🐧</span><span class="nm">企鹅步</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="pgEntry" data-game="PG">
+    <span class="ico">🐧</span><span class="nm">企鹅过河</span><span class="go lock">🔒 💰 1K</span>
   </button>
-  <button class="gameBtn soon" data-game="MN">
-    <span class="ico">🚀</span><span class="nm">登月</span><span class="go soon">敬请期待</span>
+  <button class="gameBtn lock" id="mlEntry" data-game="MN">
+    <span class="ico">🚀</span><span class="nm">登月</span><span class="go lock">🔒 💰 1K</span>
   </button>
   <button class="gameBtn soon" data-game="PB">
     <span class="ico">🎱</span><span class="nm">弹珠板</span><span class="go soon">敬请期待</span>
@@ -1479,6 +1826,7 @@
     <button class="betBtn" data-bet="50">50</button>
     <button class="betBtn" data-bet="100">100</button>
     <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
   </div>
 
   <div class="whMode" id="whModeRow">
@@ -1491,6 +1839,253 @@
     <button class="whSpin" id="whSpin">转</button>
     <button id="whClaim">领取救济金 100</button>
   </div>
+</div>
+
+<!-- 赛鸭场（4.6）：四条泳道、一人押一只鸭，闸门一开往前跑，最先冲线的赢 -->
+<div id="duckPage" class="duckWrap" style="display:none">
+  <div class="whTop">
+    <button id="duckBack">‹ 自由模式</button>
+    <div class="whTopStats">
+      <div class="stats">
+        <div class="stat"><b id="dkGold" style="color:#f3d98b">100</b><span>金币</span></div>
+        <div class="stat"><b id="dkLuck" style="color:#f3d98b">×1.00</b><span>赛鸭幸运</span></div>
+        <div class="stat"><b id="dkEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="potBadge" id="dkPotBadge" style="display:none"></div>
+
+  <div class="dkTrack">
+    <div class="dkLanes" id="dkLanes">
+      <div class="dkLane c0" id="dkLane0" data-i="0">
+        <span class="dkTag" id="dkTag0">红鸭</span>
+        <div class="dkDuck" id="dkDuck0"><i></i><b></b><u></u></div>
+      </div>
+      <div class="dkLane c1" id="dkLane1" data-i="1">
+        <span class="dkTag" id="dkTag1">黄鸭</span>
+        <div class="dkDuck" id="dkDuck1"><i></i><b></b><u></u></div>
+      </div>
+      <div class="dkLane c2" id="dkLane2" data-i="2">
+        <span class="dkTag" id="dkTag2">蓝鸭</span>
+        <div class="dkDuck" id="dkDuck2"><i></i><b></b><u></u></div>
+      </div>
+      <div class="dkLane c3" id="dkLane3" data-i="3">
+        <span class="dkTag" id="dkTag3">绿鸭</span>
+        <div class="dkDuck" id="dkDuck3"><i></i><b></b><u></u></div>
+      </div>
+    </div>
+    <div class="dkGate" id="dkGate"></div>
+    <div class="dkFin"></div>
+    <div class="dkCount" id="dkCount"></div>
+  </div>
+
+  <div class="dkInfo">
+    <div class="dkRes" id="dkRes">先在泳道上点一只你看好的鸭，再点「开跑」</div>
+    <div class="dkMsg" id="dkMsg"></div>
+    <div class="dkStake" id="dkStake">本局下注 <b id="dkStakeBet">1</b> 金币<span id="dkStakePick"></span></div>
+  </div>
+
+  <div class="dkChips" id="dkChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="dkGo">
+    <button class="dkStart" id="dkStart">开跑</button>
+    <button id="dkClaim">领取救济金 100</button>
+  </div>
+</div>
+
+<!-- 第 8 层在最上面，紧贴龙头；每层 4 格，行首小点是这一层的龙眼数 -->
+<div id="dtPage" class="dtWrap" style="display:none">
+  <div class="whTop">
+    <button id="dtBack">‹ 自由模式</button>
+    <div class="whTopStats"><div class="stats">
+      <div class="stat"><b id="dtGold" style="color:#f3d98b">100</b><span>金币</span></div>
+      <div class="stat"><b id="dtRate" style="color:#f3d98b">×1.05</b><span>本塔倍率</span></div>
+      <div class="stat"><b id="dtEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+    </div></div>
+  </div>
+
+  <div class="dtTower" id="dtTower">
+    <div class="dtDragon" id="dtDragon">🐉</div>
+    <div class="dtFire"></div>
+    <div class="dtCrenel"></div>
+    <div class="dtRows" id="dtRows">
+      <div class="dtRow" id="dtRow7"><i class="dtDots">●●●</i><button class="dtCell" id="dtC-7-0"></button><button class="dtCell" id="dtC-7-1"></button><button class="dtCell" id="dtC-7-2"></button><button class="dtCell" id="dtC-7-3"></button></div>
+      <div class="dtRow" id="dtRow6"><i class="dtDots">●●●</i><button class="dtCell" id="dtC-6-0"></button><button class="dtCell" id="dtC-6-1"></button><button class="dtCell" id="dtC-6-2"></button><button class="dtCell" id="dtC-6-3"></button></div>
+      <div class="dtRow" id="dtRow5"><i class="dtDots">●●</i><button class="dtCell" id="dtC-5-0"></button><button class="dtCell" id="dtC-5-1"></button><button class="dtCell" id="dtC-5-2"></button><button class="dtCell" id="dtC-5-3"></button></div>
+      <div class="dtRow" id="dtRow4"><i class="dtDots">●●</i><button class="dtCell" id="dtC-4-0"></button><button class="dtCell" id="dtC-4-1"></button><button class="dtCell" id="dtC-4-2"></button><button class="dtCell" id="dtC-4-3"></button></div>
+      <div class="dtRow" id="dtRow3"><i class="dtDots">●●</i><button class="dtCell" id="dtC-3-0"></button><button class="dtCell" id="dtC-3-1"></button><button class="dtCell" id="dtC-3-2"></button><button class="dtCell" id="dtC-3-3"></button></div>
+      <div class="dtRow" id="dtRow2"><i class="dtDots">●</i><button class="dtCell" id="dtC-2-0"></button><button class="dtCell" id="dtC-2-1"></button><button class="dtCell" id="dtC-2-2"></button><button class="dtCell" id="dtC-2-3"></button></div>
+      <div class="dtRow" id="dtRow1"><i class="dtDots">●</i><button class="dtCell" id="dtC-1-0"></button><button class="dtCell" id="dtC-1-1"></button><button class="dtCell" id="dtC-1-2"></button><button class="dtCell" id="dtC-1-3"></button></div>
+      <div class="dtRow" id="dtRow0"><i class="dtDots">●</i><button class="dtCell" id="dtC-0-0"></button><button class="dtCell" id="dtC-0-1"></button><button class="dtCell" id="dtC-0-2"></button><button class="dtCell" id="dtC-0-3"></button></div>
+    </div>
+    <div class="dtBase"></div>
+  </div>
+
+  <div class="dtInfo">
+    <div class="dtRes" id="dtRes">挑一枚筹码，点「开始爬塔」</div>
+    <div class="dtMsg" id="dtMsg"></div>
+    <div class="dtStake" id="dtStake">本局下注 <b id="dtStakeBet">1</b> 金币<span id="dtStakeMult"></span></div>
+  </div>
+
+  <div class="dtChips" id="dtChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="dtGo">
+    <button class="dtStart" id="dtStart">开始爬塔</button>
+    <button class="dtCash" id="dtCash" disabled>提现</button>
+  </div>
+  <div class="dtGo2"><button id="dtClaim">领取救济金 100</button></div>
+</div>
+
+<div id="mnPage" class="mnWrap" style="display:none">
+  <div class="whTop">
+    <button id="mnBack">‹ 自由模式</button>
+    <div class="whTopStats"><div class="stats">
+      <div class="stat"><b id="mnGold" style="color:#f3d98b">100</b><span>金币</span></div>
+      <div class="stat"><b id="mnRate" style="color:#f3d98b">×1.05</b><span>本局倍率</span></div>
+      <div class="stat"><b id="mnEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+    </div></div>
+  </div>
+
+  <div class="mnSet" id="mnSet">
+    <div class="mnSetTop"><span>雷数</span><b id="mnMineNum">3</b><span id="mnTop">最高 ×2.42K</span></div>
+    <div class="mnQuick" id="mnQuick">
+      <button class="mnQ" data-mines="3">😌 3</button>
+      <button class="mnQ" data-mines="5">🙂 5</button>
+      <button class="mnQ" data-mines="8">😰 8</button>
+      <button class="mnQ" data-mines="12">☠️ 12</button>
+    </div>
+    <input class="mnRange" id="mnRange" type="range" min="1" max="24" step="1" value="3" aria-label="地雷数量">
+  </div>
+
+  <div class="mnBoard" id="mnBoard">
+    <div class="mnHead"><i id="mnHeadLeft">5 × 5 · 3 雷</i><i id="mnHeadRight">已翻 0 格</i></div>
+    <div class="mnGrid" id="mnGrid">
+      <button class="mnCell" id="mnC-0"></button><button class="mnCell" id="mnC-1"></button><button class="mnCell" id="mnC-2"></button><button class="mnCell" id="mnC-3"></button><button class="mnCell" id="mnC-4"></button>
+      <button class="mnCell" id="mnC-5"></button><button class="mnCell" id="mnC-6"></button><button class="mnCell" id="mnC-7"></button><button class="mnCell" id="mnC-8"></button><button class="mnCell" id="mnC-9"></button>
+      <button class="mnCell" id="mnC-10"></button><button class="mnCell" id="mnC-11"></button><button class="mnCell" id="mnC-12"></button><button class="mnCell" id="mnC-13"></button><button class="mnCell" id="mnC-14"></button>
+      <button class="mnCell" id="mnC-15"></button><button class="mnCell" id="mnC-16"></button><button class="mnCell" id="mnC-17"></button><button class="mnCell" id="mnC-18"></button><button class="mnCell" id="mnC-19"></button>
+      <button class="mnCell" id="mnC-20"></button><button class="mnCell" id="mnC-21"></button><button class="mnCell" id="mnC-22"></button><button class="mnCell" id="mnC-23"></button><button class="mnCell" id="mnC-24"></button>
+    </div>
+  </div>
+
+  <div class="mnInfo">
+    <div class="mnRes" id="mnRes">挑一枚筹码，点「开始排雷」</div>
+    <div class="mnMsg" id="mnMsg"></div>
+    <div class="mnStake" id="mnStake">本局下注 <b id="mnStakeBet">1</b> 金币<span id="mnStakeMult"></span></div>
+  </div>
+
+  <div class="mnChips" id="mnChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="mnGo">
+    <button class="mnStart" id="mnStart">开始排雷</button>
+    <button class="mnCash" id="mnCash" disabled>提现</button>
+  </div>
+  <div class="mnGo2"><button id="mnClaim">领取救济金 100</button></div>
+</div>
+
+<div id="pgPage" class="pgWrap" style="display:none">
+  <div class="whTop">
+    <button id="pgBack">‹ 自由模式</button>
+    <div class="whTopStats"><div class="stats">
+      <div class="stat"><b id="pgGold" style="color:#f3d98b">100</b><span>金币</span></div>
+      <div class="stat"><b id="pgRate" style="color:#f3d98b">×1.05</b><span>本轮倍率</span></div>
+      <div class="stat"><b id="pgEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+    </div></div>
+  </div>
+
+  <div class="pgIce" id="pgIce">
+    <div class="pgHead"><i id="pgHeadLeft">冰面 10 格</i><i id="pgHeadRight">已走 0 步</i></div>
+    <div class="pgTrack" id="pgTrack">
+      <button class="pgCell" id="pgS-0"></button><button class="pgCell" id="pgS-1"></button><button class="pgCell" id="pgS-2"></button>
+      <button class="pgCell" id="pgS-3"></button><button class="pgCell" id="pgS-4"></button><button class="pgCell" id="pgS-5"></button>
+      <button class="pgCell" id="pgS-6"></button><button class="pgCell" id="pgS-7"></button><button class="pgCell" id="pgS-8"></button>
+      <button class="pgCell" id="pgS-9"></button>
+      <span class="pgShore">对 岸</span>
+    </div>
+  </div>
+
+  <div class="pgInfo">
+    <div class="pgRes" id="pgRes">挑一枚筹码，点「开始过河」</div>
+    <div class="pgMsg" id="pgMsg"></div>
+    <div class="pgStake" id="pgStake">本局下注 <b id="pgStakeBet">1</b> 金币<span id="pgStakeMult"></span></div>
+  </div>
+
+  <div class="pgChips" id="pgChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="pgGo">
+    <button class="pgStart" id="pgStart">开始过河</button>
+    <button class="pgCash" id="pgCash" disabled>提现</button>
+  </div>
+  <div class="pgGo2"><button id="pgClaim">领取救济金 100</button></div>
+</div>
+
+<div id="mlPage" class="mlWrap" style="display:none">
+  <div class="whTop">
+    <button id="mlBack">‹ 自由模式</button>
+    <div class="whTopStats"><div class="stats">
+      <div class="stat"><b id="mlGold" style="color:#f3d98b">100</b><span>金币</span></div>
+      <div class="stat"><b id="mlRate" style="color:#f3d98b">×1.05</b><span>本局倍率</span></div>
+      <div class="stat"><b id="mlEq" style="color:#ffffff">默认</b><span>佩戴光环</span></div>
+    </div></div>
+  </div>
+
+  <div class="mlSpace" id="mlSpace">
+    <div class="mlStars" id="mlStars"></div>
+    <div class="mlRocket" id="mlRocket">🚀</div>
+    <div class="mlCount" id="mlCount"></div>
+    <div class="mlMult" id="mlMult">×1.00</div>
+    <div class="mlSub" id="mlSub">等发射</div>
+    <div class="mlBoom" id="mlBoom">💥</div>
+  </div>
+
+  <div class="mlInfo">
+    <div class="mlRes" id="mlRes">挑一枚筹码，点「发射」</div>
+    <div class="mlMsg" id="mlMsg"></div>
+    <div class="mlStake" id="mlStake">本局下注 <b id="mlStakeBet">1</b> 金币<span id="mlStakeMult"></span></div>
+  </div>
+
+  <div class="mlChips" id="mlChips">
+    <button class="betBtn" data-bet="1">1</button>
+    <button class="betBtn" data-bet="10">10</button>
+    <button class="betBtn" data-bet="50">50</button>
+    <button class="betBtn" data-bet="100">100</button>
+    <button class="betBtn" data-bet="1000">1000</button>
+    <button class="betBtn" data-bet="0">自定义</button>
+  </div>
+
+  <div class="mlGo">
+    <button class="mlStart" id="mlStart">发射</button>
+    <button class="mlCash" id="mlCash" disabled>提现</button>
+  </div>
+  <div class="mlGo2"><button id="mlClaim">领取救济金 100</button></div>
 </div>
 
 <button class="corner" id="helpBtn" style="display:none">❓</button>
@@ -1677,6 +2272,150 @@
       <h3>金币</h3>
       · 轮盘赌要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
       · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 所有进度自动保存在本机
+    </div>
+
+    <div class="rules" id="helpDuck" style="display:none">
+      <h3>赛鸭场 · 怎么玩</h3>
+      · 四条泳道、四只鸭：<b>红 / 黄 / 蓝 / 绿</b>。开跑之前先押一只你看好的鸭<br>
+      · 闸门一开，四只鸭自己往前跑，<b>最先冲线的那只赢</b>；一局只押一只鸭<br>
+      · 押中了就按这只鸭自己的倍率 <b>连本带利赔</b>（下注 × 倍率）；押错了，这一局的下注就归庄家<br>
+      · 鸭子有快有慢：跑得快的倍率低、跑得慢的倍率高 —— 具体看下面的倍率表
+
+      <h3>倍率表</h3>
+      <div class="pay" id="dkPayTable">
+        <span>红鸭 ×3.0</span>
+        <span>黄鸭 ×4.0</span>
+        <span>蓝鸭 ×5.0</span>
+        <span>绿鸭 ×6.0</span>
+      </div>
+
+      <h3>怎么下注</h3>
+      · 先点泳道选一只鸭（选中的泳道会亮起来），再在下面挑一枚筹码当本局下注<br>
+      · 点 <b>开跑</b>，下注才从金币里扣；闸门、3-2-1 倒数、冲线都得看完，中途没有跳过<br>
+      · 这一局跑完，鸭子们回闸门后面，才能开下一局
+
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，<b>你押的那只鸭</b>越容易跑赢，<b>倍率一个字都不改</b><br>
+      · 🍀 幸运药水：赛鸭幸运 +5，每跑完一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30（没押中就什么都没有）<br>
+      · ⏪ 后悔药水：本局作废，押的那只鸭免费重跑一次（下注不退）<br>
+      · 🛡️ 无敌药水：本局要是输了，把这一局的下注全退回给你
+
+      <h3>金币</h3>
+      · 赛鸭场要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 页面上只摆这一局的成绩，不累计统计<br>
+      · 所有进度自动保存在本机
+    </div>
+
+    <div class="rules" id="helpDt" style="display:none">
+      <h3>火龙塔 · 怎么玩</h3>
+      · 一座 8 层的塔，每层四个格子：<b>踩中安全格</b>就往上爬一层，<b>踩到龙眼</b>这一局的下注立刻归零<br>
+      · 每层有几只龙眼<b>明摆着</b>，但它们藏在哪一格谁也不知道 —— 四个格子看上去一模一样<br>
+      · 越往上龙眼越多、倍率越猛：第 1~3 层各 1 只，第 4~6 层各 2 只，第 7~8 层各 3 只<br>
+      · 爬到第 8 层就是登顶，自动结算，不用再点提现
+
+      <h3>倍率表</h3>
+      <div class="pay" id="dtPayTable"></div>
+
+      <h3>怎么下注</h3>
+      · 先挑一枚筹码当本局下注，再点「开始爬塔」，下注立刻从金币里扣<br>
+      · 在脚下这一层的四个格子里<b>点一个</b>踩上去；踩中了接着挑下一层，随时可以点「提现」走人<br>
+      · 提现是把「下注 × 当前倍率」连本带利拿走；一层都没踩就提现是拿不到奖金的<br>
+      · 这一局结束之前，塔不能重开 —— 要么提现，要么踩到龙眼
+
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，塔上的倍率越肥 —— 开局那一刻定死，本局中途换佩戴也不改<br>
+      · 🍀 幸运药水：开局算进去，一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30<br>
+      · 🛡️ 无敌药水：这一局要是踩到龙眼，把下注原样退回给你<br>
+      · ⏪ 后悔药水：踩到龙眼的那一局作废，下注退回，塔得重新爬
+
+      <h3>金币</h3>
+      · 火龙塔要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 爬塔爬到一半刷新页面，这一局当作放弃，下注原样退回<br>
+      · 所有进度自动保存在本机
+    </div>
+
+    <div class="rules" id="helpMine" style="display:none">
+      <h3>扫雷 · 怎么玩</h3>
+      · 一块 <b>5 × 5 = 25 格</b>的雷区，开局前先定下这片区里埋几颗雷<br>
+      · 点开一格：<b>安全</b>就把当前倍率往上抬一档，<b>踩雷</b>这一局的下注立刻炸光<br>
+      · 格子上<b>没有数字提示</b>，除了「安全」和「炸」你什么也看不出 —— 全靠手气<br>
+      · 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；25 格里的安全格全翻完自动结算
+      <h3>雷数与最高倍率</h3>
+      · 雷越多，每翻一格的倍率涨得越猛，可翻的安全格也越少 —— <b>12 / 13 雷</b>是全清倍率的顶点，再往上安全格太少，反倒回落
+      <div class="pay" id="mnPayTable"></div>
+      <small>表里是<b>公平倍率</b>，实际到手还会乘上当前佩戴的加成；页面上那行「最高 ×」就是你现在到手的实际数值。</small>
+      <h3>怎么下注</h3>
+      · 先挑一枚筹码当本局下注、再选雷数（快捷档或拖滑杆，1 ~ 24 颗），点「开始排雷」，下注立刻从金币里扣<br>
+      · 一格都没翻就提现是拿不到奖金的<br>
+      · 这一局结束之前，雷区不能重开 —— 要么提现，要么踩到雷
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，格子上的倍率越肥 —— 开局那一刻定死，本局中途换佩戴也不改<br>
+      · 🍀 幸运药水：开局算进去，一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30<br>
+      · 🛡️ 无敌药水：这一局要是踩到雷，把下注原样退回给你<br>
+      · ⏪ 后悔药水：踩到雷的那一局作废，下注退回，雷区得重新开
+      <h3>金币</h3>
+      · 扫雷要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 排雷排到一半刷新页面，这一局当作放弃，下注原样退回<br>
+      · 所有进度自动保存在本机
+    </div>
+
+    <div class="rules" id="helpPeng" style="display:none">
+      <h3>企鹅过河 · 怎么玩</h3>
+      · 一条 <b>10 格</b>的冰面，企鹅从岸边一步步往前走，每迈一格，当前倍率就往上翻一档<br>
+      · 有的冰格下面是薄冰：一脚踩上去企鹅就掉进水里，这一局的下注立刻清零<br>
+      · 越往后的冰越薄，踩空的机会一格比一格大 —— 想走到对岸，靠的是见好就收<br>
+      · 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；走完第 10 格自动结算
+      <h3>每一格的倍率</h3>
+      <div class="pay" id="pgPayTable"></div>
+      <small>表里是<b>公平倍率</b>，实际到手还会乘上当前佩戴的加成；页面上那行「全程 ×」就是你现在到手的实际数值。</small>
+      <h3>怎么下注</h3>
+      · 先挑一枚筹码当本局下注，点「开始过河」，下注立刻从金币里扣<br>
+      · 一步都没走就提现是拿不到奖金的<br>
+      · 这一局结束之前冰面不能重开 —— 要么提现，要么踩空
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，冰面上的倍率越肥 —— 开局那一刻定死，本局中途换佩戴也不改<br>
+      · 🍀 幸运药水：开局算进去，一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30<br>
+      · 🛡️ 无敌药水：这一局要是踩空，把下注原样退回给你<br>
+      · ⏪ 后悔药水：踩空的那一局作废，下注退回，冰面得重新开
+      <h3>金币</h3>
+      · 企鹅过河要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 走到一半刷新页面，这一局当作放弃，下注原样退回<br>
+      · 所有进度自动保存在本机
+    </div>
+    <div class="rules" id="helpMoon" style="display:none">
+      <h3>登月 · 怎么玩</h3>
+      · 点「发射」，3-2-1 倒数完火箭点火升空，面板中间的倍率从 ×1.00 开始一路往上窜<br>
+      · 倍率窜到哪儿会炸，在点火前就已经定死了 —— 可能刚离地就炸，也可能一路冲到顶才炸<br>
+      · 在炸掉之前点「提现」，就能把「下注 × 那一刻的倍率」连本带利拿走<br>
+      · 手慢一步没点上，火箭炸了，这一局的下注就全没了<br>
+      · 倍率最高窜到 ×200 就是尽头，冲到顶也就等于炸了<br>
+      · 提现之后火箭还会自己继续往上飞，飞到它的爆点炸给你看 —— 这一回炸不掉你的钱，只是让你知道刚才跑得早不早
+      <h3>倍率怎么涨</h3>
+      <div class="pay" id="mlPayTable"></div>
+      <small>表里是<b>公平倍率</b>，实际到手还会乘上当前佩戴的加成；面板上那个数字就是你现在到手的实际倍率。</small>
+      <h3>怎么下注</h3>
+      · 先挑一枚筹码当本局下注，点「发射」，下注立刻从金币里扣<br>
+      · 倒数期间不能提现，点火之后、爆炸之前随时都能提现<br>
+      · 这一局结束之前不能再发射 —— 要么提现，要么等它炸
+      <h3>幸运与药水</h3>
+      · 佩戴的幸运越高，倍率窜得越猛 —— 点火那一刻定死，本局中途换佩戴也不改<br>
+      · 🍀 幸运药水：点火算进去，一局消耗一局<br>
+      · 💰 金币药水：本局回收 ×1.30<br>
+      · 🛡️ 无敌药水：这一局要是炸了，把下注原样退回给你<br>
+      · ⏪ 后悔药水：炸掉的那一局作废，下注退回，得重新发射
+      <h3>金币</h3>
+      · 登月要 <b>1K 金币买断</b>才进得去，买断后永久有效<br>
+      · 金币不够 1 枚时，可以领 <b>100 金币救济金</b>（与别的玩法共用 1 小时冷却）<br>
+      · 飞到一半刷新页面，这一局当作放弃，下注原样退回<br>
       · 所有进度自动保存在本机
     </div>
   </div>
@@ -1985,7 +2724,7 @@
      所以永远不会出现两条线同时中奖。赔付 = 本局下注 × 该符号倍率。 */
   /* 中奖「形状」固定：各奖项的相对比例永远不变（只由这里的 w 决定），
      光环好坏只调「中奖率」一个旋钮 —— 中奖概率 = 回报率 ÷ 中奖时平均赔率。
-     比例 = 用户给的表：🍒两个+三个 合计 40 / ×5 三个符号合计 20 / ×8 10 /
+     比例表：🍒两个+三个 合计 40 / ×5 三个符号合计 20 / ×8 10 /
      ×10 5 / ×15 2.5 / ×20 1 / ×50 0.5 / ×100 0.05（内部再按 87.5:12.5 拆两个和三个🍒） */
   var WINS = [
     { k: 'pair',   m: 2,   w: 10.5   },   // 两个🍒（第三个不是🍒也不是Wild）
@@ -2079,14 +2818,19 @@
   var state = {
     luck: 1, rolls: 0, counts: {}, hist: [],
     gold: GOLD_START, eq: '默认', bet: 1, bjBet: 1,
-    bjUnlocked: false, fishUnlocked: false, whUnlocked: false,   // 三台机子的买断记录（买了永久开）
+    bjUnlocked: false, fishUnlocked: false, whUnlocked: false, duckUnlocked: false, dtUnlocked: false, mnUnlocked: false, pgUnlocked: false, mlUnlocked: false,   // 八台机子的买断记录（买了永久开）
     bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
     codes: {},                                   // 已兑换过的兑换码：{ 码: 兑换时间 }
     bag: {},                                     // 背包（商城买的道具）：{ 商品id: 数量 }
     pot: {},                                     // 生效中的药水：{ 药水key: 剩余局数 }
     auto: { on: false, until: 0, last: 0 },      // 自动光环仪：是否在跑 / 跑到几点 / 上次抽奖结算到几点
     fish: freshFish(),                           // 钓鱼：鱼篓 / 图鉴 / 鱼缸 / 渔具
-    wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }   // 轮盘赌：转过的局数 / 单局最高回收 / 筹码 / 下注模式
+    wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' },  // 轮盘赌：转过的局数 / 单局最高回收 / 筹码 / 下注模式
+    duck: { bet: 1, pick: -1 },                  // 赛鸭场：本局下注 / 押的是哪只鸭（-1 = 还没选）
+    dt: { bet: 1, escrow: 0 },                   // 火龙塔：escrow = 正压在塔里的下注，刷新页面原样退回
+    mn: { bet: 1, mines: 3, escrow: 0 },         // 扫雷：本局下注 / 雷数 / escrow = 正压在雷区里的下注
+    pg: { bet: 1, escrow: 0 },                   // 企鹅过河：本局下注 / escrow = 正踩在冰面里的下注
+    ml: { bet: 1, escrow: 0 }                    // 登月：本局下注 / escrow = 正压在火箭里的下注
   };
   var potTimer = {};                             // 只是给徽标做倒计时的显示定时器，不进存档
 
@@ -2133,6 +2877,11 @@
       if (d.bjUnlocked === true) state.bjUnlocked = true;
       if (d.fishUnlocked === true) state.fishUnlocked = true;
       if (d.whUnlocked === true) state.whUnlocked = true;
+      if (d.duckUnlocked === true) state.duckUnlocked = true;
+      if (d.dtUnlocked === true) state.dtUnlocked = true;
+      if (d.mnUnlocked === true) state.mnUnlocked = true;
+      if (d.pgUnlocked === true) state.pgUnlocked = true;
+      if (d.mlUnlocked === true) state.mlUnlocked = true;
       state.bd1 = !!d.bd1; state.bd2 = !!d.bd2;
       state.t1 = d.t1 || 0; state.t2 = d.t2 || 0; state.t3 = d.t3 || 0; state.t5 = d.t5 || 0; state.t6 = d.t6 || 0;
       state.claimAt = d.claimAt || 0;
@@ -2222,13 +2971,44 @@
         }
       }
       state.fish = nf;
-      // 轮盘赌：筹码只认台上那几档，模式只认下注 / 去注
+      // 轮盘赌：筹码 1 起（台上那几档 + 自定义都认），模式只认下注 / 去注
       var wl = d.wheel;
       if (wl && typeof wl === 'object') {
         if (typeof wl.spins === 'number' && wl.spins > 0) state.wheel.spins = Math.floor(wl.spins);
         if (typeof wl.best === 'number' && wl.best > 0) state.wheel.best = Math.floor(wl.best);
-        if (typeof wl.chip === 'number' && BET_PRESETS.indexOf(Math.floor(wl.chip)) >= 0) state.wheel.chip = Math.floor(wl.chip);
+        if (typeof wl.chip === 'number' && wl.chip >= 1) state.wheel.chip = Math.floor(wl.chip);
         if (wl.mode === 'take') state.wheel.mode = 'take';
+      }
+      // 赛鸭场：本局下注 1 起（台上那几档 + 自定义都认），押的鸭子只认 0 ~ 3
+      var dkp = d.duck;
+      if (dkp && typeof dkp === 'object') {
+        if (typeof dkp.bet === 'number' && dkp.bet >= 1) state.duck.bet = Math.floor(dkp.bet);
+        if (typeof dkp.pick === 'number' && dkp.pick >= 0 && dkp.pick < DUCKS.length) state.duck.pick = Math.floor(dkp.pick);
+      }
+      // 火龙塔：本局下注 1 起（台上那几档 + 自定义都认）。escrow 是上一条命压在塔里的下注，读回来交给启动块退回
+      var dtp = d.dt;
+      if (dtp && typeof dtp === 'object') {
+        if (typeof dtp.bet === 'number' && dtp.bet >= 1) state.dt.bet = Math.floor(dtp.bet);
+        if (typeof dtp.escrow === 'number' && dtp.escrow > 0 && isFinite(dtp.escrow)) state.dt.escrow = Math.floor(dtp.escrow);
+      }
+      // 扫雷：本局下注 1 起，雷数夹在 1 ~ 24；escrow 是上一条命压在雷区里的下注，读回来交给启动块退回
+      var mnp = d.mn;
+      if (mnp && typeof mnp === 'object') {
+        if (typeof mnp.bet === 'number' && mnp.bet >= 1) state.mn.bet = Math.floor(mnp.bet);
+        if (typeof mnp.mines === 'number') state.mn.mines = Math.max(1, Math.min(24, Math.floor(mnp.mines)));
+        if (typeof mnp.escrow === 'number' && mnp.escrow > 0 && isFinite(mnp.escrow)) state.mn.escrow = Math.floor(mnp.escrow);
+      }
+      // 企鹅过河：本局下注 1 起；escrow 是上一条命踩在冰面里的下注，读回来交给启动块退回
+      var pgp = d.pg;
+      if (pgp && typeof pgp === 'object') {
+        if (typeof pgp.bet === 'number' && pgp.bet >= 1) state.pg.bet = Math.floor(pgp.bet);
+        if (typeof pgp.escrow === 'number' && pgp.escrow > 0 && isFinite(pgp.escrow)) state.pg.escrow = Math.floor(pgp.escrow);
+      }
+      // 登月：本局下注 1 起；escrow 是上一条命压在火箭里的下注，读回来交给启动块退回
+      var mlp = d.ml;
+      if (mlp && typeof mlp === 'object') {
+        if (typeof mlp.bet === 'number' && mlp.bet >= 1) state.ml.bet = Math.floor(mlp.bet);
+        if (typeof mlp.escrow === 'number' && mlp.escrow > 0 && isFinite(mlp.escrow)) state.ml.escrow = Math.floor(mlp.escrow);
       }
     } catch (e) {}
   }
@@ -2403,7 +3183,7 @@
   }
 
   /* ================= 工具 ================= */
-  /* 金币缩写：跟 Roblox 一样用 K / M / B / T（每 1000 进一位，大小写按用户要求用大写）。
+  /* 金币缩写：跟 Roblox 一样用 K / M / B / T（每 1000 进一位，大小写统一用大写）。
      规则：1000 以下直接显示整数；系数 ≥ 100 取整（999M），< 100 保留 2 位小数并去掉多余的 0（1.23M / 12.5M）。
      关键点：先把系数按两位小数四舍五入，如果它进位到 1000（999,999 -> 1000.00K），就升到下一个单位再算，
      否则会出现「1000.00K」这种错显示。 */
@@ -2528,6 +3308,11 @@
   var $helpBj = document.getElementById('helpBj');
   var $helpFish = document.getElementById('helpFish');
   var $helpWheel = document.getElementById('helpWheel');
+  var $helpDuck = document.getElementById('helpDuck');
+  var $helpDt = document.getElementById('helpDt');
+  var $helpMine = document.getElementById('helpMine');
+  var $helpPeng = document.getElementById('helpPeng');
+  var $helpMoon = document.getElementById('helpMoon');
 
   /* ---- 轮盘赌（4.0） ---- */
   var $wheelPage = document.getElementById('wheelPage');
@@ -2546,6 +3331,125 @@
   var $whSpin = document.getElementById('whSpin');
   var $whClaim = document.getElementById('whClaim');
   var $whPotBadge = document.getElementById('whPotBadge');
+
+  /* ---- 赛鸭场（4.6） ---- */
+  var $duckPage = document.getElementById('duckPage');
+  var $duckBack = document.getElementById('duckBack');
+  var $dkGold = document.getElementById('dkGold');
+  var $dkLuck = document.getElementById('dkLuck');
+  var $dkEq = document.getElementById('dkEq');
+  var $dkPotBadge = document.getElementById('dkPotBadge');
+  var $dkLanes = document.getElementById('dkLanes');
+  var $dkGate = document.getElementById('dkGate');
+  var $dkCount = document.getElementById('dkCount');
+  var $dkRes = document.getElementById('dkRes');
+  var $dkMsg = document.getElementById('dkMsg');
+  var $dkStake = document.getElementById('dkStake');
+  var $dkStakeBet = document.getElementById('dkStakeBet');
+  var $dkStakePick = document.getElementById('dkStakePick');
+  var $dkChips = document.getElementById('dkChips');
+  var $dkStart = document.getElementById('dkStart');
+  var $dkClaim = document.getElementById('dkClaim');
+  var $dkPayTable = document.getElementById('dkPayTable');
+  var $dkLane = [], $dkDuck = [], $dkTag = [];
+  for (var dkI = 0; dkI < 4; dkI++) {           // 四条泳道写死在 HTML 里，和 DUCKS 一样是 4
+    $dkLane[dkI] = document.getElementById('dkLane' + dkI);
+    $dkDuck[dkI] = document.getElementById('dkDuck' + dkI);
+    $dkTag[dkI] = document.getElementById('dkTag' + dkI);
+  }
+
+  /* ---- 火龙塔（4.7） ---- */
+  var $dtPage = document.getElementById('dtPage');
+  var $dtBack = document.getElementById('dtBack');
+  var $dtTower = document.getElementById('dtTower');
+  var $dtRows = document.getElementById('dtRows');
+  var $dtGold = document.getElementById('dtGold');
+  var $dtRate = document.getElementById('dtRate');
+  var $dtEq = document.getElementById('dtEq');
+  var $dtRes = document.getElementById('dtRes');
+  var $dtMsg = document.getElementById('dtMsg');
+  var $dtStakeBet = document.getElementById('dtStakeBet');
+  var $dtStakeMult = document.getElementById('dtStakeMult');
+  var $dtChips = document.getElementById('dtChips');
+  var $dtStart = document.getElementById('dtStart');
+  var $dtCash = document.getElementById('dtCash');
+  var $dtClaim = document.getElementById('dtClaim');
+  var $dtPayTable = document.getElementById('dtPayTable');
+  var $dtRow = [], $dtCell = [];
+  for (var dtLv = 0; dtLv < 8; dtLv++) {         // 八层塔、每层四格，都写死在 HTML 里
+    $dtRow[dtLv] = document.getElementById('dtRow' + dtLv);
+    for (var dtCl = 0; dtCl < 4; dtCl++) $dtCell[dtLv * 4 + dtCl] = document.getElementById('dtC-' + dtLv + '-' + dtCl);
+  }
+
+  /* ---- 扫雷（4.8） ---- */
+  var $mnPage = document.getElementById('mnPage');
+  var $mnBack = document.getElementById('mnBack');
+  var $mnGold = document.getElementById('mnGold');
+  var $mnRate = document.getElementById('mnRate');
+  var $mnEq = document.getElementById('mnEq');
+  var $mnMineNum = document.getElementById('mnMineNum');
+  var $mnTop = document.getElementById('mnTop');
+  var $mnQuick = document.getElementById('mnQuick');
+  var $mnRange = document.getElementById('mnRange');
+  var $mnBoard = document.getElementById('mnBoard');
+  var $mnHeadLeft = document.getElementById('mnHeadLeft');
+  var $mnHeadRight = document.getElementById('mnHeadRight');
+  var $mnGrid = document.getElementById('mnGrid');
+  var $mnRes = document.getElementById('mnRes');
+  var $mnMsg = document.getElementById('mnMsg');
+  var $mnStakeBet = document.getElementById('mnStakeBet');
+  var $mnStakeMult = document.getElementById('mnStakeMult');
+  var $mnChips = document.getElementById('mnChips');
+  var $mnStart = document.getElementById('mnStart');
+  var $mnCash = document.getElementById('mnCash');
+  var $mnClaim = document.getElementById('mnClaim');
+  var $mnPayTable = document.getElementById('mnPayTable');
+  var $mnCell = [];
+  for (var mnI = 0; mnI < 25; mnI++) $mnCell[mnI] = document.getElementById('mnC-' + mnI);   // 5 × 5 都写死在 HTML 里
+
+  /* ---- 企鹅过河（4.9） ---- */
+  var $pgPage = document.getElementById('pgPage');
+  var $pgBack = document.getElementById('pgBack');
+  var $pgGold = document.getElementById('pgGold');
+  var $pgRate = document.getElementById('pgRate');
+  var $pgEq = document.getElementById('pgEq');
+  var $pgIce = document.getElementById('pgIce');
+  var $pgTrack = document.getElementById('pgTrack');
+  var $pgHeadLeft = document.getElementById('pgHeadLeft');
+  var $pgHeadRight = document.getElementById('pgHeadRight');
+  var $pgRes = document.getElementById('pgRes');
+  var $pgMsg = document.getElementById('pgMsg');
+  var $pgStakeBet = document.getElementById('pgStakeBet');
+  var $pgStakeMult = document.getElementById('pgStakeMult');
+  var $pgChips = document.getElementById('pgChips');
+  var $pgStart = document.getElementById('pgStart');
+  var $pgCash = document.getElementById('pgCash');
+  var $pgClaim = document.getElementById('pgClaim');
+  var $pgPayTable = document.getElementById('pgPayTable');
+  var $pgCell = [];
+  for (var pgI = 0; pgI < 10; pgI++) $pgCell[pgI] = document.getElementById('pgS-' + pgI);   // 10 格冰道都写死在 HTML 里
+
+  /* ---- 登月 ---- */
+  var $mlPage = document.getElementById('mlPage');
+  var $mlBack = document.getElementById('mlBack');
+  var $mlGold = document.getElementById('mlGold');
+  var $mlRate = document.getElementById('mlRate');
+  var $mlEq = document.getElementById('mlEq');
+  var $mlSpace = document.getElementById('mlSpace');
+  var $mlStars = document.getElementById('mlStars');
+  var $mlRocket = document.getElementById('mlRocket');
+  var $mlCount = document.getElementById('mlCount');
+  var $mlMult = document.getElementById('mlMult');
+  var $mlSub = document.getElementById('mlSub');
+  var $mlRes = document.getElementById('mlRes');
+  var $mlMsg = document.getElementById('mlMsg');
+  var $mlStakeBet = document.getElementById('mlStakeBet');
+  var $mlStakeMult = document.getElementById('mlStakeMult');
+  var $mlChips = document.getElementById('mlChips');
+  var $mlStart = document.getElementById('mlStart');
+  var $mlCash = document.getElementById('mlCash');
+  var $mlClaim = document.getElementById('mlClaim');
+  var $mlPayTable = document.getElementById('mlPayTable');
 
   /* ---- 钓鱼 ---- */
   var $fishPage = document.getElementById('fishPage');
@@ -2619,8 +3523,18 @@
     $bjPage.style.display = (p === 'bj') ? '' : 'none';
     $fishPage.style.display = (p === 'fish') ? '' : 'none';
     $wheelPage.style.display = (p === 'wheel') ? '' : 'none';
+    $duckPage.style.display = (p === 'duck') ? '' : 'none';
+    $dtPage.style.display = (p === 'dt') ? '' : 'none';
+    $mnPage.style.display = (p === 'mn') ? '' : 'none';
+    $pgPage.style.display = (p === 'pg') ? '' : 'none';
+    $mlPage.style.display = (p === 'ml') ? '' : 'none';
     if (p === 'fish') renderFishPage();
     if (p === 'wheel') renderWheelPage();
+    if (p === 'duck') renderDuckPage();
+    if (p === 'dt') renderDtPage();
+    if (p === 'mn') renderMnPage();
+    if (p === 'pg') renderPgPage();
+    if (p === 'ml') renderMlPage();
     refreshCorners();
   }
 
@@ -2636,12 +3550,17 @@
   }
 
   /* ================= 渲染：顶部 / 下注 ================= */
-  /* ---- 机子门槛：黑杰克 / 钓鱼 / 轮盘赌都要花 1K 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
+  /* ---- 机子门槛：黑杰克 / 钓鱼 / 轮盘赌 / 赛鸭场都要花 1K 金币买断才算开（买了就永久开，不会因为后面输钱又被锁上） ---- */
   var LOCK_FEE = 1000;
   var LOCK_CARDS = [
     { g: 'BJ',   id: 'bjEntry',   nm: '黑杰克', flag: 'bjUnlocked' },
     { g: 'FISH', id: 'fishEntry', nm: '钓鱼',   flag: 'fishUnlocked' },
-    { g: 'WH',   id: 'whEntry',   nm: '轮盘赌', flag: 'whUnlocked' }
+    { g: 'WH',   id: 'whEntry',   nm: '轮盘赌', flag: 'whUnlocked' },
+    { g: 'DK',   id: 'dkEntry',   nm: '赛鸭场', flag: 'duckUnlocked' },
+    { g: 'DT',   id: 'dtEntry',   nm: '火龙塔', flag: 'dtUnlocked' },
+    { g: 'MS',   id: 'mnEntry',   nm: '扫雷',   flag: 'mnUnlocked' },
+    { g: 'PG',   id: 'pgEntry',   nm: '企鹅过河', flag: 'pgUnlocked' },
+    { g: 'MN',   id: 'mlEntry',   nm: '登月',   flag: 'mlUnlocked' }
   ];
   function lockInfo(g) { for (var i = 0; i < LOCK_CARDS.length; i++) if (LOCK_CARDS[i].g === g) return LOCK_CARDS[i]; return null; }
   function gameUnlocked(g) { var d = lockInfo(g); return !!d && state[d.flag] === true; }
@@ -2840,7 +3759,7 @@
 
   // 两行徽标：生效中的药水，跟着游戏页和黑杰克页各显示一份
   function renderPotBadges() {
-    var ids = ['potBadge', 'bjPotBadge', 'whPotBadge'], i;
+    var ids = ['potBadge', 'bjPotBadge', 'whPotBadge', 'dkPotBadge'], i;
     for (i = 0; i < ids.length; i++) {
       var el = document.getElementById(ids[i]);
       if (!el) continue;
@@ -2874,11 +3793,11 @@
   }
 
   /* ---------- 后悔药水：回溯一次操作 ---------- */
-  function rewindArm(kind, bet, back) { rewindTarget = { kind: kind, bet: bet, back: back, used: false }; }
+  function rewindArm(kind, bet, back, extra) { rewindTarget = { kind: kind, bet: bet, back: back, extra: (extra === undefined ? -1 : extra), used: false }; }
   function renderRewindBtn() {
     var b = document.getElementById('rewindBtn');
     if (!b) return;
-    var show = (page === 'slot' || page === 'bj' || page === 'wheel') && potActive('rewind') && rewindTarget && !rewindTarget.used;
+    var show = (page === 'slot' || page === 'bj' || page === 'wheel' || page === 'duck' || page === 'dt' || page === 'mn' || page === 'pg' || page === 'ml') && potActive('rewind') && rewindTarget && !rewindTarget.used;
     b.style.display = show ? '' : 'none';
     if (show) b.textContent = '⏪ 后悔药水 · 重开本局';
   }
@@ -2888,7 +3807,7 @@
     var t = rewindTarget;
     t.used = true;
     rewindTarget = null;
-    potTick('rewind');                      // 用掉一瓶
+    potTick('rewind');
     if (t.kind === 'slot') {
       if (spinning) { toast('正在转，等这局停下再说'); return; }
       if (!afford(t.bet)) { toast('金币不足，回溯不了'); return; }
@@ -2902,6 +3821,11 @@
     }
     if (t.kind === 'bj') { rewindBj(t.bet); renderRewindBtn(); return; }
     if (t.kind === 'wheel') { whRewind(t); renderRewindBtn(); return; }
+    if (t.kind === 'duck') { dkRewind(t); renderRewindBtn(); return; }
+    if (t.kind === 'dt') { dtRewind(t); renderRewindBtn(); return; }
+    if (t.kind === 'mn') { mnRewind(t); renderRewindBtn(); return; }
+    if (t.kind === 'pg') { pgRewind(t); renderRewindBtn(); return; }
+    if (t.kind === 'ml') { mlRewind(t); renderRewindBtn(); return; }
   }
   function rewindBj(bet) {
     if (BJ.phase !== 'idle') return;
@@ -2918,7 +3842,7 @@
     ], function () { bjAfterDeal(); });
   }
 
-  // 徽标要跟着时间自己消失（3 秒窗口），所以顺手挂一个 1 秒的刷新
+  // 徽标要跟着时间自己消失（3 秒窗口），所以再挂一个 1 秒的刷新
   setInterval(function () { if (potActive('rewind') && rewindTarget) renderRewindBtn(); }, 1000);
 
   function renderStats() {
@@ -2926,7 +3850,7 @@
     $sGold.textContent = abbr(state.gold);
     $lobbyGold.textContent = abbr(state.gold);
     if ($lobbyShell) $lobbyShell.textContent = abbr(shellNum());
-    $freeGold.textContent = abbr(state.gold);            // 自由模式列表页也摆一份钱
+    $freeGold.textContent = abbr(state.gold);
     if ($freeShell) $freeShell.textContent = abbr(shellNum());
     $sSlotLuck.textContent = fmtSlotLuck(slotLuck());
     $sEq.textContent = state.eq;
@@ -2941,6 +3865,31 @@
     $whLuck.textContent = fmtSlotLuck(slotLuck());
     $whEq.textContent = state.eq;
     $whEq.style.color = col;
+    // 赛鸭场页顶部也是同一份金币 / 幸运 / 光环
+    $dkGold.textContent = abbr(state.gold);
+    $dkLuck.textContent = fmtSlotLuck(slotLuck());
+    $dkEq.textContent = state.eq;
+    $dkEq.style.color = col;
+    // 火龙塔页顶部也是同一份金币 / 幸运 / 光环；倍率显示开局锁死的那一个
+    $dtGold.textContent = abbr(state.gold);
+    if ($dtRate) $dtRate.textContent = '×' + dtFmt((dtRun && !dtRun.done) ? dtRun.R : auraR());
+    $dtEq.textContent = state.eq;
+    $dtEq.style.color = col;
+    // 扫雷页顶部也是同一份金币 / 幸运 / 光环；倍率显示这一局翻到的那个
+    $mnGold.textContent = abbr(state.gold);
+    if ($mnRate) $mnRate.textContent = '×' + mnFmt((mnRun && !mnRun.done && mnRun.safe > 0) ? mnRun.mult : auraR());
+    $mnEq.textContent = state.eq;
+    $mnEq.style.color = col;
+    // 企鹅过河页顶部也是同一份金币 / 幸运 / 光环；倍率显示这一局走到的那一格
+    $pgGold.textContent = abbr(state.gold);
+    if ($pgRate) $pgRate.textContent = '×' + mnFmt((pgRun && !pgRun.done && pgRun.at >= 0) ? pgRun.mult : auraR());
+    $pgEq.textContent = state.eq;
+    $pgEq.style.color = col;
+    // 登月页顶部也是同一份金币 / 幸运 / 光环；倍率显示这一局窜到的那个
+    $mlGold.textContent = abbr(state.gold);
+    if ($mlRate) $mlRate.textContent = '×' + mlFmt((mlRun && !mlRun.done) ? mlRun.mult : auraR());
+    $mlEq.textContent = state.eq;
+    $mlEq.style.color = col;
     renderLocks();
   }
 
@@ -2969,7 +3918,7 @@
   // 老虎机和黑杰克两页共用同一份救济金状态
   function paintClaim(el) {
     if (!el) return;
-    var can = state.gold < 1;                           // 连 1 枚都下不起
+    var can = state.gold < 1;
     var left = CLAIM_CD - (Date.now() - state.claimAt);
     if (left < 0) left = 0;
     el.style.display = 'inline-block';
@@ -2977,7 +3926,7 @@
     else if (!can) { el.disabled = true; el.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
     else { el.disabled = false; el.textContent = '领取救济金 100 金币'; }
   }
-  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); paintClaim($whClaim); }
+  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); paintClaim($whClaim); paintClaim($dkClaim); paintClaim($dtClaim); paintClaim($mnClaim); paintClaim($pgClaim); }
 
   /* ================= 黑杰克 ================= */
   // 规则：单副牌每局重洗 · J/Q/K=10 · A 软硬双值 · 庄家 S17（软 17 停）· 明牌 A/10 时 peek
@@ -3427,7 +4376,6 @@
     }
     if (!list.length) html = '<div class="empty">还没有任何光环</div>';
     $eqList.innerHTML = html;
-    // 当前佩戴
     $eqInfo.innerHTML = '当前：<span style="color:' + TIER_COLOR[cur.t] + '">' + cur.n + '</span>　幸运 +' + cur.L.toFixed(2) +
       (state.cb ? '　｜　词条「' + CAIBAO + '」生效中' : '');
   }
@@ -3639,8 +4587,61 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '4.5.0';
+  var VERSION = '4.10.1';
   var CHANGELOG = [
+    { v: '4.10.1', t: '小调整', li: [
+      '🚧 先把 🐔 养鸡场的入口收起来了，做好之后再摆回来'
+    ] },
+    { v: '4.10.0', t: '登月', li: [
+      '🚀 自由模式里 🚀 登月开门了：点「发射」，3-2-1 倒数完火箭点火升空，面板中间的倍率从 ×1.00 一路往上窜',
+      '💥 倍率窜到哪儿会炸，点火前就定死了 —— 可能刚离地就炸，也可能一路冲到 ×200 的尽头才炸',
+      '💰 在炸掉之前点「提现」，就能把「下注 × 那一刻的倍率」连本带利拿走；手慢一步没点上，这一局的下注就全没了',
+      '👀 提现之后火箭还会自己往上飞，飞到它自己的爆点炸给你看 —— 这一回炸不掉你的钱，只是让你知道刚才跑得早不早',
+      '📈 倍率是前期慢、后期猛：点火 5 秒到 ×2，10 秒到 ×10，再往后一格比一格快，冲到 ×200 就到头了',
+      '🔒 登月要 💰 1K 金币买断才进得去，买断后永久有效',
+      '🛡️ 无敌药水挡得住爆炸（下注原样退回），⏪ 后悔药水能把炸掉的那一局作废、下注退回',
+      '❓ 规则面板多了一页「登月规则」，里面有倍率随时间上涨的对照表'
+    ] },
+    { v: '4.9.0', t: '企鹅过河', li: [
+      '🐧 自由模式里 🐧 企鹅步改名叫「企鹅过河」并开门了：一条 10 格的冰面，企鹅从岸边一步步往前走，每迈一格倍率往上翻一档',
+      '🧊 冰面里混着薄冰，一脚踩上去企鹅就掉进水里，这一局的下注清零 —— 越往后的冰越薄，一步比一步悬',
+      '💹 走完全程最高 ×72.55（不含加成）；走到任何一格都能随时收手，每一步的期望回报都仍是光环那个数，没有暗改',
+      '💰 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；走完第 10 格自动结算',
+      '🔒 企鹅过河要 💰 1K 金币买断才进得去，买断后永久有效',
+      '🛡️ 无敌药水挡得住薄冰（下注原样退回），⏪ 后悔药水能把踩空的那一局作废、下注退回',
+      '❓ 规则面板多了一页「企鹅过河规则」，里面有 10 格逐格的倍率表',
+      '🏔️ 冰面重做：10 块浮冰排成蛇形、一块接一块用冰桥连起来，从岸边一路绕到对岸',
+      '🐛 修好了过河页上「领取救济金」那颗按钮不跟着金币刷新的毛病'
+    ] },
+    { v: '4.8.0', t: '扫雷', li: [
+      '💣 自由模式新开了一片雷区：5 × 5 共 25 格，翻到安全格倍率往上涨，踩到雷整局下注炸光',
+      '🎚️ 开局前先定雷数（快捷档 😌3 / 🙂5 / 😰8 / ☠️12，也能拖滑杆在 1 ~ 24 之间随便调）——雷越多涨得越猛',
+      '💹 一格不踩满，全清最高 ×2.30K（3 雷）；12 / 13 雷是顶点，全清最高 ×5.20M。每一步的期望回报都仍是光环那个数，没有暗改',
+      '🧊 格子上没有数字提示，除了「安全」和「炸」什么都看不出；点一次只翻开点的那一格，不自动扩散',
+      '💥 踩到雷的那一格会当场炸开一个大爆炸',
+      '💰 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；安全格全翻完自动结算',
+      '🔒 扫雷要 💰 1K 金币买断才进得去，买断后永久有效',
+      '🛡️ 无敌药水挡得住雷（下注原样退回），⏪ 后悔药水能把炸掉的那一局作废、下注退回',
+      '❓ 规则面板多了一页「扫雷规则」，里面有 1 ~ 24 雷的整张倍率表'
+    ] },
+    { v: '4.7.0', t: '火龙塔', li: [
+      '🐉 自由模式新开了一座火龙塔：8 层、每层四个格子，踩中安全格倍率往上滚，踩到龙眼整局下注归火龙',
+      '💹 一路踩满 8 层最高 ×303；越往上龙眼越多 —— 第 1~3 层各 1 只，第 4~6 层各 2 只，第 7~8 层各 3 只',
+      '💰 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；爬到第 8 层自动结算',
+      '🔒 火龙塔要 💰 1K 金币买断才进得去，买断后永久有效',
+      '🛡️ 无敌药水挡得住龙眼（下注原样退回），⏪ 后悔药水能把踩爆的那一局作废、下注退回',
+      '🏯 塔面做成了正经的塔：下宽上窄的塔身 + 塔顶垛口 + 脚下塔基，还是那 8 层、每层 4 格',
+      '🧹 塔面右边那列每层 ×倍率撤掉了，塔身清爽些；当前倍率看塔上面那条和挂出注的地方',
+      '🎲 轮盘赌、赛鸭场、火龙塔的筹码都多了一档「自定义」，想押多少就押多少',
+      '❓ 规则面板多了一页「火龙塔规则」'
+    ] },
+    { v: '4.6.0', t: '赛鸭场', li: [
+      '🦆 自由模式里 🦆 赛鸭场开门了：四条泳道四只鸭，开跑前押一只你看着顺眼的',
+      '🏁 闸门 + 3-2-1 倒数之后鸭子自己往前跑，最先冲线的那只赢；押中按它的倍率连本带利赔，押错这局的下注就没了',
+      '⚡ 跑得快的倍率低、跑得慢的倍率高：红鸭 ×3.0 / 黄鸭 ×4.0 / 蓝鸭 ×5.0 / 绿鸭 ×6.0（一句话就能看懂的手感）',
+      '🔒 跟黑杰克 / 钓鱼 / 轮盘赌一样 💰 1K 金币买断；🍀 幸运 / 💰 金币 / ⏪ 后悔 / 🛡️ 无敌 四瓶药水全都能用',
+      '❓ 规则面板多了一页「赛鸭场规则」'
+    ] },
     { v: '4.5.0', t: '买断制', li: [
       '🔒 🃏 黑杰克 / 🎣 钓鱼 / 🎡 轮盘赌 现在都要 💰 1K 金币买断才进得去，买断之后永久开放',
       '🎰 老虎机照旧免费，进门就能玩',
@@ -3927,12 +4928,18 @@
 
   // ❓ 是同一个按钮，规则内容按当前所在页面切换
   function openHelp() {
-    var slot = (page === 'slot'), bj = (page === 'bj'), fish = (page === 'fish');
-    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则' : (bj ? '❓ 黑杰克规则' : (fish ? '❓ 钓鱼规则' : '❓ 轮盘赌规则'));
+    var slot = (page === 'slot'), bj = (page === 'bj'), fish = (page === 'fish'), duck = (page === 'duck'), dt = (page === 'dt'), mn = (page === 'mn'), pg = (page === 'pg'), ml = (page === 'ml');
+    $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则'
+      : (bj ? '❓ 黑杰克规则' : (fish ? '❓ 钓鱼规则' : (duck ? '❓ 赛鸭场规则' : (dt ? '❓ 火龙塔规则' : (mn ? '❓ 扫雷规则' : (pg ? '❓ 企鹅过河规则' : (ml ? '❓ 登月规则' : '❓ 轮盘赌规则')))))));
     $helpSlot.style.display = slot ? '' : 'none';
     $helpBj.style.display = bj ? '' : 'none';
     $helpFish.style.display = fish ? '' : 'none';
-    $helpWheel.style.display = (!slot && !bj && !fish) ? '' : 'none';
+    $helpDuck.style.display = duck ? '' : 'none';
+    $helpDt.style.display = dt ? '' : 'none';
+    $helpMine.style.display = mn ? '' : 'none';
+    $helpPeng.style.display = pg ? '' : 'none';
+    $helpMoon.style.display = ml ? '' : 'none';
+    $helpWheel.style.display = (!slot && !bj && !fish && !duck && !dt && !mn && !pg && !ml) ? '' : 'none';
     openSheet('helpSheet');
   }
   $helpBtn.addEventListener('click', openHelp, false);
@@ -4013,7 +5020,7 @@
     })(modeBtns[mb]);
   }
 
-  // 自由模式机子列表：老虎机免费直接进，黑杰克 / 钓鱼 / 轮盘赌各要 1K 金币买断，商城开弹层，其余 8 张占位卡只弹「敬请期待」
+  // 自由模式机子列表：老虎机免费直接进，黑杰克 / 钓鱼 / 轮盘赌 / 赛鸭场 / 火龙塔 / 扫雷 / 企鹅过河 各要 1K 金币买断，商城开弹层，其余 4 张占位卡只弹「敬请期待」
   var homeBtns = document.getElementById('freePage').getElementsByClassName('gameBtn');
   for (var hb = 0; hb < homeBtns.length; hb++) {
     (function (btn) {
@@ -4021,16 +5028,36 @@
         var g = btn.getAttribute('data-game');
         if (g === 'slot') { setPage('slot'); return; }                 // 进老虎机
         if (g === 'BJ') {
-          if (!bjTryUnlock()) return;                                   // 没买断：门口拦下来
+          if (!bjTryUnlock()) return;
           setPage('bj'); renderBj(); renderBjBet(); return;
         }
         if (g === 'FISH') {
-          if (!gameTryUnlock('FISH')) return;                            // 没买断：门口拦下来
+          if (!gameTryUnlock('FISH')) return;
           setPage('fish'); return;
         }
         if (g === 'WH') {
-          if (!gameTryUnlock('WH')) return;                              // 没买断：门口拦下来
+          if (!gameTryUnlock('WH')) return;
           setPage('wheel'); return;
+        }
+        if (g === 'DK') {
+          if (!gameTryUnlock('DK')) return;
+          setPage('duck'); return;
+        }
+        if (g === 'DT') {
+          if (!gameTryUnlock('DT')) return;
+          setPage('dt'); return;
+        }
+        if (g === 'MS') {
+          if (!gameTryUnlock('MS')) return;
+          setPage('mn'); return;
+        }
+        if (g === 'PG') {
+          if (!gameTryUnlock('PG')) return;
+          setPage('pg'); return;
+        }
+        if (g === 'MN') {
+          if (!gameTryUnlock('MN')) return;
+          setPage('ml'); return;
         }
         if (g === 'SHOP') { toggleMiscPop(false); openSheet('shopSheet'); return; }   // 进商城
         toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 敬请期待');
@@ -4093,11 +5120,20 @@
       luck: 1, rolls: 0, counts: { '默认': 1 }, hist: [],
       gold: GOLD_START, eq: '默认', bet: 1,
       bd1: false, bd2: false, t1: 0, t2: 0, t3: 0, t5: 0, t6: 0, claimAt: 0, cb: false,
-      codes: {}, bjBet: 1, bjUnlocked: false, fishUnlocked: false, whUnlocked: false,
+      codes: {}, bjBet: 1, bjUnlocked: false, fishUnlocked: false, whUnlocked: false, duckUnlocked: false, dtUnlocked: false, mnUnlocked: false, pgUnlocked: false, mlUnlocked: false,
       bag: {}, pot: {}, auto: { on: false, until: 0, last: 0 }, fish: freshFish(),
-      wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' }
+      wheel: { spins: 0, best: 0, chip: 1, mode: 'bet' },
+      duck: { bet: 1, pick: -1 },
+      dt: { bet: 1, escrow: 0 },
+      mn: { bet: 1, mines: 3, escrow: 0 },
+      pg: { bet: 1, escrow: 0 },
+      ml: { bet: 1, escrow: 0 }
     };
     rewindTarget = null; clearPotTimer(); fishIdle();
+    clearTimeout(dkTimer); dkTimer = null; dkRace = null; dkBusy = false; dkSel = -1; dkReset();
+    dtRun = null; dtFlame(false);
+    mnRun = null; pgRun = null;
+    mlRun = null; mlStopTimer();
     for (var wk in whTable) delete whTable[wk];
     whLast = -1; whBusy = false; whAngle = 0;
     whRenderTable(); whRenderCtl();
@@ -4114,13 +5150,13 @@
     $tierLine.textContent = ''; $oddsLine.textContent = '';
     $newSlot.innerHTML = ''; $gainSlot.innerHTML = '';
     renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
-    renderFishPage(); renderFishSheet(); save();
+    renderFishPage(); renderFishSheet(); renderDuckPage(); save();
     closeSheet('setPop');
     toast('已重置');
   }, false);
 
   /* ================= 后门（隐藏） ================= */
-  // 现在只留两个（其余按用户要求全部关闭）：
+  // 现在只留两个（其余全部关闭）：
   // 1) 待机时点中间格子 20 下 -> 自己填想加多少金币（不限次数）
   // 2) 待机时点「佩戴光环」显示 10 下 -> 获得隐藏词条「菜包」（获得过之后只提示）
   // 已关闭：左上角格 10 下 +100、金币显示 10 下 +1000、右中格 5 下拿 100 救济金。
@@ -4183,8 +5219,8 @@
 
   var whTable = {};                       // 台面上的临时注单：key -> 押了多少（不存档）
   var whAngle = 0;                        // 转盘累计角度
-  var whBusy = false;                     // 正在转
-  var whLast = -1;                        // 上一次开出的号码
+  var whBusy = false;
+  var whLast = -1;
   var whTimer = 0;
   var whCovNum = {};                      // 本局注单覆盖到的号码
 
@@ -4290,7 +5326,6 @@
     return 'conic-gradient(from 0deg, ' + s.join(',') + ')';
   }
 
-  // —— 台面 ——
   function whCellHtml(kind, v, label, cls) {
     var attrs, on = '', chip = '', amt = 0, keys, i;
     if (kind === 'num') {
@@ -4309,7 +5344,7 @@
 
   function whRenderTable() {
     if (!$whTable) return;
-    whCover();                             // 顺手刷一遍覆盖集：格子高亮跟着注单走
+    whCover();                             // 覆盖集跟着注单刷新，格子高亮才对
     var html = '', r, j, n;
     html += '<div class="whZeroRow">' + whCellHtml('num', 0, '0', ' green whZero') + '</div>';
     for (r = 0; r < 12; r++) {
@@ -4325,11 +5360,12 @@
   }
 
   function whRenderCtl() {
-    var cv = whCover(), i, el, els, cnt = 0, k;
+    var cv = whCover(), i, el, els, cnt = 0, k, b;
     els = $whChips.getElementsByClassName('betBtn');
     for (i = 0; i < els.length; i++) {
       el = els[i];
-      el.className = (parseInt(el.getAttribute('data-bet'), 10) === state.wheel.chip) ? 'betBtn on' : 'betBtn';
+      b = parseInt(el.getAttribute('data-bet'), 10);
+      el.className = ((b === 0) ? (BET_PRESETS.indexOf(state.wheel.chip) < 0) : (b === state.wheel.chip)) ? 'betBtn on' : 'betBtn';
     }
     els = $whModeRow.getElementsByClassName('whM');
     for (i = 0; i < els.length; i++) {
@@ -4447,7 +5483,14 @@
     var t = e.target, v;
     if (!t || !t.getAttribute) return;
     v = parseInt(t.getAttribute('data-bet'), 10);
-    if (!v || BET_PRESETS.indexOf(v) < 0) return;
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义筹码面额
+      askNumber('自定义筹码面额', '整数，1 ~ ' + abbr(NUM_MAX) + '（每注押这么多）', String(state.wheel.chip), function (nv) {
+        state.wheel.chip = nv; whRenderCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
     state.wheel.chip = v;
     buzz(6); whRenderCtl(); save();
   }, false);
@@ -4460,6 +5503,1346 @@
     if (m !== 'bet' && m !== 'take') return;
     state.wheel.mode = m;
     buzz(6); whRenderCtl(); save();
+  }, false);
+
+  /* ================= 🦆 赛鸭场 ================= */
+
+  // 四只鸭：红 / 黄 / 蓝 / 绿。跑得快的倍率低、跑得慢的倍率高。
+  // m = 赔率（押中时连本带利回收「下注 × m」）。
+  // 概率不写死：q[i] = 1/m[i] 归一化，是「不靠幸运」时的天然胜率，只用来给陪跑的排实力名次；
+  // 真正决定输赢的是 auraR（佩戴光环 + 🍀）。押的那只胜率 = R / m —— 所以改一个倍率，整局回报率跟着动
+  // （默认光环 R = 1.05：红鸭 35% / 黄鸭 26% / 蓝鸭 21% / 绿鸭 17.5%，回报率正好落回 105%，和其他机子一个档）。
+  var DUCKS = [
+    { nm: '红鸭', m: 3.0 },
+    { nm: '黄鸭', m: 4.0 },
+    { nm: '蓝鸭', m: 5.0 },
+    { nm: '绿鸭', m: 6.0 }
+  ];
+  var DK_END = 78;                 // 鸭子最多跑到泳道宽度的百分之多少（冲线带在 CSS 里钉在 82%）
+  var DK_T = {
+    gate: 600,                     // 点「开跑」到第一声倒数
+    count: 620,                    // 每声倒数之间的间隔
+    go: 460,                       // 「跑！」亮多久
+    tick: 40,                      // 每帧步长（页面里没有 rAF，一律 setTimeout 步进）
+    race: 3600,                    // 冠军冲线用的时间
+    gap: [0, 220, 430, 660],       // 第 2 / 3 / 4 名各比冠军晚多少毫秒冲线
+    tail: 520                      // 冠军冲线后再跑一会儿（让后面几只有个冲线画面）才结算
+  };
+  var dkBusy = false;              // 正在倒数 / 正在跑
+  var dkSel = -1;                  // 这一局押的是哪只（-1 = 还没选）；进页面时从 state.duck.pick 同步
+  var dkRace = null;               // 当前这一局：{ win, order, T[], p[], ph[], bet, start, done }
+  var dkTimer = null;
+
+  // 天然胜率：1/倍率 归一化（倍率表一改，这里跟着改）
+  var DK_Q = (function () {
+    var i, s = 0, q = [];
+    for (i = 0; i < DUCKS.length; i++) { q[i] = 1 / DUCKS[i].m; s += q[i]; }
+    for (i = 0; i < q.length; i++) q[i] /= s;
+    return q;
+  })();
+
+  // 结果优先：先把冠军摇出来，再让动画去演。
+  // 押的那只：胜率 = 回报率 R ÷ 它的倍率；没押的那几只按天然胜率在剩下三只里挑。
+  function dkRoll(sel) {
+    var R = auraR(state.eq), p = R / DUCKS[sel].m, i, x;
+    if (p > 0.95) p = 0.95;
+    if (Math.random() < p) return sel;
+    x = Math.random() * (1 - DK_Q[sel]);
+    for (i = 0; i < DUCKS.length; i++) {
+      if (i === sel) continue;
+      x -= DK_Q[i];
+      if (x <= 0) return i;
+    }
+    for (i = DUCKS.length - 1; i >= 0; i--) if (i !== sel) return i;
+    return 0;
+  }
+
+  // 冠军定好了，第 2 ~ 4 名按天然胜率抓阄（抓出来就是「快到线才拉开差距」的冲刺画面）
+  function dkOrder(win) {
+    var rest = [], i, x, tot = 0, order = [win];
+    for (i = 0; i < DUCKS.length; i++) if (i !== win) { rest.push(i); tot += DK_Q[i]; }
+    while (rest.length) {
+      x = Math.random() * tot;
+      for (i = 0; i < rest.length; i++) {
+        x -= DK_Q[rest[i]];
+        if (x <= 0) break;
+      }
+      if (i >= rest.length) i = rest.length - 1;
+      tot -= DK_Q[rest[i]];
+      order.push(rest[i]);
+      rest.splice(i, 1);
+    }
+    return order;
+  }
+
+  function dkNewRace() {
+    var win = dkRoll(dkSel < 0 ? 0 : dkSel), order = dkOrder(win), i, d;
+    d = { win: win, order: order, T: [], p: [], ph: [], bet: state.duck.bet, start: 0, done: false };
+    for (i = 0; i < order.length; i++) {
+      d.T[order[i]] = DK_T.race + DK_T.gap[i] + (Math.random() * 120 - 60);
+      d.p[order[i]] = 0;
+      d.ph[order[i]] = Math.random() * Math.PI * 2;
+    }
+    return d;
+  }
+
+  // 把这一局的进度画到泳道上
+  function dkPaint() {
+    var i, p;
+    if (!dkRace) return;
+    for (i = 0; i < DUCKS.length; i++) {
+      p = dkRace.p[i] || 0;
+      if (p < 0) p = 0;
+      if (p > 1) p = 1;
+      if ($dkDuck[i]) $dkDuck[i].style.marginLeft = (p * DK_END).toFixed(2) + '%';
+    }
+  }
+
+  // 四只鸭回闸门后面、闸门关上、倒数圈收起来
+  function dkReset() {
+    var i;
+    for (i = 0; i < DUCKS.length; i++) if ($dkDuck[i]) {
+      $dkDuck[i].style.marginLeft = '0%';
+      $dkDuck[i].className = 'dkDuck';
+    }
+    if ($dkCount) { $dkCount.className = 'dkCount'; $dkCount.textContent = ''; }
+    if ($dkGate) $dkGate.className = 'dkGate';
+  }
+
+  // 3 - 2 - 1 - 跑！（每一跳都带一下震动）
+  function dkCountDown(n) {
+    if (n > 0) {
+      $dkCount.textContent = String(n);
+      $dkCount.className = 'dkCount show';
+      buzz(12);
+      dkTimer = setTimeout(function () { dkCountDown(n - 1); }, DK_T.count);
+      return;
+    }
+    $dkCount.textContent = '跑！';
+    buzz(30);
+    if ($dkGate) $dkGate.className = 'dkGate open';
+    dkTimer = setTimeout(function () { if ($dkCount) $dkCount.className = 'dkCount'; }, DK_T.go);
+    dkRace.start = Date.now();
+    dkTick();
+  }
+
+  // 每 40 毫秒把四只鸭往前推一格（页面里没有 rAF，用 setTimeout 步进）
+  function dkTick() {
+    var R = dkRace, el, i, p;
+    if (!R) return;
+    el = Date.now() - R.start;
+    for (i = 0; i < DUCKS.length; i++) {
+      p = el / R.T[i];
+      if (p > 1) p = 1;
+      p = Math.pow(p, 0.94);                            // 起步稍快、末段稍微挤一挤
+      p += Math.sin(el / 210 + R.ph[i]) * 0.012;        // 你追我赶的小抖动
+      R.p[i] = p;
+    }
+    dkPaint();
+    if (el >= R.T[R.win] + DK_T.tail) { dkSettle(); return; }
+    dkTimer = setTimeout(dkTick, DK_T.tick);
+  }
+
+  function dkSettle() {
+    var R = dkRace, win, sel, bet, pay, net, goldPot, shield, hit, i;
+    if (!R || R.done) return;
+    win = R.win; sel = dkSel; bet = R.bet; pay = 0;
+    R.done = true;
+    dkBusy = false;
+    hit = (win === sel);
+    if (hit) pay = Math.floor(bet * DUCKS[sel].m);
+    goldPot = pay > 0 && potActive('gold');
+    if (goldPot) pay = Math.floor(pay * GOLD_MUL);        // 💰：本局回收 ×1.30
+    shield = pay < bet && potActive('shield');
+    if (shield) pay = bet;                               // 🛡️：输了就把这一局的下注全退回（净 0）
+    state.gold = clampGold(state.gold + pay);
+    rewindArm('duck', bet, pay, sel);                    // 留一手：跑完之后的 ⏪ 回溯点（还是这只鸭）
+    if (potActive('luck')) potTick('luck');
+    if (potActive('gold')) potTick('gold');
+    if (shield) potTick('shield');
+    for (i = 0; i < DUCKS.length; i++) if ($dkDuck[i]) $dkDuck[i].className = 'dkDuck';
+    net = pay - bet;
+    $dkRes.textContent = '🏁 ' + DUCKS[win].nm + ' 冲线！';
+    $dkRes.style.color = hit ? '#f3d98b' : '#e8e2d2';
+    $dkMsg.textContent = hit
+      ? ('押中 ' + DUCKS[sel].nm + ' ×' + DUCKS[sel].m.toFixed(1) + ' · 回收 ' + abbr(pay) +
+         '　本局 ' + (net > 0 ? '+' : '') + abbr(net) + (goldPot ? '　💰 ×' + GOLD_MUL.toFixed(2) : ''))
+      : ('押 ' + DUCKS[sel].nm + ' 没中 · 本局 ' + abbr(net) + (shield ? '　🛡️ 退注' : ''));
+    dkRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function dkStart(free) {
+    if (dkBusy) return;
+    if (dkSel < 0) { toast('先在泳道上点一只你看好的鸭'); return; }
+    if (!free && !afford(state.duck.bet)) { toast('金币不够：本局下注 ' + abbr(state.duck.bet) + ' 金币'); return; }
+    if (!free) { state.gold = clampGold(state.gold - state.duck.bet); save(); }
+    clearTimeout(dkTimer);
+    dkRace = dkNewRace();
+    dkBusy = true;
+    state.duck.pick = dkSel;
+    dkReset();
+    $dkRes.textContent = '闸门待开…';
+    $dkRes.style.color = '#f3d98b';
+    $dkMsg.textContent = '押 ' + DUCKS[dkSel].nm + '　倍率 ×' + DUCKS[dkSel].m.toFixed(1) +
+      '　本局下注 ' + abbr(state.duck.bet) + ' 金币';
+    dkRenderCtl(); renderStats(); renderClaim(); save();
+    dkTimer = setTimeout(function () { dkCountDown(3); }, DK_T.gate);
+  }
+
+  // ⏪ 后悔药水：这一局作废，押的那只鸭免费重跑一次（下注不退）
+  function dkRewind(t) {
+    if (dkBusy) return;
+    state.gold = clampGold(state.gold - (t.back || 0));   // 把上局回收的金币拿回来
+    if (t.extra >= 0) { dkSel = t.extra; state.duck.pick = dkSel; }
+    dkRace = null;
+    dkReset();
+    $dkRes.textContent = '本局作废，免费重跑…';
+    $dkRes.style.color = '#f3d98b';
+    $dkMsg.textContent = '⏪ 后悔药水：这一局不算数（还是这只鸭，下注不退）';
+    renderStats(); renderClaim(); save();
+    dkStart(true);
+  }
+
+  // 点泳道选鸭（一局只押一只）
+  function dkPickDuck(i) {
+    if (dkBusy) { toast('这局正在跑，等冲线再说'); return; }
+    if (i < 0 || i >= DUCKS.length) return;
+    dkSel = i;
+    state.duck.pick = i;
+    dkRace = null;
+    dkReset();
+    $dkRes.textContent = '押 ' + DUCKS[i].nm + '　倍率 ×' + DUCKS[i].m.toFixed(1);
+    $dkRes.style.color = '#f3d98b';
+    $dkMsg.textContent = '再挑一枚筹码当本局下注，然后点「开跑」';
+    buzz(6);
+    dkRenderCtl(); renderStats(); save();
+  }
+
+  // 筹码 / 泳道高亮 / 开跑按钮的可用状态
+  function dkRenderCtl() {
+    var i, btns, b;
+    if ($dkChips) {
+      btns = $dkChips.getElementsByClassName('betBtn');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-bet'), 10);
+        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.duck.bet) < 0) : (b === state.duck.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].disabled = dkBusy || (b > 0 && !afford(b));
+      }
+    }
+    for (i = 0; i < DUCKS.length; i++) {
+      if (!$dkLane[i]) continue;
+      $dkLane[i].className = 'dkLane c' + i + ((i === dkSel) ? ' pick' : '') +
+        ((dkRace && dkRace.done && dkRace.win === i) ? ' win' : '');
+    }
+    if ($dkStakeBet) $dkStakeBet.textContent = abbr(state.duck.bet);
+    if ($dkStakePick) $dkStakePick.textContent = (dkSel >= 0) ? ('　看好的鸭 ' + DUCKS[dkSel].nm) : '';
+    if ($dkStart) $dkStart.disabled = dkBusy || dkSel < 0 || !afford(state.duck.bet);
+  }
+
+  function renderDuckPage() {
+    var i;
+    if (!$dkLanes) return;
+    if (!dkBusy) dkSel = state.duck.pick;                  // 回到这一页：上次押的那只鸭还在
+    renderStats();
+    dkRenderCtl();
+    dkPaint();
+    for (i = 0; i < DUCKS.length; i++) if ($dkTag[i]) $dkTag[i].textContent = DUCKS[i].nm + ' ×' + DUCKS[i].m.toFixed(1);
+    if (dkBusy) { $dkRes.textContent = '正在跑…'; $dkRes.style.color = '#f3d98b'; return; }
+    if (dkRace && dkRace.done) return;                     // 刚跑完的成绩留在屏幕上
+    $dkRes.style.color = '#f3d98b';
+    if (dkSel >= 0) {
+      $dkRes.textContent = '押 ' + DUCKS[dkSel].nm + '　倍率 ×' + DUCKS[dkSel].m.toFixed(1);
+      $dkMsg.textContent = '再挑一枚筹码当本局下注，然后点「开跑」';
+    } else {
+      $dkRes.textContent = '先在泳道上点一只你看好的鸭，再点「开跑」';
+      $dkMsg.textContent = '红 / 黄 / 蓝 / 绿，四只鸭跑得有快有慢';
+    }
+  }
+
+  // ❓ 规则页里的倍率表跟着 DUCKS 走，以后调倍率只用改一个地方
+  (function () {
+    var i, s = '';
+    if (!$dkPayTable) return;
+    for (i = 0; i < DUCKS.length; i++) s += '<span>' + DUCKS[i].nm + ' ×' + DUCKS[i].m.toFixed(1) + '</span>';
+    $dkPayTable.innerHTML = s;
+  })();
+
+  $duckBack.addEventListener('click', function () { setPage('free'); }, false);
+  $dkStart.addEventListener('click', function () { dkStart(false); }, false);
+  $dkClaim.addEventListener('click', function () { doClaim(); }, false);
+  $dkChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute || dkBusy) return;
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义本局下注
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.duck.bet), function (nv) {
+        state.duck.bet = nv; dkRenderCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
+    state.duck.bet = v;
+    buzz(6); dkRenderCtl(); save();
+  }, false);
+  for (dkI = 0; dkI < DUCKS.length; dkI++) (function (i) {
+    if ($dkLane[i]) $dkLane[i].addEventListener('click', function () { dkPickDuck(i); }, false);
+  })(dkI);
+
+  /* ================= 🐉 火龙塔（4.7） ================= */
+  // 8 层、每层 4 格。DT_DRAGONS[i] = 第 i+1 层藏了几只龙眼（第 1~3 层各 1 只，第 4~6 层各 2 只，第 7~8 层各 3 只）
+  var DT_LEVELS = 8, DT_CELLS = 4;
+  var DT_DRAGONS = [1, 1, 1, 2, 2, 2, 3, 3];
+  // DT_BASE[i] = 一路踩到第 i+1 层能拿的基准倍率 = Π(4 / 每层安全格数)；不戴光环时正好是公平倍率
+  var DT_BASE = (function () {
+    var i, m = 1, out = [];
+    for (i = 0; i < DT_LEVELS; i++) { m *= DT_CELLS / (DT_CELLS - DT_DRAGONS[i]); out[i] = m; }
+    return out;
+  })();
+  var DT_TOP = DT_LEVELS - 1;
+
+  var dtRun = null;    // 进行中的这一局；null = 还没开局
+  var dtTimer = null;  // 塔顶喷火的收尾定时器
+
+  function dtFmt(m) { return (m >= 100 ? m.toFixed(0) : m.toFixed(2)); }
+
+  // 每层的龙眼位置开局就洗好，但一个都不给玩家看 —— 脚脚都是真随机，不是结果优先
+  function dtShuffle() {
+    var lv, i, j, swap, idx, out = [];
+    for (lv = 0; lv < DT_LEVELS; lv++) {
+      idx = [0, 1, 2, 3];
+      for (i = idx.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        swap = idx[i]; idx[i] = idx[j]; idx[j] = swap;
+      }
+      out[lv] = idx.slice(0, DT_DRAGONS[lv]);
+    }
+    return out;
+  }
+
+  function dtMults(R) {
+    var i, out = [];
+    for (i = 0; i < DT_LEVELS; i++) out[i] = DT_BASE[i] * R;
+    return out;
+  }
+
+  // 塔顶喷火；900ms 后重画一次，把塔面交回给 dtPaint
+  function dtFlame(on) {
+    if (!$dtTower) return;
+    clearTimeout(dtTimer); dtTimer = null;
+    if (!on) { $dtTower.className = 'dtTower' + (dtRun ? '' : ' idle'); return; }
+    $dtTower.className = 'dtTower fire';
+    dtTimer = setTimeout(function () { dtTimer = null; dtPaint(); }, 900);
+  }
+
+  function dtPaint() {
+    var lv, c, cls, btn, run = dtRun, done = run && run.done, cur = (run && !done) ? (run.at + 1) : -1;
+    if (!$dtRows) return;
+    if ($dtTower) $dtTower.className = 'dtTower' + (run ? '' : ' idle');
+    for (lv = 0; lv < DT_LEVELS; lv++) {
+      if ($dtRow[lv]) $dtRow[lv].className = 'dtRow' + ((lv === cur) ? ' cur' : '') + ((done && !run.win && run.at > lv) ? ' dead' : '');
+      for (c = 0; c < DT_CELLS; c++) {
+        btn = $dtCell[lv * DT_CELLS + c];
+        if (!btn) continue;
+        cls = 'dtCell';
+        if (run && lv <= run.at && run.path[lv] === c) cls += ' safe';
+        else if (done && lv === run.openLv) cls += (run.traps[lv].indexOf(c) >= 0) ? ' trap' : ' seen';
+        else if (done && lv > run.at) cls += ' dead';
+        if (btn.className !== cls) btn.className = cls;
+        btn.disabled = (lv !== cur);
+      }
+    }
+  }
+
+  function dtStatus() {
+    var run = dtRun, lv;
+    if (!$dtRes || !$dtMsg) return;
+    if (!run) {
+      $dtRes.style.color = '#f3d98b';
+      $dtRes.textContent = '挑一枚筹码，点「开始爬塔」';
+      $dtMsg.textContent = '每层 4 格，踩到龙眼这一局的注就没了　一路踩满 8 层 ×' + dtFmt(DT_BASE[DT_TOP] * auraR());
+      return;
+    }
+    if (!run.done) {
+      lv = run.at + 1;
+      $dtRes.style.color = '#f3d98b';
+      $dtRes.textContent = '第 ' + (lv + 1) + ' 层　龙眼 ' + DT_DRAGONS[lv] + ' 只 / 安全 ' + (DT_CELLS - DT_DRAGONS[lv]) + ' 格';
+      $dtMsg.textContent = (run.at < 0)
+        ? ('踩中这一格就能提现 ×' + dtFmt(run.mult[0]) + '　越往上倍率越猛')
+        : ('已站上第 ' + (run.at + 1) + ' 层　现在提现 ×' + dtFmt(run.mult[run.at]) + '　再爬一层 ×' + dtFmt(run.mult[lv]));
+      return;
+    }
+    if (run.win) {
+      $dtRes.style.color = '#9fe0c4';
+      $dtRes.textContent = (run.at === DT_TOP ? '登顶！×' : '提现 ×') + dtFmt(run.mult[run.at]);
+      $dtMsg.textContent = '到账 💰' + abbr(run.paid) + ' 金币' + (run.pot ? '（💰 金币药水 ×1.30）' : '');
+    } else {
+      $dtRes.style.color = '#e0623a';
+      $dtRes.textContent = '踩到龙眼，第 ' + (run.openLv + 1) + ' 层塌了';
+      $dtMsg.textContent = run.shield
+        ? ('🛡️ 无敌药水：本局下注 💰' + abbr(run.bet) + ' 原样退回')
+        : ('本局下注 💰' + abbr(run.bet) + ' 归火龙了');
+    }
+  }
+
+  function dtRenderCtl() {
+    var i, btns, b, run = dtRun, live = !!(run && !run.done);
+    if ($dtChips) {
+      btns = $dtChips.getElementsByClassName('betBtn');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-bet'), 10);
+        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.dt.bet) < 0) : (b === state.dt.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].disabled = live || (b > 0 && !afford(b));
+      }
+    }
+    if ($dtStakeBet) $dtStakeBet.textContent = abbr(live ? run.bet : state.dt.bet);
+    if ($dtStakeMult) $dtStakeMult.textContent = live
+      ? ((run.at >= 0) ? ('　现在提现 ×' + dtFmt(run.mult[run.at])) : ('　爬上第 1 层就是 ×' + dtFmt(run.mult[0])))
+      : '';
+    if ($dtStart) $dtStart.disabled = live || !afford(state.dt.bet);
+    if ($dtCash) {
+      $dtCash.disabled = !live || run.at < 0;
+      $dtCash.textContent = (live && run.at >= 0) ? ('提现 ×' + dtFmt(run.mult[run.at])) : '提现';
+    }
+  }
+
+  function dtStart() {
+    var bet = state.dt.bet;
+    if (dtRun && !dtRun.done) return;              // 这一局还在爬：先提现或者踩到龙眼，塔才能重开
+    if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
+    if (rewindTarget && rewindTarget.kind === 'dt') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    state.gold = clampGold(state.gold - bet);
+    state.dt.escrow = bet;                         // 压在塔里的这笔钱，刷新页面时会原样退回
+    dtRun = {
+      bet: bet,
+      R: auraR(),                                  // 光环 + 🍀 只在这一刻算一次，本局中途换光环也不改
+      lucky: potActive('luck'),
+      traps: dtShuffle(),
+      path: [],
+      at: -1,
+      openLv: -1,
+      pot: false,
+      shield: false,
+      paid: 0,
+      done: false,
+      win: false
+    };
+    dtRun.mult = dtMults(dtRun.R);
+    buzz(8);
+    dtFlame(false);
+    dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  // 脚下一格：踩中就往上爬一层，踩到龙眼整局结束
+  function dtStep(c) {
+    var lv;
+    if (!dtRun || dtRun.done) return;
+    lv = dtRun.at + 1;
+    if (lv >= DT_LEVELS || c < 0 || c >= DT_CELLS) return;
+    if (dtRun.traps[lv].indexOf(c) >= 0) { dtBoom(lv); return; }
+    dtRun.at = lv;
+    dtRun.path[lv] = c;
+    buzz(8);
+    if (lv === DT_TOP) { dtCash(); return; }       // 登顶：直接结算，不用再点提现
+    dtPaint(); dtStatus(); dtRenderCtl(); save();
+  }
+
+  // 提现：把「下注 × 当前倍率」连本带利拿走
+  function dtCash() {
+    var run = dtRun, pay, mult;
+    if (!run || run.done || run.at < 0) return;
+    mult = run.mult[run.at];
+    pay = Math.floor(run.bet * mult);
+    if (potActive('gold')) { pay = Math.floor(pay * GOLD_MUL); run.pot = true; potTick('gold'); }
+    state.gold = clampGold(state.gold + pay);
+    state.dt.escrow = 0;
+    run.done = true; run.win = true; run.paid = pay;
+    run.openLv = (run.at + 1 < DT_LEVELS) ? (run.at + 1) : -1;   // 把没敢踩的那一层翻开给玩家看
+    if (run.lucky) potTick('luck');
+    dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+    if (run.at === DT_TOP) dtFlame(true);          // 登顶才喷火，放在重画之后，免得被 dtPaint 抹掉
+  }
+
+  function dtBoom(lv) {
+    var run = dtRun;
+    if (!run || run.done) return;
+    if (potActive('shield')) {                     // 🛡️ 无敌药水：踩爆了就把这一局的下注全退回（净 0）
+      state.gold = clampGold(state.gold + run.bet);
+      run.shield = true;
+      potTick('shield');
+    }
+    state.dt.escrow = 0;
+    run.done = true; run.win = false; run.paid = 0;
+    run.openLv = lv;
+    if (run.lucky) potTick('luck');
+    rewindArm('dt', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但塔得重新爬
+    buzz(40);
+    dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+    dtFlame(true);                                 // 踩爆了才喷火，放在重画之后，免得被 dtPaint 抹掉
+  }
+
+  function dtRewind(t) {
+    state.gold = clampGold(state.gold - (t.back || 0));   // 先把这一局的回收拿回来
+    state.gold = clampGold(state.gold + (t.bet || 0));    // 再把下注原样退回
+    state.dt.escrow = 0;
+    dtRun = null;
+    dtFlame(false);
+    dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  function renderDtPage() {
+    if (!$dtRows) return;
+    renderStats();
+    dtPaint(); dtStatus(); dtRenderCtl();
+  }
+
+  // ❓ 规则页里的倍率表跟着 DT_DRAGONS 走，以后调龙眼数只用改一个地方
+  (function () {
+    var i, s = '';
+    if (!$dtPayTable) return;
+    for (i = 0; i < DT_LEVELS; i++) s += '<span>第 ' + (i + 1) + ' 层 ×' + dtFmt(DT_BASE[i]) + '</span>';
+    $dtPayTable.innerHTML = s;
+  })();
+
+  $dtBack.addEventListener('click', function () { setPage('free'); }, false);
+  $dtStart.addEventListener('click', function () { dtStart(); }, false);
+  $dtCash.addEventListener('click', function () { dtCash(); }, false);
+  $dtClaim.addEventListener('click', function () { doClaim(); }, false);
+  $dtChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    if (dtRun && !dtRun.done) return;
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义本局下注
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.dt.bet), function (nv) {
+        state.dt.bet = nv; dtRenderCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
+    state.dt.bet = v;
+    buzz(6); dtRenderCtl(); save();
+  }, false);
+  $dtRows.addEventListener('click', function (e) {
+    var t = e.target, p, lv, c;
+    if (!t || String(t.className || '').indexOf('dtCell') < 0) return;
+    if (!dtRun || dtRun.done) return;
+    p = String(t.id || '').split('-');             // 按钮 id 形如 dtC-<层>-<格>
+    lv = parseInt(p[1], 10); c = parseInt(p[2], 10);
+    if (!(lv >= 0) || !(c >= 0)) return;
+    if (lv !== dtRun.at + 1) return;               // 只认脚下这一层
+    dtStep(c);
+  }, false);
+
+  /* ================= 💣 扫雷（4.8） ================= */
+  // 5×5 = 25 格，开局先定雷数 m（1 ~ 24）。每翻开一个安全格，倍率乘上「剩余总格 ÷ 剩余安全格」，
+  // 于是任何时刻提现的期望回报都恒等于光环值，而安全格全翻完的倍率正好是组合数 C(25, m) —— 雷越多越猛
+  var MN_N = 25, MN_MINE_MIN = 1, MN_MINE_MAX = 24;
+
+  var mnRun = null;    // 进行中的这一局；null = 还没开局
+
+  // 还剩 total 格、其中 safe 格安全，这一格翻中的翻倍
+  function mnStep(total, safe) { return total / safe; }
+
+  // 翻开 k 个安全格之后的公平倍率（不含光环）；k = 25 - m 时就是这片雷区的最高公平倍率
+  function mnBaseAt(m, k) {
+    var i, v = 1, T = MN_N, S = MN_N - m;
+    for (i = 0; i < k; i++) { v *= mnStep(T, S); T--; S--; }
+    return v;
+  }
+  function mnTopBase(m) { return mnBaseAt(m, MN_N - m); }
+  function mnFmt(v) {
+    if (!isFinite(v)) return '0';
+    if (v >= 1e6) return (v / 1e6).toFixed(2) + 'M';
+    if (v >= 1e3) return (v / 1e3).toFixed(2) + 'K';
+    return v.toFixed(2);
+  }
+  function mnClampMines(m) {
+    m = Math.floor(Number(m));
+    if (!isFinite(m) || m < MN_MINE_MIN) m = MN_MINE_MIN;
+    if (m > MN_MINE_MAX) m = MN_MINE_MAX;
+    return m;
+  }
+
+  // 雷埋在哪几格，开局就洗好，一个都不给玩家看 —— 格格都是真随机，不是结果优先
+  function mnShuffle(m) {
+    var i, j, swap, idx = [];
+    for (i = 0; i < MN_N; i++) idx[i] = i;
+    for (i = MN_N - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      swap = idx[i]; idx[i] = idx[j]; idx[j] = swap;
+    }
+    return idx.slice(0, m);
+  }
+
+  function mnPaint() {
+    var i, btn, cls, run = mnRun, done = !!(run && run.done), sink = (!run || done);
+    if (!$mnGrid) return;
+    if ($mnBoard) $mnBoard.className = 'mnBoard' + ((run && !done) ? ' live' : '') + ((done && !run.win) ? ' boom' : '');
+    for (i = 0; i < MN_N; i++) {
+      btn = $mnCell[i];
+      if (!btn) continue;
+      cls = 'mnCell';
+      if (run && run.open[i]) cls += ' safe';
+      else if (done && !run.win && run.traps.indexOf(i) >= 0) cls += (i === run.boom) ? ' bomb' : ' mine';
+      if (btn.className !== cls) btn.className = cls;
+      btn.disabled = sink;
+    }
+  }
+
+  function mnStatus() {
+    var run = mnRun, m = run ? run.mines : state.mn.mines, left;
+    if (!$mnRes || !$mnMsg) return;
+    if ($mnHeadLeft) $mnHeadLeft.textContent = '5 × 5 · ' + m + ' 雷';
+    if ($mnHeadRight) $mnHeadRight.textContent = '已翻 ' + (run ? run.safe : 0) + ' 格 / 安全 ' + (MN_N - m) + ' 格';
+    if (!run) {
+      $mnRes.style.color = '#f3d98b';
+      $mnRes.textContent = '挑一枚筹码，点「开始排雷」';
+      $mnMsg.textContent = '每格都可能是雷，翻到安全格倍率就往上涨　全清 ×' + mnFmt(mnTopBase(m) * auraR());
+      return;
+    }
+    if (!run.done) {
+      left = (MN_N - run.mines) - run.safe;
+      $mnRes.style.color = '#f3d98b';
+      $mnRes.textContent = '已翻 ' + run.safe + ' 格　现在提现 ×' + mnFmt(run.mult);
+      $mnMsg.textContent = '还剩 ' + left + ' 个安全格　再翻一格 ×' + mnFmt(mnBaseAt(run.mines, run.safe + 1) * run.R) + '　踩雷这局就没了';
+      return;
+    }
+    if (run.win) {
+      $mnRes.style.color = '#9fe0c4';
+      $mnRes.textContent = (run.safe >= MN_N - run.mines ? '全清！×' : '提现 ×') + mnFmt(run.mult);
+      $mnMsg.textContent = '到账 💰' + abbr(run.paid) + ' 金币' + (run.pot ? '（💰 金币药水 ×1.30）' : '');
+    } else {
+      $mnRes.style.color = '#e0623a';
+      $mnRes.textContent = '踩雷了，第 ' + (run.boom + 1) + ' 格下面是雷';
+      $mnMsg.textContent = run.shield
+        ? ('🛡️ 无敌药水：本局下注 💰' + abbr(run.bet) + ' 原样退回，雷区得重新开')
+        : ('本局下注 💰' + abbr(run.bet) + ' 归雷区了，雷区重新开');
+    }
+  }
+
+  function mnRenderCtl() {
+    var i, btns, b, run = mnRun, live = !!(run && !run.done);
+    if ($mnChips) {
+      btns = $mnChips.getElementsByClassName('betBtn');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-bet'), 10);
+        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.mn.bet) < 0) : (b === state.mn.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].disabled = live || (b > 0 && !afford(b));
+      }
+    }
+    if ($mnQuick) {
+      btns = $mnQuick.getElementsByClassName('mnQ');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-mines'), 10);
+        btns[i].className = (b === state.mn.mines) ? 'mnQ on' : 'mnQ';
+        btns[i].disabled = live;
+      }
+    }
+    if ($mnRange) {
+      $mnRange.value = String(state.mn.mines);
+      $mnRange.disabled = live;
+    }
+    if ($mnMineNum) $mnMineNum.textContent = String(state.mn.mines);
+    if ($mnTop) $mnTop.textContent = '最高 ×' + mnFmt(mnTopBase(state.mn.mines) * auraR());
+    if ($mnStakeBet) $mnStakeBet.textContent = abbr(live ? run.bet : state.mn.bet);
+    if ($mnStakeMult) $mnStakeMult.textContent = live
+      ? ('　已翻 ' + run.safe + ' 格　现在提现 ×' + mnFmt(run.mult))
+      : ('　' + state.mn.mines + ' 雷　全清 ×' + mnFmt(mnTopBase(state.mn.mines) * auraR()));
+    if ($mnStart) $mnStart.disabled = live || !afford(state.mn.bet);
+    if ($mnCash) {
+      $mnCash.disabled = !live || run.safe < 1;
+      $mnCash.textContent = (live && run.safe >= 1) ? ('提现 ×' + mnFmt(run.mult)) : '提现';
+    }
+  }
+
+  function mnStart() {
+    var bet = state.mn.bet, m = mnClampMines(state.mn.mines);
+    if (mnRun && !mnRun.done) return;              // 这一局还在排：先提现或者踩雷，雷区才能重开
+    if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
+    if (rewindTarget && rewindTarget.kind === 'mn') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    state.mn.mines = m;
+    state.gold = clampGold(state.gold - bet);
+    state.mn.escrow = bet;                         // 压在雷区里的这笔钱，刷新页面时会原样退回
+    mnRun = {
+      bet: bet,
+      mines: m,
+      R: auraR(),                                  // 光环 + 🍀 只在这一刻算一次，本局中途换光环也不改
+      lucky: potActive('luck'),
+      traps: mnShuffle(m),
+      open: {},
+      safe: 0,
+      boom: -1,
+      mult: auraR(),
+      pot: false,
+      shield: false,
+      paid: 0,
+      done: false,
+      win: false
+    };
+    buzz(8);
+    mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  // 点开一格：安全就抬一档倍率，踩到雷整局结束
+  function mnPick(i) {
+    var run = mnRun;
+    if (!run || run.done) return;
+    if (!(i >= 0) || i >= MN_N || run.open[i]) return;
+    if (run.traps.indexOf(i) >= 0) { mnBoom(i); return; }
+    run.open[i] = 1;
+    run.safe++;
+    run.mult = mnBaseAt(run.mines, run.safe) * run.R;
+    buzz(8);
+    if (run.safe >= MN_N - run.mines) { mnCash(); return; }   // 安全格全翻完：直接结算
+    mnPaint(); mnStatus(); mnRenderCtl(); save();
+  }
+
+  // 提现：把「下注 × 当前倍率」连本带利拿走
+  function mnCash() {
+    var run = mnRun, pay;
+    if (!run || run.done || run.safe < 1) return;
+    pay = Math.floor(run.bet * run.mult);
+    if (potActive('gold')) { pay = Math.floor(pay * GOLD_MUL); run.pot = true; potTick('gold'); }
+    state.gold = clampGold(state.gold + pay);
+    state.mn.escrow = 0;
+    run.done = true; run.win = true; run.paid = pay;
+    if (run.lucky) potTick('luck');
+    mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function mnBoom(i) {
+    var run = mnRun;
+    if (!run || run.done) return;
+    if (potActive('shield')) {                     // 🛡️ 无敌药水：踩爆了就把这一局的下注全退回（净 0）
+      state.gold = clampGold(state.gold + run.bet);
+      run.shield = true;
+      potTick('shield');
+    }
+    state.mn.escrow = 0;
+    run.done = true; run.win = false; run.paid = 0; run.boom = i;
+    if (run.lucky) potTick('luck');
+    rewindArm('mn', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但雷区得重新开
+    buzz(40);
+    mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function mnRewind(t) {
+    state.gold = clampGold(state.gold - (t.back || 0));   // 先把这一局的回收拿回来
+    state.gold = clampGold(state.gold + (t.bet || 0));    // 再把下注原样退回
+    state.mn.escrow = 0;
+    mnRun = null;
+    mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  function renderMnPage() {
+    if (!$mnGrid) return;
+    renderStats();
+    mnPaint(); mnStatus(); mnRenderCtl();
+  }
+
+  // ❓ 规则页里的倍率表跟着雷数上下限走，以后改档位只用改一处
+  (function () {
+    var i, s = '';
+    if (!$mnPayTable) return;
+    for (i = MN_MINE_MIN; i <= MN_MINE_MAX; i++) s += '<span>' + i + ' 雷 ×' + mnFmt(mnTopBase(i)) + '</span>';
+    $mnPayTable.innerHTML = s;
+  })();
+
+  $mnBack.addEventListener('click', function () { setPage('free'); }, false);
+  $mnStart.addEventListener('click', function () { mnStart(); }, false);
+  $mnCash.addEventListener('click', function () { mnCash(); }, false);
+  $mnClaim.addEventListener('click', function () { doClaim(); }, false);
+  $mnQuick.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    if (mnRun && !mnRun.done) return;
+    v = parseInt(t.getAttribute('data-mines'), 10);
+    if (isNaN(v)) return;
+    state.mn.mines = mnClampMines(v);
+    buzz(6); mnRenderCtl(); save();
+  }, false);
+  $mnRange.addEventListener('input', function (e) {
+    var t = e.target || $mnRange, v;
+    if (mnRun && !mnRun.done) return;
+    v = parseInt(t.value, 10);
+    if (isNaN(v)) return;
+    state.mn.mines = mnClampMines(v);
+    mnRenderCtl(); save();
+  }, false);
+  $mnChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    if (mnRun && !mnRun.done) return;
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义本局下注
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.mn.bet), function (nv) {
+        state.mn.bet = nv; mnRenderCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
+    state.mn.bet = v;
+    buzz(6); mnRenderCtl(); save();
+  }, false);
+  $mnGrid.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || String(t.className || '').indexOf('mnCell') < 0) return;
+    if (!mnRun || mnRun.done) return;
+    mnPick(parseInt(String(t.id || '').split('-')[1], 10));   // 按钮 id 形如 mnC-<格>
+  }, false);
+
+  /* ================= 🐧 企鹅过河（4.9） ================= */
+  // 一条 10 格的冰道，一格一格往前走。每格的薄冰风险一格比一格大，迈过去的倍率乘上「1 ÷ 那格的安全机会」，
+  // 于是任何一格提现的期望回报都恒等于光环值，走完全程的倍率正好是 10 格风险的连乘 —— 越往后越猛
+  var PG_STEPS = 10;
+  var PG_RISK = [0.15, 0.20, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55];
+  // PG_BASE[i] = 一路走到第 i+1 格能拿的基准倍率；不戴光环时正好是公平倍率
+  var PG_BASE = (function () {
+    var i, m = 1, out = [];
+    for (i = 0; i < PG_STEPS; i++) { m *= 1 / (1 - PG_RISK[i]); out[i] = m; }
+    return out;
+  })();
+  var PG_TOP = PG_STEPS - 1;
+
+  var pgRun = null;    // 进行中的这一局；null = 还没开局
+
+  var PG_LINK = ['R', 'R', 'D', 'L', 'L', 'D', 'R', 'R', 'D', ''];   // 蛇形路线：每一步往哪边拐
+
+  function pgPaint() {
+    var i, btn, cls, txt, run = pgRun, done = !!(run && run.done), win = !!(done && run.win);
+    var cur = (run && !done) ? run.at : -1, next = (run && !done) ? (run.at + 1) : -1;
+    if (!$pgTrack) return;
+    if ($pgIce) $pgIce.className = 'pgIce' + ((run && !done) ? ' live' : '') + ((done && !run.win) ? ' sink' : '');
+    for (i = 0; i < PG_STEPS; i++) {
+      btn = $pgCell[i];
+      if (!btn) continue;
+      cls = 'pgCell' + (PG_LINK[i] ? ' link' + PG_LINK[i] : '');
+      if (run && i <= run.at) cls += ' safe';
+      if (i === cur) cls += ' cur';
+      if (i === next) cls += ' next';
+      if (done && !run.win && i === run.sinkAt) cls += ' boom';
+      if (win && i === run.at) cls += ' goal';
+      if (btn.className !== cls) btn.className = cls;
+      if (done && !run.win && i === run.sinkAt) txt = '🕳️';
+      else if (i === cur || (win && i === run.at)) txt = '🐧';
+      else txt = '';
+      if (btn.textContent !== txt) btn.textContent = txt;
+      btn.disabled = (i !== next);
+    }
+  }
+
+  function pgStatus() {
+    var run = pgRun;
+    if (!$pgRes || !$pgMsg) return;
+    if ($pgHeadLeft) $pgHeadLeft.textContent = '冰面 ' + PG_STEPS + ' 格';
+    if ($pgHeadRight) $pgHeadRight.textContent = '已走 ' + (run ? (run.at + 1) : 0) + ' 步 / 共 ' + PG_STEPS + ' 格';
+    if (!run) {
+      $pgRes.style.color = '#f3d98b';
+      $pgRes.textContent = '挑一枚筹码，点「开始过河」';
+      $pgMsg.textContent = '越往后的冰越薄，踩空这一局就没了　走完全程 ×' + mnFmt(PG_BASE[PG_TOP] * auraR());
+      return;
+    }
+    if (!run.done) {
+      $pgRes.style.color = '#f3d98b';
+      $pgRes.textContent = (run.at < 0) ? '企鹅站在岸边' : ('已走 ' + (run.at + 1) + ' 步　现在提现 ×' + mnFmt(run.mult));
+      $pgMsg.textContent = (run.at < 0)
+        ? ('迈出第 1 步就是 ×' + mnFmt(PG_BASE[0] * run.R) + '　一步都没走就提现是拿不到奖金的')
+        : (run.at >= PG_TOP ? '' : ('再往前一格 ×' + mnFmt(PG_BASE[run.at + 1] * run.R) + '　那格下面是薄冰的话，这一局就交代在这了'));
+      return;
+    }
+    if (run.win) {
+      $pgRes.style.color = '#9fe0c4';
+      $pgRes.textContent = (run.at === PG_TOP ? '过河！×' : '提现 ×') + mnFmt(run.mult);
+      $pgMsg.textContent = '到账 💰' + abbr(run.paid) + ' 金币' + (run.pot ? '（💰 金币药水 ×1.30）' : '');
+    } else {
+      $pgRes.style.color = '#e0623a';
+      $pgRes.textContent = '冰面碎了，企鹅在第 ' + (run.sinkAt + 1) + ' 格掉了下去';
+      $pgMsg.textContent = run.shield
+        ? ('🛡️ 无敌药水：本局下注 💰' + abbr(run.bet) + ' 原样退回，冰面得重新过')
+        : ('本局下注 💰' + abbr(run.bet) + ' 沉冰底了，冰面重新开');
+    }
+  }
+
+  function pgRenderCtl() {
+    var i, btns, b, run = pgRun, live = !!(run && !run.done);
+    if ($pgChips) {
+      btns = $pgChips.getElementsByClassName('betBtn');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-bet'), 10);
+        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.pg.bet) < 0) : (b === state.pg.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].disabled = live || (b > 0 && !afford(b));
+      }
+    }
+    if ($pgStakeBet) $pgStakeBet.textContent = abbr(live ? run.bet : state.pg.bet);
+    if ($pgStakeMult) $pgStakeMult.textContent = live
+      ? ((run.at >= 0) ? ('　现在提现 ×' + mnFmt(run.mult)) : ('　迈出第 1 步 ×' + mnFmt(PG_BASE[0] * run.R)))
+      : ('　走完全程 ×' + mnFmt(PG_BASE[PG_TOP] * auraR()));
+    if ($pgStart) {
+      $pgStart.disabled = live ? false : !afford(state.pg.bet);
+      $pgStart.textContent = live ? '往前走一步' : '开始过河';
+    }
+    if ($pgCash) {
+      $pgCash.disabled = !live || run.at < 0;
+      $pgCash.textContent = (live && run.at >= 0) ? ('提现 ×' + mnFmt(run.mult)) : '提现';
+    }
+  }
+
+  function pgStart() {
+    var bet = state.pg.bet;
+    if (pgRun && !pgRun.done) return;              // 这一局还在冰面上：先提现或者踩空，冰面才能重开
+    if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
+    if (rewindTarget && rewindTarget.kind === 'pg') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    state.gold = clampGold(state.gold - bet);
+    state.pg.escrow = bet;                         // 踩在冰面里的这笔钱，刷新页面时会原样退回
+    pgRun = {
+      bet: bet,
+      R: auraR(),                                  // 光环 + 🍀 只在这一刻算一次，本局中途换光环也不改
+      lucky: potActive('luck'),
+      mult: auraR(),
+      at: -1,
+      sinkAt: -1,
+      pot: false,
+      shield: false,
+      paid: 0,
+      done: false,
+      win: false
+    };
+    buzz(8);
+    pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  // 往前迈一格：没踩空就抬一档倍率，踩空整局结束
+  function pgStep() {
+    var run = pgRun, lv;
+    if (!run || run.done) return;
+    lv = run.at + 1;
+    if (lv >= PG_STEPS) return;
+    if (Math.random() < PG_RISK[lv]) { pgSink(lv); return; }   // 脚脚都是真随机，不是结果优先
+    run.at = lv;
+    run.mult = PG_BASE[lv] * run.R;
+    buzz(8);
+    if (lv === PG_TOP) { pgCash(); return; }       // 走到对岸：直接结算，不用再点提现
+    pgPaint(); pgStatus(); pgRenderCtl(); save();
+  }
+
+  // 提现：把「下注 × 当前倍率」连本带利拿走
+  function pgCash() {
+    var run = pgRun, pay;
+    if (!run || run.done || run.at < 0) return;
+    pay = Math.floor(run.bet * run.mult);
+    if (potActive('gold')) { pay = Math.floor(pay * GOLD_MUL); run.pot = true; potTick('gold'); }
+    state.gold = clampGold(state.gold + pay);
+    state.pg.escrow = 0;
+    run.done = true; run.win = true; run.paid = pay;
+    if (run.lucky) potTick('luck');
+    pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function pgSink(lv) {
+    var run = pgRun;
+    if (!run || run.done) return;
+    if (potActive('shield')) {                     // 🛡️ 无敌药水：踩空了就把这一局的下注全退回（净 0）
+      state.gold = clampGold(state.gold + run.bet);
+      run.shield = true;
+      potTick('shield');
+    }
+    state.pg.escrow = 0;
+    run.done = true; run.win = false; run.paid = 0; run.sinkAt = lv;
+    if (run.lucky) potTick('luck');
+    rewindArm('pg', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但冰面得重新过
+    buzz(40);
+    pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function pgRewind(t) {
+    state.gold = clampGold(state.gold - (t.back || 0));   // 先把这一局的回收拿回来
+    state.gold = clampGold(state.gold + (t.bet || 0));    // 再把下注原样退回
+    state.pg.escrow = 0;
+    pgRun = null;
+    pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); save();
+  }
+
+  function renderPgPage() {
+    if (!$pgTrack) return;
+    renderStats();
+    pgPaint(); pgStatus(); pgRenderCtl();
+  }
+
+  // ❓ 规则页里的倍率表跟着 PG_RISK 走，以后调冰面风险只用改一个地方
+  (function () {
+    var i, s = '';
+    if (!$pgPayTable) return;
+    for (i = 0; i < PG_STEPS; i++) s += '<span>第 ' + (i + 1) + ' 格 ×' + mnFmt(PG_BASE[i]) + '</span>';
+    $pgPayTable.innerHTML = s;
+  })();
+
+  $pgBack.addEventListener('click', function () { setPage('free'); }, false);
+  $pgStart.addEventListener('click', function () {
+    if (pgRun && !pgRun.done) { pgStep(); return; }   // 已经在冰面上：这一下就是往前走一步
+    pgStart();
+  }, false);
+  $pgCash.addEventListener('click', function () { pgCash(); }, false);
+  $pgClaim.addEventListener('click', function () { doClaim(); }, false);
+  $pgChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    if (pgRun && !pgRun.done) return;
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义本局下注
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.pg.bet), function (nv) {
+        state.pg.bet = nv; pgRenderCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
+    state.pg.bet = v;
+    buzz(6); pgRenderCtl(); save();
+  }, false);
+  $pgTrack.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || String(t.className || '').indexOf('pgCell') < 0) return;
+    if (!pgRun || pgRun.done) return;
+    if (parseInt(String(t.id || '').split('-')[1], 10) !== pgRun.at + 1) return;   // 只认脚下前方那一格
+    pgStep();
+  }, false);
+
+  /* ================= 🚀 登月（4.10） ================= */
+  // 点火之后倍率一路往上窜，窜到哪儿会炸在点火前就定死了。玩家得在炸之前手动提现，
+  // 提现成功拿「下注 × 那一刻的倍率」，没跑掉整局清零。
+  // 倍率曲线 m(t) = 2 ^ ((t / ML_T0) ^ ML_P)：5 秒 ×2、10 秒 ×10、16.2 秒摸到顶 ×200。
+  // 炸点 crash = R / u（u 均匀），于是「在 m 提现的成功率 = R / m」——
+  // 任何一刻收手的期望回报都恒等于光环值，和别的机子同一条规矩。
+  var ML_T0 = 5;             // 基准时刻：点火后 5 秒涨到 ×2
+  var ML_P = Math.log(Math.log(10) / Math.LN2) / Math.LN2;   // 陡度（≈1.73206，由「10 秒正好 ×10」反解）：> 1 就是「前期平、后期猛」，= 1 是纯指数
+  var ML_CAP = 200;          // 天花板：倍率冲到 ×200 封顶，摸到顶就等于炸
+  var ML_COUNT = 3;          // 点火前的 3-2-1 倒数（秒）
+  var ML_TICK = 33;          // 飞行步长（毫秒）；页面里没有 requestAnimationFrame，一律定时器步进
+  var ML_WATCH_MIN = 1.2;    // 提现后观战的最短时长（秒）
+  var ML_WATCH_MAX = 4;      // 提现后观战的最长时长（秒），再远就快进着飞
+  var ML_LIFT_LO = 12, ML_LIFT_HI = 78;   // 火箭在面板里爬升的高度区间（%）
+
+  function mlMultAt(t) { return Math.pow(2, Math.pow(t / ML_T0, ML_P)); }
+  function mlTimeAt(m) { return ML_T0 * Math.pow(Math.log(m) / Math.LN2, 1 / ML_P); }
+
+  // 面板上那串数字：一位数留两位小数，两位数留一位，到三位数只留整数
+  function mlFmt(v) {
+    if (!(v > 0)) return '0.00';
+    if (v < 10) return v.toFixed(2);
+    if (v < 100) return v.toFixed(1);
+    return String(Math.round(v));
+  }
+
+  // 火箭爬多高：按倍率在对数轴上走到天花板的几成算，和真实时间无关，看着才顺
+  function mlLiftAt(m) {
+    var r = Math.log(m) / Math.log(ML_CAP);
+    if (!(r > 0)) r = 0;
+    if (r > 1) r = 1;
+    return ML_LIFT_LO + (ML_LIFT_HI - ML_LIFT_LO) * r;
+  }
+
+  // 星点往下坠：越飞越快，纯好看，不参与任何判定
+  function mlStarShift(t) { return 150 * Math.pow(t, 1.6); }
+
+  var mlRun = null;          // 进行中的这一局；null = 还没开局
+  var mlTimer = null;        // 飞行步进的定时器，只在有局在跑的时候才挂着
+
+  function mlStartTimer() { if (!mlTimer) mlTimer = setInterval(mlTick, ML_TICK); }
+  function mlStopTimer() { if (mlTimer) { clearInterval(mlTimer); mlTimer = null; } }
+
+  function mlSpaceCls() {
+    var run = mlRun;
+    if (!run) return 'mlSpace';
+    if (run.phase === 'count') return 'mlSpace count';
+    if (run.phase === 'fly' || run.phase === 'watch') return 'mlSpace live';
+    return 'mlSpace boom';
+  }
+
+  // 面板：星空 / 火箭 / 大倍率数字，全由「当前倍率」推出来
+  function mlPaint(m, t) {
+    var c = mlSpaceCls();
+    if ($mlSpace && $mlSpace.className !== c) $mlSpace.className = c;
+    if ($mlMult) $mlMult.textContent = '×' + mlFmt(m);
+    if ($mlRate) $mlRate.textContent = '×' + mlFmt(m);
+    if ($mlRocket) $mlRocket.style.bottom = mlLiftAt(m) + '%';
+    if ($mlStars && t !== null && t !== undefined) {
+      $mlStars.style.backgroundPositionY = (mlStarShift(t) % 60) + 'px';
+    }
+  }
+
+  // 提现按钮上挂着的那个倍率：每帧跟着飞
+  function mlCashBtn(m) {
+    if ($mlCash && !$mlCash.disabled) $mlCash.textContent = '提现 ×' + mlFmt(m);
+  }
+
+  // 倒数：数字每秒跳一下，跳的瞬间放大再缩回去（缩放走 style，免得 CSS 动画不重播）
+  function mlCountPaint(t) {
+    var left = ML_COUNT - t, n, prog;
+    if (left < 0) left = 0;
+    n = Math.ceil(left) || 1;
+    prog = Math.ceil(left) - left;
+    if ($mlCount) {
+      if ($mlCount.textContent !== String(n)) $mlCount.textContent = String(n);
+      $mlCount.style.opacity = String(Math.max(0, 1 - prog * 0.5));
+      $mlCount.style.transform = 'scale(' + (1.55 - prog * 0.55) + ')';
+    }
+  }
+
+  function mlTick() {
+    var run = mlRun, now, t, m;
+    if (!run) { mlStopTimer(); return; }
+    now = Date.now();
+    if (run.phase === 'count') {
+      t = (now - run.tc0) / 1000;
+      if (t >= ML_COUNT) { mlIgnite(); return; }
+      mlCountPaint(t);
+      return;
+    }
+    if (run.phase === 'fly') {
+      t = (now - run.t0) / 1000;
+      m = mlMultAt(t);
+      if (m > run.crash) { mlBoom(); return; }       // 自己先炸了：整局清零
+      run.mult = m;
+      mlPaint(m, t); mlCashBtn(m);
+      return;
+    }
+    if (run.phase === 'watch') {                     // 提现之后：追着看它到底炸在哪儿
+      t = (now - run.watch.t0) / 1000;
+      if (t >= run.watch.dur) { mlBlow(); return; }
+      m = run.watch.from * Math.pow(run.watch.to / run.watch.from, t / run.watch.dur);
+      run.mult = m;
+      mlPaint(m, (now - run.t0) / 1000);
+      return;
+    }
+  }
+
+  function mlIgnite() {
+    var run = mlRun;
+    if (!run || run.phase !== 'count') return;
+    run.phase = 'fly';
+    run.t0 = Date.now();
+    if ($mlCount) { $mlCount.textContent = ''; $mlCount.style.opacity = '0'; }
+    buzz(12);
+    mlPaint(1, 0);
+    mlStatus(); mlCtl();
+  }
+
+  function mlStatus() {
+    var run = mlRun;
+    if (!$mlRes || !$mlMsg) return;
+    if (!run) {
+      $mlRes.style.color = '#f3d98b';
+      $mlRes.textContent = '挑一枚筹码，点「发射」';
+      $mlMsg.textContent = '点火之后倍率一路往上窜，炸在哪儿开局就定了　天花板 ×' + ML_CAP;
+      if ($mlSub) $mlSub.textContent = '等发射';
+      return;
+    }
+    if (run.phase === 'count') {
+      $mlRes.style.color = '#f3d98b';
+      $mlRes.textContent = '点火倒数 ' + (Math.ceil(ML_COUNT - (Date.now() - run.tc0) / 1000) || 1);
+      $mlMsg.textContent = '倒数完就点火，之后随时都能提现';
+      if ($mlSub) $mlSub.textContent = '倒数中';
+      return;
+    }
+    if (run.phase === 'fly') {
+      $mlRes.style.color = '#f3d98b';
+      $mlRes.textContent = '在飞　炸掉之前点「提现」就能落袋';
+      $mlMsg.textContent = '本局下注 💰' + abbr(run.bet) + '　倍率摸到 ×' + ML_CAP + ' 就是尽头，别贪';
+      if ($mlSub) $mlSub.textContent = '飞行中';
+      return;
+    }
+    if (run.phase === 'watch') {
+      $mlRes.style.color = '#9fe0c4';
+      $mlRes.textContent = '提现 ×' + mlFmt(run.cashMult) + ' 落袋';
+      $mlMsg.textContent = '到手 💰' + abbr(run.paid) + ' 金币' + (run.pot ? '（💰 金币药水 ×1.30）' : '') + '　火箭还在往上飞，看它炸在哪儿';
+      if ($mlSub) $mlSub.textContent = '追看爆点';
+      return;
+    }
+    if (run.cashed) {                                // 追看完了：钱早到手了，这一炸只是给你看个明白
+      $mlRes.style.color = '#9fe0c4';
+      $mlRes.textContent = '提现 ×' + mlFmt(run.cashMult) + ' 逃顶';
+      $mlMsg.textContent = '到手 💰' + abbr(run.paid) + ' 金币' + (run.pot ? '（💰 金币药水 ×1.30）' : '') + '　它随后炸在 ×' + mlFmt(run.crash);
+      if ($mlSub) $mlSub.textContent = '炸在 ×' + mlFmt(run.crash);
+      return;
+    }
+    $mlRes.style.color = '#e0623a';
+    $mlRes.textContent = '火箭炸了　没跑掉';
+    $mlMsg.textContent = run.shield
+      ? ('🛡️ 无敌药水：本局下注 💰' + abbr(run.bet) + ' 原样退回，得重新发射')
+      : ('本局下注 💰' + abbr(run.bet) + ' 归零，重新发射吧');
+    if ($mlSub) $mlSub.textContent = '炸在 ×' + mlFmt(run.crash);
+  }
+
+  function mlCtl() {
+    var i, btns, b, run = mlRun;
+    var fly = !!(run && !run.done && run.phase === 'fly');
+    var busy = !!(run && !run.done && run.phase !== 'watch');   // 倒数中 / 在飞 = 不能重开；追看爆点时随时能再来一局
+    if ($mlChips) {
+      btns = $mlChips.getElementsByClassName('betBtn');
+      for (i = 0; i < btns.length; i++) {
+        b = parseInt(btns[i].getAttribute('data-bet'), 10);
+        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.ml.bet) < 0) : (b === state.ml.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].disabled = busy || (b > 0 && !afford(b));
+      }
+    }
+    if ($mlStakeBet) $mlStakeBet.textContent = abbr(busy ? run.bet : state.ml.bet);
+    if ($mlStakeMult) $mlStakeMult.textContent = '　天花板 ×' + ML_CAP;
+    if ($mlStart) {
+      $mlStart.disabled = busy || !afford(state.ml.bet);
+      $mlStart.textContent = !run ? '发射'
+        : (run.phase === 'count' ? '倒数中…' : (run.phase === 'fly' ? '在飞…' : '再发射'));
+    }
+    if ($mlCash) {
+      $mlCash.disabled = !fly;
+      $mlCash.textContent = fly ? ('提现 ×' + mlFmt(run.mult)) : '提现';
+    }
+  }
+
+  function mlStart() {
+    var run = mlRun, bet = state.ml.bet, R, u, crash;
+    if (run && !run.done && run.phase !== 'watch') return;   // 这一局还没飞完：要么提现，要么等它炸
+    if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
+    if (rewindTarget && rewindTarget.kind === 'ml') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    state.gold = clampGold(state.gold - bet);
+    state.ml.escrow = bet;                         // 压在火箭里的这笔钱，刷新页面时会原样退回
+    R = auraR();                                   // 光环 + 🍀 只在这一刻算一次，本局中途换光环也不改
+    u = Math.random();
+    if (!(u > 1e-12)) u = 1e-12;                   // 万一抽到 0：夹一下，免得炸点算成无穷大
+    crash = Math.min(ML_CAP, R / u);
+    if (!(crash > 1)) crash = 1;                   // 兜底：炸点至少 ×1
+    mlRun = {
+      bet: bet,
+      R: R,
+      lucky: potActive('luck'),
+      crash: crash,
+      tCrash: mlTimeAt(crash),
+      phase: 'count',
+      tc0: Date.now(),
+      t0: 0,
+      mult: 1,
+      cashMult: 0,
+      cashed: false, win: false, shield: false, pot: false, paid: 0, done: false,
+      watch: null
+    };
+    mlStartTimer();
+    buzz(8);
+    mlPaint(1, 0);
+    mlCountPaint(0);
+    mlStatus(); mlCtl(); renderStats(); renderClaim(); save();
+  }
+
+  // 提现：抢在炸掉之前把「下注 × 当前倍率」连本带利落袋
+  function mlCash() {
+    var run = mlRun, now, t, m, pay, left;
+    if (!run || run.done || run.cashed || run.phase !== 'fly') return;
+    now = Date.now();
+    t = (now - run.t0) / 1000;
+    m = mlMultAt(t);
+    if (m > run.crash) { mlBoom(); return; }        // 手慢了：按下去的这一下它已经炸了
+    run.mult = m;
+    run.cashMult = m;
+    run.cashed = true; run.win = true;
+    run.phase = 'watch';
+    pay = Math.floor(run.bet * m);
+    if (potActive('gold')) { pay = Math.floor(pay * GOLD_MUL); run.pot = true; potTick('gold'); }
+    state.gold = clampGold(state.gold + pay);
+    state.ml.escrow = 0;
+    run.paid = pay;
+    if (run.lucky) potTick('luck');
+    // 提现之后火箭继续往上飞，飞到它自己的爆点炸给你看；太远就快进着飞
+    left = run.tCrash - t;
+    run.watch = {
+      t0: now,
+      from: m,
+      to: run.crash,
+      dur: Math.max(ML_WATCH_MIN, Math.min(ML_WATCH_MAX, left))
+    };
+    buzz(12);
+    mlStatus(); mlCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  function mlBoom() {
+    var run = mlRun;
+    if (!run || run.done || run.cashed) return;
+    run.phase = 'dead';
+    run.done = true; run.win = false;
+    run.mult = run.crash;
+    if (potActive('shield')) {                     // 🛡️ 无敌药水：炸了就把这一局的下注全退回（净 0）
+      state.gold = clampGold(state.gold + run.bet);
+      run.shield = true;
+      potTick('shield');
+    }
+    state.ml.escrow = 0;
+    if (run.lucky) potTick('luck');
+    rewindArm('ml', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但得重新发射
+    buzz(40);
+    mlStopTimer();
+    mlPaint(run.crash, null);
+    mlStatus(); mlCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
+  }
+
+  // 观战结束：火箭炸在自己那个爆点上，钱早就落袋了，这一步只是把结果摆给玩家看
+  function mlBlow() {
+    var run = mlRun;
+    if (!run || run.phase !== 'watch') return;
+    run.phase = 'dead';
+    run.done = true;
+    run.mult = run.crash;
+    buzz(26);
+    mlStopTimer();
+    mlPaint(run.crash, (Date.now() - run.t0) / 1000);
+    mlStatus(); mlCtl(); renderStats(); renderClaim(); save();
+  }
+
+  function mlRewind(t) {
+    state.gold = clampGold(state.gold - (t.back || 0));   // 先把这一局的回收拿回来
+    state.gold = clampGold(state.gold + (t.bet || 0));    // 再把下注原样退回
+    state.ml.escrow = 0;
+    mlRun = null;
+    mlStopTimer();
+    if ($mlCount) { $mlCount.textContent = ''; $mlCount.style.opacity = '0'; }
+    mlPaint(1, null);
+    mlStatus(); mlCtl(); renderStats(); renderClaim(); save();
+  }
+
+  function renderMlPage() {
+    if (!$mlSpace) return;
+    renderStats();
+    if (mlRun) mlPaint(mlRun.mult, (mlRun.phase === 'fly' && mlRun.t0) ? ((Date.now() - mlRun.t0) / 1000) : 0);
+    else mlPaint(1, null);
+    mlStatus(); mlCtl();
+  }
+
+  // ❓ 规则页里那张表跟着曲线走，以后调 ML_T0 / ML_P 只用改一个地方
+  (function () {
+    var i, s = '', ts = [0.5, 1, 2, 3, 5, 8, 10, 12, 14, 16];
+    if (!$mlPayTable) return;
+    for (i = 0; i < ts.length; i++) s += '<span>点火 ' + ts[i] + ' 秒　×' + mlFmt(mlMultAt(ts[i])) + '</span>';
+    $mlPayTable.innerHTML = s;
+  })();
+
+  $mlBack.addEventListener('click', function () { setPage('free'); }, false);
+  $mlStart.addEventListener('click', function () { mlStart(); }, false);
+  $mlCash.addEventListener('click', function () { mlCash(); }, false);
+  $mlClaim.addEventListener('click', function () { doClaim(); }, false);
+  $mlChips.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if (!t || !t.getAttribute) return;
+    if (mlRun && !mlRun.done && mlRun.phase !== 'watch') return;   // 这一局还没飞完：下注先别动
+    v = parseInt(t.getAttribute('data-bet'), 10);
+    if (isNaN(v)) return;
+    if (v === 0) {                                 // 自定义本局下注
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.ml.bet), function (nv) {
+        state.ml.bet = nv; mlCtl(); save();
+      });
+      return;
+    }
+    if (BET_PRESETS.indexOf(v) < 0) return;
+    state.ml.bet = v;
+    buzz(6); mlCtl(); save();
   }, false);
 
   /* ================= 钓鱼 ================= */
@@ -4726,7 +7109,6 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  /* ---- 展示 ---- */
 
   function fishHtml(f, extra) {
     return '<div class="fish t' + f.t + ' sh-' + f.sh + ' pt-' + f.pt + (f.ft ? ' ft-' + f.ft : '') +
@@ -4930,7 +7312,6 @@
     return true;
   }
 
-  /* ---- 鱼篓弹层 ---- */
 
   function renderFishSheet() {
     if (!state.fish || !$fishSheetTop) return;
@@ -5083,7 +7464,6 @@
     $fbGearList.innerHTML = h;
   }
 
-  /* ---- 抛竿 / 拉锯 ---- */
 
   var FG = { phase: 'idle', target: null, hold: false, pos: 0, g: 0, gdir: 1, acc: 0, zone: 0, pull: 0, gv: 0, auto: false, fy: 0.42, t1: 0, t2: 0 };
   var gmIdx = -1, gmFishRef = null, gmBusy = false, catchPending = false, shellTaps = 0;
@@ -5306,7 +7686,6 @@
     $rippleLayer.innerHTML = h;
   }
 
-  /* ---- 卖 / 赌 / 鱼缸 ---- */
 
   function fishSell(i) {
     var it = state.fish.bag[i];
@@ -5601,15 +7980,40 @@
   if (!state.pot || typeof state.pot !== 'object') state.pot = {};
   if (!state.fish || typeof state.fish !== 'object') state.fish = freshFish();
   if (!state.auto || typeof state.auto !== 'object') state.auto = { on: false, until: 0, last: 0 };
+  if (!state.dt || typeof state.dt !== 'object') state.dt = { bet: 1, escrow: 0 };
+  if (state.dt.escrow > 0) {                      // 🐉 上一局爬到一半就刷新了：压在塔里的下注原样退回，塔从头爬
+    state.gold = clampGold(state.gold + Math.floor(state.dt.escrow));
+    state.dt.escrow = 0;
+    save();
+  }
+  if (!state.mn || typeof state.mn !== 'object') state.mn = { bet: 1, mines: 3, escrow: 0 };
+  state.mn.mines = mnClampMines(state.mn.mines);
+  if (state.mn.escrow > 0) {                      // 💣 上一局排到一半就刷新了：压在雷区里的下注原样退回
+    state.gold = clampGold(state.gold + Math.floor(state.mn.escrow));
+    state.mn.escrow = 0;
+    save();
+  }
+  if (!state.pg || typeof state.pg !== 'object') state.pg = { bet: 1, escrow: 0 };
+  if (state.pg.escrow > 0) {                      // 🐧 上一局走到一半就刷新了：踩在冰面里的下注原样退回
+    state.gold = clampGold(state.gold + Math.floor(state.pg.escrow));
+    state.pg.escrow = 0;
+    save();
+  }
+  if (!state.ml || typeof state.ml !== 'object') state.ml = { bet: 1, escrow: 0 };
+  if (state.ml.escrow > 0) {                      // 🚀 上一局飞到一半就刷新了：压在火箭里的下注原样退回
+    state.gold = clampGold(state.gold + Math.floor(state.ml.escrow));
+    state.ml.escrow = 0;
+    save();
+  }
   fillGridIdle();
   renderStats(); renderBet(); renderHist(); renderDex(); renderEquip(); renderDrawLuck(); renderCodeHist();
   renderBj(); renderBjBet();
-  refreshPots();                                  // 商城 / 背包 / 生效中药水徽标
-  renderFishPage(); renderFishSheet();
+  refreshPots();
+  renderFishPage(); renderFishSheet(); renderDuckPage(); renderDtPage(); renderMnPage(); renderPgPage(); renderMlPage();
   autoKick();                                     // ⏱️ 关掉页面那段时间欠下的抽奖，回来先补上
-  setPage('home');                                // 从「赛博赌场」大厅开始
+  setPage('home');
   setInterval(renderClaim, 1000);
-  setInterval(autoTick, 1000);                    // ⏱️ 自动光环仪的心跳
+  setInterval(autoTick, 1000);
 
   /* ================= 离线支持 ================= */
   // sw.js 用「联网时优先网络、断网时回退缓存」的策略；file:// 打开时不需要也不注册。
