@@ -1124,8 +1124,8 @@
   .whZeroRow { display: flex; gap: 3px; margin-bottom: 3px; }
   .whRow { display: flex; gap: 3px; margin-top: 3px; }
   .whRow .whCell { flex: 1; }
-  .whOut { display: flex; gap: 3px; margin-top: 3px; }
-  .whOut .whCell { flex: 1; height: 30px; font-size: 14px; }
+  .whOut { display: flex; gap: 8px; margin-top: 8px; }
+  .whOut .whCell { flex: 1; height: 74px; font-size: 22px; font-weight: 700; letter-spacing: 2px; }
   .whCell { position: relative; display: flex; align-items: center; justify-content: center;
     height: 24px; border: 1px solid #2a342c; border-radius: 2px; background: linear-gradient(#141d17, #0b120e);
     font-family: var(--disp); font-size: 12px; font-weight: 800; color: var(--tx);
@@ -1544,24 +1544,183 @@
     .whSpin { padding: 10px 6px; font-size: 15px; }
     .whM { padding: 5px 4px; }
   }
+  /* ================= 💸 欠债模式 ================= */
+  #debtBar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+    margin: 0 0 10px; padding: 7px 11px; border-radius: 10px; font-size: 13px;
+    background: linear-gradient(#241016, #180a0e); border: 1px solid rgba(200,16,46,.5); color: var(--tx); }
+  #debtBar b { font-family: var(--disp); color: var(--goldlit); font-size: 15px; }
+  #debtBar .dbDay { color: #e8a0a8; font-weight: 700; }
+  #debtBar .dbT { font-family: var(--disp); font-size: 15px; color: #ffd9a0; }
+  .dbtTop { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .dbtTop button { background: #1b1a17; color: var(--tx); border: 1px solid var(--golddim); border-radius: 9px;
+    padding: 7px 11px; font-size: 13px; cursor: pointer; }
+  .dbtTop button:disabled { opacity: .4; }
+  .dbtName { flex: 1; text-align: center; font-weight: 700; letter-spacing: .5px; color: var(--goldlit); }
+  .dbtDays { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px; }
+  .dbtD { width: 27px; height: 27px; line-height: 27px; text-align: center; border-radius: 7px; font-size: 12px;
+    font-family: var(--disp); background: #161513; color: #6c675c; border: 1px solid #242220; }
+  .dbtD.done { background: #13301f; color: #7fc79a; border-color: #1e5136; }
+  .dbtD.now { background: var(--gold); color: #231c07; border-color: var(--goldlit); font-weight: 700; }
+  .dbtStats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .dbtStat { background: #141312; border: 1px solid #262421; border-radius: 10px; padding: 9px 11px;
+    font-size: 12.5px; color: var(--txd); }
+  .dbtStat b { font-family: var(--disp); font-size: 19px; color: var(--goldlit); margin-left: 6px; }
+  .dbtClockBox { background: #141312; border: 1px solid #262421; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; }
+  .dbtClockTx { font-size: 13px; color: var(--txd); margin-bottom: 7px; }
+  .dbtClockTx b { font-family: var(--disp); font-size: 17px; color: #ffd9a0; }
+  .dbtClockBar { height: 8px; border-radius: 5px; background: #0d0c0b; overflow: hidden; }
+  .dbtClockBar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #c8102e, #d4af37); }
+  .dbtSub { font-size: 12.5px; color: var(--txd); margin: 0 0 8px; letter-spacing: .4px; }
+  .dbtGames { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+  .dbtCard { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left;
+    background: linear-gradient(#1b1917, #121110); border: 1px solid var(--golddim); border-radius: 11px;
+    padding: 10px 12px; cursor: pointer; color: var(--tx); }
+  .dbtCard .ico { font-size: 22px; }
+  .dbtCard .nm { font-weight: 700; }
+  .dbtCard .lim { font-size: 11.5px; color: var(--txd); font-family: var(--disp); }
+  .dbtCard .go { font-size: 11.5px; color: var(--goldlit); }
+  .dbtLog { font-size: 12.5px; color: var(--txd); line-height: 1.9; background: #121110;
+    border: 1px solid #242220; border-radius: 10px; padding: 10px 12px; }
+  .dbtLog .empty { color: #5f5a51; }
+  .dbtEnd { position: fixed; inset: 0; z-index: 90; background: rgba(6,6,8,.93); display: flex;
+    align-items: center; justify-content: center; padding: 20px; }
+  .dbtEndBox { max-width: 440px; width: 100%; background: linear-gradient(#17120f, #0d0b0a);
+    border: 1px solid var(--golddim); border-radius: 14px; padding: 20px 18px; box-shadow: 0 18px 50px rgba(0,0,0,.7); }
+  .dbtEndT { font-size: 20px; font-weight: 700; color: var(--goldlit); margin-bottom: 10px; }
+  .dbtEndX { font-size: 14px; line-height: 1.85; color: var(--tx); margin-bottom: 16px; }
+  .dbtEndX b { color: var(--goldlit); font-family: var(--disp); }
+  .dbtEndB { display: flex; flex-direction: column; gap: 8px; }
+  .dbtBtn { padding: 11px 14px; border-radius: 10px; font-size: 14px; cursor: pointer;
+    background: #1b1a17; color: var(--tx); border: 1px solid var(--golddim); }
+  .dbtBtn.main { background: linear-gradient(#d4af37, #b8912a); color: #241c06; border-color: var(--goldlit); font-weight: 700; }
+  /* 注码档位按钮按「第几档」配色：欠债模式的档位数值是动态的，认不了 data-bet */
+  .betBtn[data-slot="1"] { --c: #e8e2d2; color: #3a3427; text-shadow: none; }
+  .betBtn[data-slot="2"] { --c: var(--red); }
+  .betBtn[data-slot="3"] { --c: #1e4d8c; }
+  .betBtn[data-slot="4"] { --c: #16653f; }
+  .betBtn[data-slot="5"] { --c: #16181d; box-shadow: 0 3px 0 rgba(0,0,0,.5), inset 0 0 0 2px var(--golddim); }
+  /* 💸 欠债模式 · 商店与道具 */
+  .dbtShop, .dbtBag { display: flex; flex-direction: column; gap: 8px; }
+  .dbtGood { display: grid; grid-template-columns: 34px 1fr auto; grid-template-areas: 'ico nm px' 'ico ds px'; align-items: center; gap: 2px 10px; width: 100%; text-align: left; padding: 9px 11px; border-radius: 10px; border: 1px solid #2c2f38; background: #16181d; color: var(--tx); cursor: pointer; font: inherit; }
+  .dbtGood .ico { grid-area: ico; font-size: 22px; text-align: center; }
+  .dbtGood .nm { grid-area: nm; font-weight: 700; font-size: 14px; }
+  .dbtGood .ds { grid-area: ds; font-size: 11.5px; color: var(--txd); line-height: 1.35; }
+  .dbtGood .px { grid-area: px; font-size: 12.5px; color: var(--goldlit); white-space: nowrap; }
+  .dbtGood.use .px { color: #8fd8a0; }
+  .dbtGood:disabled { opacity: .42; cursor: default; }
+  .dbtGood.sold { opacity: .35; }
+  .dbtShopBar { display: flex; align-items: center; gap: 10px; margin: 8px 0 14px; }
+  .dbtHint { font-size: 11.5px; color: var(--txd); }
+  .dbtCard.dim { opacity: .5; }
+  .dbtCard.pick { border-color: var(--gold); box-shadow: 0 0 0 1px var(--golddim) inset; }
+/* 欠债模式的剧情演出层与抛硬币动画 */
+.dbtStory{position:fixed;left:0;right:0;top:0;bottom:0;background:#08080a;z-index:300;cursor:pointer}
+.dbtStoryTx{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);padding:0 9vw;color:#e8e2d2;font-size:16px;line-height:2.1;letter-spacing:.02em}
+.dbtStoryTip{position:absolute;left:0;right:0;bottom:18px;text-align:center;color:#4a463c;font-size:12px}
+.dbtStorySkip{position:absolute;right:14px;bottom:14px;color:#8d8778;font-size:12px;border:1px solid #3a3730;border-radius:999px;padding:5px 12px}
+.dbtStorySkip:hover{color:#e8e2d2;border-color:#6b6456}
+.dbtCoin{position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(8,8,10,.92);z-index:310;display:flex;align-items:center;justify-content:center}
+.dbtCoinFace{font-size:72px;animation:dbtFlip 1.5s linear}
+@keyframes dbtFlip{0%{transform:rotateY(0deg) scale(.6)}50%{transform:rotateY(900deg) scale(1.15)}100%{transform:rotateY(1800deg) scale(1)}}
+.dbtAct{display:flex;gap:8px;margin:10px 0 0}
+.dbtGo{flex:1;padding:10px 8px;border-radius:10px;border:1px solid #3a3730;background:#1a1a1c;color:#e8e2d2;font-size:13px;cursor:pointer}
+.dbtGo.main{background:#2c4f36;border-color:#4a8a5c;color:#eaf7ee}
+.dbtGo:disabled{background:#151517;border-color:#2a2823;color:#5c584f;cursor:default}
+.dbtGo:not(:disabled):hover{border-color:#8d8778}
 </style>
 </head>
 <body>
 
-<!-- 首页（选模式）：自由模式开着，欠债模式还只是个牌子 -->
+<!-- 💸 欠债模式主页：界面一 = 采买（看不到机子）／界面二 = 开赌 -->
+<div class="wrap" id="debtPage" style="display:none">
+  <div class="dbtTop">
+    <button id="debtBack">‹ 首页</button>
+    <div class="dbtName" id="debtName">💸 欠债模式</div>
+    <button id="debtPause">⏸ 暂停</button>
+    <button id="debtRestart">🔄 重开</button>
+  </div>
+  <div class="dbtDays" id="debtDays"></div>
+  <div class="dbtStats">
+    <div class="dbtStat">第<b id="debtDay">1</b> / 11 天</div>
+    <div class="dbtStat">今天要还<b id="debtQuota">1.2K</b></div>
+    <div class="dbtStat">手上资金<b id="debtGold">1K</b></div>
+    <div class="dbtStat">所在楼层<b id="debtFloor">一楼</b></div>
+  </div>
+
+  <div id="debtShopWrap">
+    <div class="dbtSub"><span id="debtShopTitle">今日道具</span></div>
+    <div class="dbtShop" id="debtShop"></div>
+    <div class="dbtShopBar">
+      <button class="dbtBtn" id="debtReroll">🔄 重摇</button>
+      <span class="dbtHint" id="debtHint"></span>
+    </div>
+    <div class="dbtAct">
+      <button class="dbtGo main" id="debtBegin">▶ 开始今天（5 分钟）</button>
+    </div>
+  </div>
+
+  <div id="debtPlayWrap" style="display:none">
+    <div class="dbtClockBox">
+      <div class="dbtClockTx">今天还剩 <b id="debtClock">5:00</b></div>
+      <div class="dbtClockBar"><i id="debtClockFill"></i></div>
+    </div>
+    <div class="dbtAct">
+      <button class="dbtGo" id="debtNext" disabled>✅ 今天就够了 · 进明天</button>
+    </div>
+    <div class="dbtSub"><span id="debtGamesTitle">今天开着的机子</span></div>
+    <div class="dbtGames" id="debtGames"></div>
+  </div>
+
+  <div class="dbtSub" id="debtBagTitle">手上道具（点一下就用）</div>
+  <div class="dbtBag" id="debtBag"></div>
+  <div class="dbtSub">结算记录</div>
+  <div class="dbtLog" id="debtLog"><span class="empty">还没有结算记录</span></div>
+</div>
+
+<!-- 欠债模式挂在机子页最上面的状态条（跟着页面走，不遮任何东西） -->
+<div id="debtBar" style="display:none">
+  <span class="dbDay" id="dbDay">第 1 天</span>
+  <span class="dbQ">配额 <b id="dbQuota">1.2K</b></span>
+  <span class="dbG">资金 <b id="dbGold">1K</b></span>
+  <span class="dbT" id="dbTime">5:00</span>
+</div>
+
+<!-- 欠债模式的结局覆盖层 -->
+<div class="dbtEnd" id="debtEnd" style="display:none">
+  <div class="dbtEndBox">
+    <div class="dbtEndT" id="debtEndT"></div>
+    <div class="dbtEndX" id="debtEndX"></div>
+    <div class="dbtEndB" id="debtEndB"></div>
+  </div>
+</div>
+
+<!-- 欠债模式的剧情演出层 -->
+<div class="dbtStory" id="debtStory" style="display:none">
+  <div class="dbtStoryTx" id="debtStoryTx"></div>
+  <div class="dbtStoryTip" id="debtStoryTip">点一下继续</div>
+  <div class="dbtStorySkip" id="debtStorySkip">跳过 ›</div>
+</div>
+
+<!-- 抛硬币的动画 -->
+<div class="dbtCoin" id="debtCoin" style="display:none">
+  <div class="dbtCoinFace">🪙</div>
+</div>
+
+<!-- 首页（选模式）：自由模式与欠债模式两个入口 -->
 <div id="homePage" class="grain">
   <div id="verTag">v0.0</div>
   <div class="lobbyTitle">赛博赌场</div>
   <div class="lobbySub">💰 金币 <b id="lobbyGold" style="color:#f3d98b">10</b>　🐚 贝壳 <b id="lobbyShell" style="color:#9fe0c4">0</b></div>
+  <div class="lobbySub" id="homeStat"></div>
   <button class="modeBtn" id="modeFree" data-mode="FREE">
     <span class="ico">🎲</span>
     <span class="txt"><span class="nm">自由模式</span><span class="ds">自由下注 · 输光还能领救济金</span></span>
     <span class="go">进入 ›</span>
   </button>
-  <button class="modeBtn soon" id="modeDebt" data-mode="DEBT">
+  <button class="modeBtn" id="modeDebt" data-mode="DEBT">
     <span class="ico">💸</span>
-    <span class="txt"><span class="nm">欠债模式</span><span class="ds">还在装修中</span></span>
-    <span class="go soon">尚未开放</span>
+    <span class="txt"><span class="nm">欠债模式</span><span class="ds">欠庄家一笔钱 · 11 天还清</span></span>
+    <span class="go">进入 ›</span>
   </button>
 </div>
 
@@ -1966,9 +2125,9 @@
       <button class="mnQ" data-mines="3">😌 3</button>
       <button class="mnQ" data-mines="5">🙂 5</button>
       <button class="mnQ" data-mines="8">😰 8</button>
-      <button class="mnQ" data-mines="12">☠️ 12</button>
+      <button class="mnQ" data-mines="13">☠️ 13</button>
     </div>
-    <input class="mnRange" id="mnRange" type="range" min="1" max="24" step="1" value="3" aria-label="地雷数量">
+    <input class="mnRange" id="mnRange" type="range" min="1" max="13" step="1" value="3" aria-label="地雷数量">
   </div>
 
   <div class="mnBoard" id="mnBoard">
@@ -2145,6 +2304,17 @@
   <div class="panel">
     <span class="close" data-close="helpSheet">×</span>
     <h2 id="helpTitle">❓ 九宫格老虎机规则</h2>
+    <div class="rules" id="helpDebt" style="display:none">
+      <h3>欠债模式 · 规矩</h3>
+      · 你欠了一大笔钱。庄家给你 <b>11 天</b>，一天还一个数 —— 一天一结，没有宽限<br>
+      · 每天先<b>把道具买好</b>，再点「▶ 开始今天」；那 5 分钟从点下去才开始走<br>
+      · 凑够当天的数，可以点「✅ 今天就够了」直接进明天，也可以接着赌到时间结束<br>
+      · 时间一到还差着 —— 这一轮就没了，回首页从头再来<br>
+      · 撑满 11 天，晚上去见庄家。他会摊开两只手让你挑<br>
+      · 钱是<b>一直滚</b>的：今天剩下的，明天接着用<br>
+      · 楼层越高，机子的下注上下限越高；每天开哪 4 台，看运气<br>
+      · 外面的药水、加成、救济金在这儿一概不认，只认自己买的那几件
+    </div>
     <div class="rules" id="helpSlot">
       · 3×3 九宫格，共 <b>8 条中奖线</b>：3 横 + 3 竖 + 2 条对角<br>
       · 同一条线上出现 3 个相同符号即中奖；<b>🃏Wild 可以替代任意符号</b><br>
@@ -2244,26 +2414,24 @@
 
     <div class="rules" id="helpWheel" style="display:none">
       <h3>轮盘赌 · 怎么玩</h3>
-      · 一个球落进 0 ~ 36 里的某一格，落在你押中的注上就按赔率赔<br>
-      · 台面就是真赌桌竖过来摆：<b>最上面是 0（绿）</b>，下面 12 行每行 3 个号码（一行就是真桌上的一列），最下面一排是 <b>红 / 黑 / 绿</b><br>
-      · 一手可以同时押好几个注，球停下后 <b>逐注结算</b>：押中的按赔率赔，没押中的那部分归庄家<br>
-      · 只在 0 ~ 36 里落球，<b>0 只赔押到它的注</b>（点 0 号格，或者押「绿」），别的注落在 0 上算输
+      · 一个球落进 0 ~ 36 里的某一格，落在你押的那一色上就按赔率赔<br>
+      · 台面只有 <b>红 / 黑 / 绿</b> 三格：押红或黑是赌 18 个号，押绿是赌那个 0<br>
+      · 三格可以一起押，球停下后 <b>逐格结算</b>：押中的按赔率赔，没押中的那部分归庄家<br>
+      · 只在 0 ~ 36 里落球，<b>0 只赔押到它的注</b>（押「绿」），押红押黑落在 0 上算输
 
       <h3>赔率表</h3>
       <div class="pay">
-        <span>单号 ×36（35:1）</span>
         <span>红 / 黑 ×2（1:1）</span>
         <span>绿 0 ×36（35:1）</span>
       </div>
 
       <h3>怎么下注</h3>
-      · 先在下面选一枚筹码，再点台面上的格子：点一下加一枚；按了 <b>去注</b> 之后点格子，就把那一格上的注全退回来<br>
-      · 点号码格就是押那个号码；最下面 <b>红 / 黑 / 绿</b> 三个大格押颜色（绿就是 0）<br>
+      · 先在下面选一枚筹码，再点 <b>红 / 黑 / 绿</b> 任意一格：点一下加一枚；按了 <b>去注</b> 之后点那一格，就把那格上的注全退回来<br>
       · <b>清空</b> 把台面上的注一次全撤掉（注要等转的时候才从金币里扣，撤注不花冤枉钱）<br>
       · 球转起来之后 <b>转</b> 钮会锁住，等球停下再继续
 
       <h3>幸运与药水</h3>
-      · 佩戴的幸运越高，球越容易落在 <b>你押中的格子</b> 里，<b>赔率一个字都不改</b>；台面上押得越宽，幸运能发挥的余地越小<br>
+      · 佩戴的幸运越高，球越容易落在 <b>你押中的那一色</b> 里，<b>赔率一个字都不改</b><br>
       · 🍀 幸运药水：轮盘幸运 +5，每转完一局消耗一局<br>
       · 💰 金币药水：本局回收 ×1.30（没押中就什么都没有）<br>
       · ⏪ 后悔药水：本局作废，台面注单原样留着免费重转一次（投注不退）<br>
@@ -2346,11 +2514,11 @@
       · 格子上<b>没有数字提示</b>，除了「安全」和「炸」你什么也看不出 —— 全靠手气<br>
       · 随时可以点「提现」，把「下注 × 当前倍率」连本带利拿走；25 格里的安全格全翻完自动结算
       <h3>雷数与最高倍率</h3>
-      · 雷越多，每翻一格的倍率涨得越猛，可翻的安全格也越少 —— <b>12 / 13 雷</b>是全清倍率的顶点，再往上安全格太少，反倒回落
+      · 雷越多，每翻一格的倍率涨得越猛，可翻的安全格也越少 —— 上限卡在 <b>13 雷</b>，正好是全清倍率的顶点（12 雷和它并列最高）
       <div class="pay" id="mnPayTable"></div>
       <small>表里是<b>公平倍率</b>，实际到手还会乘上当前佩戴的加成；页面上那行「最高 ×」就是你现在到手的实际数值。</small>
       <h3>怎么下注</h3>
-      · 先挑一枚筹码当本局下注、再选雷数（快捷档或拖滑杆，1 ~ 24 颗），点「开始排雷」，下注立刻从金币里扣<br>
+      · 先挑一枚筹码当本局下注、再选雷数（快捷档或拖滑杆，1 ~ 13 颗），点「开始排雷」，下注立刻从金币里扣<br>
       · 一格都没翻就提现是拿不到奖金的<br>
       · 这一局结束之前，雷区不能重开 —— 要么提现，要么踩到雷
       <h3>幸运与药水</h3>
@@ -2693,6 +2861,9 @@
   var LUCK_CAP   = 400;
   var LUCK_EXP   = 0.28;
   var KEY = 'solrng_lite_v1';
+  var DKEY = 'solrng_debt_v1';   // 欠债模式：与自由模式完全隔离的一份存档
+  var MODE = 'FREE';             // 当前处于哪个模式：FREE = 自由模式，DEBT = 欠债模式
+  var DBT_R = 1.00;              // 欠债模式的基础回报率固定 100%（机子本身不抽水）
 
   function idxOf(name) { for (var i = 0; i < AURAS.length; i++) if (AURAS[i].n === name) return i; return 0; }
   function isRollable(a) { return a.r > 0; }
@@ -2834,7 +3005,10 @@
   };
   var potTimer = {};                             // 只是给徽标做倒计时的显示定时器，不进存档
 
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save() {
+    if (MODE === 'DEBT') { dbtSave(); return; }        // 欠债模式只写自己那份，绝不覆盖自由模式存档
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
 
   function load() {
     try {
@@ -2991,11 +3165,11 @@
         if (typeof dtp.bet === 'number' && dtp.bet >= 1) state.dt.bet = Math.floor(dtp.bet);
         if (typeof dtp.escrow === 'number' && dtp.escrow > 0 && isFinite(dtp.escrow)) state.dt.escrow = Math.floor(dtp.escrow);
       }
-      // 扫雷：本局下注 1 起，雷数夹在 1 ~ 24；escrow 是上一条命压在雷区里的下注，读回来交给启动块退回
+      // 扫雷：本局下注 1 起，雷数夹在 1 ~ 13；escrow 是上一条命压在雷区里的下注，读回来交给启动块退回
       var mnp = d.mn;
       if (mnp && typeof mnp === 'object') {
         if (typeof mnp.bet === 'number' && mnp.bet >= 1) state.mn.bet = Math.floor(mnp.bet);
-        if (typeof mnp.mines === 'number') state.mn.mines = Math.max(1, Math.min(24, Math.floor(mnp.mines)));
+        if (typeof mnp.mines === 'number') state.mn.mines = Math.max(1, Math.min(13, Math.floor(mnp.mines)));
         if (typeof mnp.escrow === 'number' && mnp.escrow > 0 && isFinite(mnp.escrow)) state.mn.escrow = Math.floor(mnp.escrow);
       }
       // 企鹅过河：本局下注 1 起；escrow 是上一条命踩在冰面里的下注，读回来交给启动块退回
@@ -3062,7 +3236,7 @@
     return idxOf('微光');
   }
 
-  function slotLuck() { return 1 + (AURAS[idxOf(state.eq)].L || 0) + (potActive('luck') ? LUCK_ADD : 0); }
+  function slotLuck() { if (MODE === 'DEBT') return 1; return 1 + (AURAS[idxOf(state.eq)].L || 0) + (potActive('luck') ? LUCK_ADD : 0); }
 
   // 九宫格的展示分布（只决定"看起来像什么"，与输赢无关）
   function fillProbs() {
@@ -3080,6 +3254,7 @@
   /* ---------- 结果优先模型 ---------- */
   // 回报率 = 当前佩戴光环的原始 R + 整体抬升；拥有词条「菜包」再 +10 个百分点（加在佩戴的那个光环上）
   function auraR(nm) {
+    if (MODE === 'DEBT') return DBT_R;   // 欠债模式固定 100%：自由模式的光环 / 词条 / 药水一律进不来
     var name = nm || state.eq;
     var a = AURAS[idxOf(name)];
     return ((a && a.n === name && a.R) ? a.R : 0.5) + RTP_ADD + (state.cb ? CAIBAO_ADD : 0)
@@ -3313,6 +3488,7 @@
   var $helpMine = document.getElementById('helpMine');
   var $helpPeng = document.getElementById('helpPeng');
   var $helpMoon = document.getElementById('helpMoon');
+  var $helpDebt = document.getElementById('helpDebt');
 
   /* ---- 轮盘赌（4.0） ---- */
   var $wheelPage = document.getElementById('wheelPage');
@@ -3431,6 +3607,8 @@
 
   /* ---- 登月 ---- */
   var $mlPage = document.getElementById('mlPage');
+  var $debtPage = document.getElementById('debtPage');   // 欠债模式主页
+  var $debtBar = document.getElementById('debtBar');     // 欠债模式在机子页顶上的状态条
   var $mlBack = document.getElementById('mlBack');
   var $mlGold = document.getElementById('mlGold');
   var $mlRate = document.getElementById('mlRate');
@@ -3516,8 +3694,9 @@
     if (p === true) p = 'home';
     else if (p === false) p = 'slot';
     page = p;
-    atHome = (p === 'home' || p === 'free');
+    atHome = (p === 'home' || p === 'free' || p === 'debt');
     $homePage.style.display = (p === 'home') ? '' : 'none';
+    if (p === 'home') dbtStatPaint();
     $freePage.style.display = (p === 'free') ? '' : 'none';
     $gamePage.style.display = (p === 'slot') ? '' : 'none';
     $bjPage.style.display = (p === 'bj') ? '' : 'none';
@@ -3528,6 +3707,11 @@
     $mnPage.style.display = (p === 'mn') ? '' : 'none';
     $pgPage.style.display = (p === 'pg') ? '' : 'none';
     $mlPage.style.display = (p === 'ml') ? '' : 'none';
+    if ($debtPage) $debtPage.style.display = (p === 'debt') ? '' : 'none';
+    var rowSpec = BET_ROWS[p];
+    if (rowSpec) paintBetRow(document.getElementById(rowSpec[0]), rowSpec[1]);   // 欠债模式的注码上下限要重画档位
+    if (p === 'debt') renderDebtPage();
+    dbtBarPlace();                                                 // 欠债状态条跟着机子页走
     if (p === 'fish') renderFishPage();
     if (p === 'wheel') renderWheelPage();
     if (p === 'duck') renderDuckPage();
@@ -3604,7 +3788,11 @@
   function bjTryUnlock() { return gameTryUnlock('BJ'); }
   function renderBjLock() { renderGameLock('BJ'); }
 
-  function afford(bet) { return state.gold >= bet; }
+  function afford(bet) {
+    // 欠债模式：🎰 All-in 筹码指到的那台机子，这一局的本金不算你的，钱不够也不拦
+    if (MODE === 'DEBT' && debt && debt.flags && debt.flags.allin && debt.flags.allin === curMachine()) return true;
+    return state.gold >= bet;
+  }
 
   /* ================= 商城 / 背包 / 药水状态机 ================= */
   var rewindTarget = null;   // 刚打完、还能用 ⏪ 回溯的那一局
@@ -3612,7 +3800,8 @@
     return null;
   }
   // 药水是否生效中；nm 省略时返回「任意一种药水生效中」
-  function potActive(nm) { return nm ? ((state.pot[nm] || 0) > 0) : potLeft() > 0; }
+  // 欠债模式里，自由模式的药水一律不生效（幸运 / 金币 / 无敌 / 后悔都进不来）
+  function potActive(nm) { if (MODE === 'DEBT') return false; return nm ? ((state.pot[nm] || 0) > 0) : potLeft() > 0; }
   function potLeft() {
     var n = 0, k;
     for (k in state.pot) if (Object.prototype.hasOwnProperty.call(state.pot, k)) n += (state.pot[k] || 0);
@@ -3797,7 +3986,7 @@
   function renderRewindBtn() {
     var b = document.getElementById('rewindBtn');
     if (!b) return;
-    var show = (page === 'slot' || page === 'bj' || page === 'wheel' || page === 'duck' || page === 'dt' || page === 'mn' || page === 'pg' || page === 'ml') && potActive('rewind') && rewindTarget && !rewindTarget.used;
+    var show = (MODE !== 'DEBT') && (page === 'slot' || page === 'bj' || page === 'wheel' || page === 'duck' || page === 'dt' || page === 'mn' || page === 'pg' || page === 'ml') && potActive('rewind') && rewindTarget && !rewindTarget.used;
     b.style.display = show ? '' : 'none';
     if (show) b.textContent = '⏪ 后悔药水 · 重开本局';
   }
@@ -3897,7 +4086,7 @@
     var btns = $betRow.getElementsByClassName('betBtn'), i, b;
     for (i = 0; i < btns.length; i++) {
       b = parseInt(btns[i].getAttribute('data-bet'), 10);
-      var sel = (b === 0) ? (BET_PRESETS.indexOf(state.bet) < 0) : (state.bet === b);
+      var sel = (b === 0) ? (curBets().indexOf(state.bet) < 0) : (state.bet === b);
       btns[i].className = 'betBtn' + (sel ? ' on' : '');
       if (b > 0) btns[i].disabled = !afford(b);
       else btns[i].disabled = false;
@@ -3918,6 +4107,7 @@
   // 老虎机和黑杰克两页共用同一份救济金状态
   function paintClaim(el) {
     if (!el) return;
+    if (MODE === 'DEBT') { el.style.display = 'none'; return; }   // 欠债模式里没有救济金
     var can = state.gold < 1;
     var left = CLAIM_CD - (Date.now() - state.claimAt);
     if (left < 0) left = 0;
@@ -3926,7 +4116,7 @@
     else if (!can) { el.disabled = true; el.textContent = '领取救济金 100（金币 ≥ 1 时不可领）'; }
     else { el.disabled = false; el.textContent = '领取救济金 100 金币'; }
   }
-  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); paintClaim($whClaim); paintClaim($dkClaim); paintClaim($dtClaim); paintClaim($mnClaim); paintClaim($pgClaim); }
+  function renderClaim() { paintClaim($claim); paintClaim($bjClaim); paintClaim($whClaim); paintClaim($dkClaim); paintClaim($dtClaim); paintClaim($mnClaim); paintClaim($pgClaim); paintClaim($mlClaim); }
 
   /* ================= 黑杰克 ================= */
   // 规则：单副牌每局重洗 · J/Q/K=10 · A 软硬双值 · 庄家 S17（软 17 停）· 明牌 A/10 时 peek
@@ -4022,7 +4212,7 @@
     var btns = $bjBetRow.getElementsByClassName('betBtn'), i, b, sel;
     for (i = 0; i < btns.length; i++) {
       b = parseInt(btns[i].getAttribute('data-bet'), 10);
-      sel = (b === 0) ? (BET_PRESETS.indexOf(state.bjBet) < 0) : (state.bjBet === b);
+      sel = (b === 0) ? (curBets().indexOf(state.bjBet) < 0) : (state.bjBet === b);
       btns[i].className = 'betBtn' + (sel ? ' on' : '');
       btns[i].disabled = locked || (b > 0 && !afford(b));
     }
@@ -4070,6 +4260,7 @@
     }
     if (back > 0) state.gold = clampGold(state.gold + back);
     net = back - bet;
+    dbtClose('bj');
     rewindArm('bj', bet, back);                 // 留个「刚打完的这一局」，等玩家点 ⏪
     bjMsg(msg + '　' + (net > 0 ? '+' + abbr(net) : (net < 0 ? '-' + abbr(-net) : '±0')) + ' 金币' + extra, tone);
     save(); renderStats(); renderBjBet(); renderBj(); refreshPots(); renderRewindBtn();
@@ -4079,6 +4270,7 @@
     if (BJ.phase !== 'idle') return;
     var bet = state.bjBet;
     if (!afford(bet)) { toast('金币不足'); return; }
+    dbtArm('bj', bet);
     state.gold = clampGold(state.gold - bet);
     BJ.deck = newDeck();
     BJ.player = []; BJ.dealer = []; BJ.hole = true;
@@ -4185,7 +4377,7 @@
     if (BJ.phase !== 'idle') { toast('这一局还没结束'); return; }
     var b = parseInt(el.getAttribute('data-bet'), 10);
     if (b === 0) {
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.bjBet), function (v) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.bjBet), function (v) {
         state.bjBet = v; renderBjBet(); save();
       });
       return;
@@ -4206,6 +4398,7 @@
 
     spinning = true;
     var bet = state.bet, cost = bet;
+    dbtArm('slot', bet);
     state.gold = clampGold(state.gold - cost);
     renderStats(); renderBet();
     $resultMain.textContent = '转动中…';
@@ -4263,6 +4456,7 @@
     if (goldPot) total = Math.floor(total * GOLD_MUL);
 
     state.gold = clampGold(state.gold + total);
+    dbtClose('slot');
     rewindArm('slot', bet, total);       // 留一手：这局结束后的 ⏪ 回溯点
     renderStats(); renderBet(); save();
 
@@ -4516,10 +4710,16 @@
     refreshAuto();
   }
   function autoTick() {
+    if (MODE === 'DEBT') return;      // 自由模式开着的自动光环仪，别在欠债模式里自己转起来
     if (autoState().on) autoKick(); else refreshAuto();
   }
   // 面板里的进度条 / 角落的 ⏱️ 小按钮 / 抽奖按钮，都跟着自动状态走
   function refreshAuto() {
+    if (MODE === 'DEBT') {                             // 欠债模式里光环仪不露头（它跟回报率无关）
+      if ($autoBar) $autoBar.style.display = 'none';
+      var ab2 = document.getElementById('autoBtn'); if (ab2) ab2.style.display = 'none';
+      return;
+    }
     var on = autoState().on, t = autoLeft();
     if ($autoBar) $autoBar.style.display = on ? '' : 'none';
     if ($autoTx) $autoTx.innerHTML = on ? ('⏱️ 自动抽取中　剩 <b>' + autoClock(t) + '</b>') : '';
@@ -4572,13 +4772,19 @@
   }
   function refreshCorners() {
     var show = !anySheetOpen();
-    $helpBtn.style.display = (show && !atHome) ? '' : 'none';    // ❓ 规则：只有进了游戏才有（左下角）
-    $bagBtn.style.display = show ? '' : 'none';                  // 🎒 背包：哪都有（右下角、🎁 正上方）
-    $miscBtn.style.display = show ? '' : 'none';                 // 🎁 礼物：哪都有（右下角最外）
-    $logBtn.style.display = (show && atHome) ? '' : 'none';      // 📜 更新日志：只在大厅（左下角）
+    $helpBtn.style.display = (show && (!atHome || MODE === 'DEBT')) ? '' : 'none';    // ❓ 规则：游戏里都有；欠债模式的采买页也留一个（左下角）
+    var freeMode = (MODE !== 'DEBT');
+    $bagBtn.style.display = (show && freeMode) ? '' : 'none';    // 🎒 背包：哪都有（右下角、🎁 正上方）
+    $miscBtn.style.display = (show && freeMode) ? '' : 'none';   // 🎁 礼物：哪都有（右下角最外）
+    $logBtn.style.display = (show && atHome && MODE !== 'DEBT') ? '' : 'none';      // 📜 更新日志：只在大厅（左下角），欠债模式里不给
     $bagBtn.textContent = '🎒';
     renderRewindBtn();
     refreshAuto();                                                // ⏱️ 自动光环仪：收起面板后钉在右下角
+    if (MODE === 'DEBT') {                                        // 欠债模式：这三样都不参与
+      var rb = document.getElementById('rewindBtn'); if (rb) rb.style.display = 'none';
+      var ab = document.getElementById('autoBtn');    if (ab) ab.style.display = 'none';
+      if ($autoBar) $autoBar.style.display = 'none';
+    }
   }
 
   /* ================= 📜 更新日志 ================= */
@@ -4587,8 +4793,49 @@
   //   y 小版本 —— 每个能独立说清的更新（2.1 氪金 / 2.2 兑换码 / … / 2.5 商城与背包）
   //   z 修订号 —— 只修 bug、不加新功能的补丁（2.5.1、2.5.2 …）
   // 加东西时改 VERSION + 在 CHANGELOG 顶上插一条；版本号永不复用。
-  var VERSION = '4.10.1';
+  var VERSION = '4.14.0';
   var CHANGELOG = [
+    { v: '4.14.0', t: '轮盘只剩红黑绿', li: [
+      '🎡 轮盘赌简化成红 / 黑 / 绿三格，号码格撤了',
+      '🏆 欠债模式的获胜次数挪到大厅首页那一行',
+      '🔧 修好登月页那颗漏刷新的救济金按钮（欠债模式里以前会露出来）',
+      '📝 用掉的欠债道具也写进结算记录',
+      '💸 欠债模式每天要还的数改成跟着手上的钱走：前六天 ×1.25、第七天起 ×1.5，不会再出现「手上的钱比要还的还多」',
+      '✍️ 欠债模式的文案捋了一遍：开场第 3 句、商店与机子的标题、几句提示都收短了',
+      '🎰 修好了：当天的上限注比你手上的钱还多时，All-in 筹码也能开局（这一局的本金本来就归庄家出）'
+    ] },
+    { v: '4.13.0', t: '欠债模式：采买与开赌分开', li: [
+      '🛒 采买和开赌分成两个界面：点「开始今天」之前，看不到今天开的是哪几台机子',
+      '🤝 结局改成庄家摊开两只手：🪙 硬币是赌一把（赢了翻倍），💳 银行卡是还债（清了账，一分不带走）',
+      '🏆 统计只留「获胜次数」：撑过十一天就算赢，死在天数里的不算',
+      '💀 死在半路直接回首页重新选模式，这一轮清得干干净净',
+      '❓ 欠债模式左下角也能看规矩了（这里不摆更新日志）',
+      '✍️ 开场和结局的文案重写了一遍',
+      '🎰 All-in 筹码改成点一台机子就直接把它今天最高的那一档注摆好，免费玩这一局',
+      '🔫 配额枪改成按「今天要还的数」的三分之一补（以前按差口补，差得少就补得少），代价改成今天少 2 分钟'
+    ] },
+    { v: '4.12.0', t: '欠债模式调整', li: [
+      '🛒 改成每天先把道具买好，再点「▶ 开始今天」跑那 5 分钟 —— 开打之后商店就关门了',
+      '✅ 凑够当天的数，可以点「今天就够了」直接进明天，也可以接着赌到时间结束',
+      '🔄 主页多了「重开」按钮，随时能重开这一把',
+      '🧪 欠债模式里外面的药水 / 光环 / 救济金都不生效了，只认自己买的那几件',
+      '🎰 All-in 筹码修好了，现在真的能免单玩一局',
+      '📊 开始记通关次数：跟他抛一次硬币翻倍、或者把账全交，主页上都能看见'
+    ] },
+    { v: '4.11.0', t: '欠债模式', li: [
+      '💸 首页那张「欠债模式」的牌子开门了：开局 1,000 金币，11 天，每天一个数，凑不齐就到此为止',
+      '⏱️ 每天给你 5 分钟。时间一到当场结算 —— 手还停在机子上、没来得及提现的那一局，钱也跟着走',
+      '🏢 楼越高，同一个数字也越刺激：一楼 1~750，二楼 10~7,500，三楼 100~75,000，四楼 1,000~750,000',
+      '🎰 每天随机开 4 台机子，开哪几台、上下限各是多少，进门才看得见',
+      '🛒 每天摆 3 件道具，价钱按你手上的钱算；买下来进「手上道具」栏，点一下才生效，过了今天就没了',
+      '🔄 商店能重摇，一天两次，第二次比第一次贵',
+      '📈 多出来的钱不会白赚：超出当天数额的部分，按四分之三折进明天的数',
+      '🚪 撑满 11 天就能去见庄家：把账一次交清，或者跟他抛一次硬币'
+    ] },
+    { v: '4.10.2', t: '小调整', li: [
+      '🎚️ 扫雷的雷数上限收到 13 —— 12 / 13 雷本来就是全清倍率的顶点，滑杆不用再往下坡走',
+      '☠️ 最高那个快捷档跟着改成 ☠️ 13，和上限对齐'
+    ] },
     { v: '4.10.1', t: '小调整', li: [
       '🚧 先把 🐔 养鸡场的入口收起来了，做好之后再摆回来'
     ] },
@@ -4802,7 +5049,7 @@
   document.getElementById('promptOk').addEventListener('click', function () {
     var v = parseInt(document.getElementById('promptInput').value, 10);
     if (!isFinite(v) || v < 1) { toast('请输入不小于 1 的整数'); return; }
-    if (v > NUM_MAX) { toast('最大 ' + abbr(NUM_MAX)); return; }
+    if (v > numMax()) { toast('最大 ' + abbr(numMax())); return; }
     closeSheet('promptSheet');
     var cb = promptCb; promptCb = null;
     if (cb) cb(v);
@@ -4904,7 +5151,7 @@
     if (!el || el.className.indexOf('betBtn') < 0) return;
     var b = parseInt(el.getAttribute('data-bet'), 10);
     if (b === 0) {
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.bet), function (v) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.bet), function (v) {
         state.bet = v; renderBet(); save();
       });
       return;
@@ -4914,6 +5161,7 @@
 
   // 救济金：老虎机 / 黑杰克 / 轮盘赌三页共用同一份 1 小时冷却
   function doClaim(extra) {
+    if (MODE === 'DEBT') return;
     if (Date.now() - state.claimAt < CLAIM_CD) return;
     if (state.gold >= 1) return;
     state.claimAt = Date.now();
@@ -4928,6 +5176,21 @@
 
   // ❓ 是同一个按钮，规则内容按当前所在页面切换
   function openHelp() {
+    if (MODE === 'DEBT') {                       // 欠债模式：只看欠债的规矩
+      $helpTitle.textContent = '❓ 欠债模式规则';
+      $helpSlot.style.display = 'none';
+      $helpBj.style.display = 'none';
+      $helpFish.style.display = 'none';
+      $helpDuck.style.display = 'none';
+      $helpDt.style.display = 'none';
+      $helpMine.style.display = 'none';
+      $helpPeng.style.display = 'none';
+      $helpMoon.style.display = 'none';
+      $helpWheel.style.display = 'none';
+      if ($helpDebt) $helpDebt.style.display = '';
+      openSheet('helpSheet');
+      return;
+    }
     var slot = (page === 'slot'), bj = (page === 'bj'), fish = (page === 'fish'), duck = (page === 'duck'), dt = (page === 'dt'), mn = (page === 'mn'), pg = (page === 'pg'), ml = (page === 'ml');
     $helpTitle.textContent = slot ? '❓ 九宫格老虎机规则'
       : (bj ? '❓ 黑杰克规则' : (fish ? '❓ 钓鱼规则' : (duck ? '❓ 赛鸭场规则' : (dt ? '❓ 火龙塔规则' : (mn ? '❓ 扫雷规则' : (pg ? '❓ 企鹅过河规则' : (ml ? '❓ 登月规则' : '❓ 轮盘赌规则')))))));
@@ -4940,6 +5203,7 @@
     $helpPeng.style.display = pg ? '' : 'none';
     $helpMoon.style.display = ml ? '' : 'none';
     $helpWheel.style.display = (!slot && !bj && !fish && !duck && !dt && !mn && !pg && !ml) ? '' : 'none';
+    if ($helpDebt) $helpDebt.style.display = 'none';
     openSheet('helpSheet');
   }
   $helpBtn.addEventListener('click', openHelp, false);
@@ -5015,7 +5279,7 @@
     (function (btn) {
       btn.addEventListener('click', function () {
         if (btn.getAttribute('data-mode') === 'FREE') { setPage('free'); return; }   // 进自由模式
-        toast((btn.getElementsByClassName('nm')[0] || {}).textContent + ' 尚未开放');
+        dbtEnter();                                                                  // 进欠债模式
       }, false);
     })(modeBtns[mb]);
   }
@@ -5026,6 +5290,7 @@
     (function (btn) {
       btn.addEventListener('click', function () {
         var g = btn.getAttribute('data-game');
+        if (MODE === 'DEBT') { dbtEnterGame(g); return; }              // 欠债模式：只有今天开出来的机子能进、不用买断
         if (g === 'slot') { setPage('slot'); return; }                 // 进老虎机
         if (g === 'BJ') {
           if (!bjTryUnlock()) return;
@@ -5065,8 +5330,8 @@
     })(homeBtns[hb]);
   }
   $freeBack.addEventListener('click', function () { setPage('home'); }, false);  // 自由模式 → 首页选模式
-  $backBtn.addEventListener('click', function () { setPage('free'); }, false);   // 机子 → 自由模式
-  $bjBack.addEventListener('click', function () { setPage('free'); }, false);
+  $backBtn.addEventListener('click', backOut, false);   // 机子 → 自由模式
+  $bjBack.addEventListener('click', backOut, false);
   $bjClaim.addEventListener('click', function () { doClaim(renderBjBet); }, false);
   document.addEventListener('click', function (e) {
     var el = e.target;
@@ -5208,13 +5473,10 @@
   (function () {
     var nums, i;
     function def(k, ns, nm) { WH_DEF[k] = { key: k, nums: ns, m: 36 / ns.length, nm: nm }; }
-    function anchor(k, n) { if (!WH_ANCHOR[n]) WH_ANCHOR[n] = []; WH_ANCHOR[n].push(k); }
-    for (i = 1; i <= 36; i++) { def('S' + i, [i], '单号 ' + i); anchor('S' + i, i); }
     def('R', WH_RED, '红');
     nums = []; for (i = 1; i <= 36; i++) if (WH_RED.indexOf(i) < 0) nums.push(i);
     def('B', nums, '黑');
     def('G', [0], '绿 0');
-    anchor('G', 0);                        // 押 0 的筹码就显示在台面最上面那个绿色 0 上
   })();
 
   var whTable = {};                       // 台面上的临时注单：key -> 押了多少（不存档）
@@ -5247,7 +5509,7 @@
     var d = WH_DEF[key], cv;
     if (!d) return;
     cv = whCover();
-    if (!afford(cv.T + state.wheel.chip)) { toast('金币不够，先去掉一些注或领救济金'); return; }
+    if (!afford(cv.T + state.wheel.chip)) { toast('金币不够，先去掉一些注'); return; }
     whTable[key] = (whTable[key] || 0) + state.wheel.chip;
     buzz(6);
     whRenderTable(); whRenderCtl();
@@ -5326,37 +5588,16 @@
     return 'conic-gradient(from 0deg, ' + s.join(',') + ')';
   }
 
-  function whCellHtml(kind, v, label, cls) {
-    var attrs, on = '', chip = '', amt = 0, keys, i;
-    if (kind === 'num') {
-      attrs = ' data-num="' + v + '"';
-      if (whCovNum[v]) on += ' on';
-      if (v === whLast) on += ' pick';
-      keys = WH_ANCHOR[v];
-      if (keys) for (i = 0; i < keys.length; i++) amt += (whTable[keys[i]] || 0);
-    } else {
-      attrs = ' data-bet="' + v + '"';
-      if (whTable[v]) { on += ' on'; amt = whTable[v]; }
-    }
-    if (amt > 0) chip = '<span class="whChip">' + abbr(amt) + '</span>';
-    return '<div class="whCell' + cls + on + '"' + attrs + '>' + label + chip + '</div>';
+  function whCellHtml(v, label, cls) {
+    var amt = whTable[v] || 0;
+    if (amt > 0) label += '<span class="whChip">' + abbr(amt) + '</span>';
+    return '<div class="whCell' + cls + (amt > 0 ? ' on' : '') + '" data-bet="' + v + '">' + label + '</div>';
   }
 
   function whRenderTable() {
     if (!$whTable) return;
-    whCover();                             // 覆盖集跟着注单刷新，格子高亮才对
-    var html = '', r, j, n;
-    html += '<div class="whZeroRow">' + whCellHtml('num', 0, '0', ' green whZero') + '</div>';
-    for (r = 0; r < 12; r++) {
-      html += '<div class="whRow">';
-      for (j = 0; j < 3; j++) {
-        n = r * 3 + j + 1;
-        html += whCellHtml('num', n, String(n), WH_RED.indexOf(n) >= 0 ? ' red' : ' black');
-      }
-      html += '</div>';
-    }
-    html += '<div class="whOut">' + whCellHtml('bet', 'R', '红', ' red') + whCellHtml('bet', 'B', '黑', ' black') + whCellHtml('bet', 'G', '绿 0', ' green') + '</div>';
-    $whTable.innerHTML = html;
+    $whTable.innerHTML = '<div class="whOut">' + whCellHtml('R', '红', ' red') +
+      whCellHtml('B', '黑', ' black') + whCellHtml('G', '绿 0', ' green') + '</div>';
   }
 
   function whRenderCtl() {
@@ -5365,7 +5606,7 @@
     for (i = 0; i < els.length; i++) {
       el = els[i];
       b = parseInt(el.getAttribute('data-bet'), 10);
-      el.className = ((b === 0) ? (BET_PRESETS.indexOf(state.wheel.chip) < 0) : (b === state.wheel.chip)) ? 'betBtn on' : 'betBtn';
+      el.className = ((b === 0) ? (curBets().indexOf(state.wheel.chip) < 0) : (b === state.wheel.chip)) ? 'betBtn on' : 'betBtn';
     }
     els = $whModeRow.getElementsByClassName('whM');
     for (i = 0; i < els.length; i++) {
@@ -5373,7 +5614,7 @@
       el.className = (el.getAttribute('data-mode') === state.wheel.mode) ? 'whM on' : 'whM';
     }
     for (k in whTable) if (whTable[k] > 0) cnt++;
-    $whStake.textContent = cnt ? ('本局注单 ' + cnt + ' 注 · 共 ' + abbr(cv.T) + ' 金币') : '先点格子押注，再点右下角「转」';
+    $whStake.textContent = cnt ? ('本局注单 ' + cnt + ' 注 · 共 ' + abbr(cv.T) + ' 金币') : '先点红 / 黑 / 绿押注，再点右下角「转」';
     $whSpin.disabled = whBusy || !cv.T || !afford(cv.T);
   }
 
@@ -5384,6 +5625,7 @@
     if (!free && !afford(cv.T)) { toast('金币不够：本局注单要 ' + abbr(cv.T) + ' 金币'); return; }
     n = whPick(cv);
     if (!free) {
+      dbtArm('wheel', cv.T);
       state.gold = clampGold(state.gold - cv.T);
       save();
     }
@@ -5395,7 +5637,7 @@
     whRenderTable(); whRenderCtl();
     renderStats(); renderClaim();
     $whRes.textContent = '转盘转动中…';
-    $whMsg.textContent = '本局覆盖 ' + cv.C + ' 个号 · 注单 ' + abbr(cv.T) + ' 金币';
+    $whMsg.textContent = '本局注单 ' + abbr(cv.T) + ' 金币';
     clearTimeout(whTimer);
     whTimer = setTimeout(function () { whSettle(n, cv); }, WH_SPIN + 160);
   }
@@ -5416,6 +5658,7 @@
     shield = payout < T && potActive('shield');
     if (shield) payout = T;                       // 🛡️：这一把输了就把注全退回（净 0）
     state.gold = clampGold(state.gold + payout);
+    dbtClose('wheel');
     state.wheel.spins++;
     if (payout > state.wheel.best) state.wheel.best = payout;
     rewindArm('wheel', T, payout);
@@ -5461,21 +5704,19 @@
       $whHub.style.background = whHubBg(whLast);
       $whRes.textContent = '上次 ' + whColorName(whLast);
     } else {
-      $whRes.textContent = '先点格子押注，再点「转」';
+      $whRes.textContent = '先点红 / 黑 / 绿押注，再点「转」';
     }
     $whMsg.textContent = state.wheel.spins
       ? ('已转 ' + state.wheel.spins + ' 局 · 单局最高回收 ' + abbr(state.wheel.best))
-      : '欧式单零 37 格 · 点号码押注，红 / 黑 / 绿在下面';
+      : '欧式单零 37 格 · 押红 / 黑 / 绿';
   }
 
-  $wheelBack.addEventListener('click', function () { setPage('free'); }, false);
+  $wheelBack.addEventListener('click', backOut, false);
   $whSpin.addEventListener('click', function () { whSpin(false); }, false);
   $whClaim.addEventListener('click', function () { doClaim(); }, false);
   $whTable.addEventListener('click', function (e) {
-    var t = e.target, num, key;
+    var t = e.target, key;
     if (!t || !t.getAttribute) return;
-    num = t.getAttribute('data-num');
-    if (num !== null && num !== undefined) { whCellTap(parseInt(num, 10)); return; }
     key = t.getAttribute('data-bet');
     if (key) whKeyTap(key);
   }, false);
@@ -5485,12 +5726,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义筹码面额
-      askNumber('自定义筹码面额', '整数，1 ~ ' + abbr(NUM_MAX) + '（每注押这么多）', String(state.wheel.chip), function (nv) {
+      askNumber('自定义筹码面额', '整数，1 ~ ' + abbr(numMax()) + '（每注押这么多）', String(state.wheel.chip), function (nv) {
         state.wheel.chip = nv; whRenderCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.wheel.chip = v;
     buzz(6); whRenderCtl(); save();
   }, false);
@@ -5656,6 +5897,7 @@
     shield = pay < bet && potActive('shield');
     if (shield) pay = bet;                               // 🛡️：输了就把这一局的下注全退回（净 0）
     state.gold = clampGold(state.gold + pay);
+    dbtClose('duck');
     rewindArm('duck', bet, pay, sel);                    // 留一手：跑完之后的 ⏪ 回溯点（还是这只鸭）
     if (potActive('luck')) potTick('luck');
     if (potActive('gold')) potTick('gold');
@@ -5675,7 +5917,11 @@
     if (dkBusy) return;
     if (dkSel < 0) { toast('先在泳道上点一只你看好的鸭'); return; }
     if (!free && !afford(state.duck.bet)) { toast('金币不够：本局下注 ' + abbr(state.duck.bet) + ' 金币'); return; }
-    if (!free) { state.gold = clampGold(state.gold - state.duck.bet); save(); }
+    if (!free) {
+      dbtArm('duck', state.duck.bet);
+      state.gold = clampGold(state.gold - state.duck.bet);
+      save();
+    }
     clearTimeout(dkTimer);
     dkRace = dkNewRace();
     dkBusy = true;
@@ -5725,7 +5971,7 @@
       btns = $dkChips.getElementsByClassName('betBtn');
       for (i = 0; i < btns.length; i++) {
         b = parseInt(btns[i].getAttribute('data-bet'), 10);
-        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.duck.bet) < 0) : (b === state.duck.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].className = ((b === 0) ? (curBets().indexOf(state.duck.bet) < 0) : (b === state.duck.bet)) ? 'betBtn on' : 'betBtn';
         btns[i].disabled = dkBusy || (b > 0 && !afford(b));
       }
     }
@@ -5767,7 +6013,7 @@
     $dkPayTable.innerHTML = s;
   })();
 
-  $duckBack.addEventListener('click', function () { setPage('free'); }, false);
+  $duckBack.addEventListener('click', backOut, false);
   $dkStart.addEventListener('click', function () { dkStart(false); }, false);
   $dkClaim.addEventListener('click', function () { doClaim(); }, false);
   $dkChips.addEventListener('click', function (e) {
@@ -5776,12 +6022,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义本局下注
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.duck.bet), function (nv) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.duck.bet), function (nv) {
         state.duck.bet = nv; dkRenderCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.duck.bet = v;
     buzz(6); dkRenderCtl(); save();
   }, false);
@@ -5891,7 +6137,7 @@
       btns = $dtChips.getElementsByClassName('betBtn');
       for (i = 0; i < btns.length; i++) {
         b = parseInt(btns[i].getAttribute('data-bet'), 10);
-        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.dt.bet) < 0) : (b === state.dt.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].className = ((b === 0) ? (curBets().indexOf(state.dt.bet) < 0) : (b === state.dt.bet)) ? 'betBtn on' : 'betBtn';
         btns[i].disabled = live || (b > 0 && !afford(b));
       }
     }
@@ -5911,6 +6157,7 @@
     if (dtRun && !dtRun.done) return;              // 这一局还在爬：先提现或者踩到龙眼，塔才能重开
     if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
     if (rewindTarget && rewindTarget.kind === 'dt') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    dbtArm('dt', bet);
     state.gold = clampGold(state.gold - bet);
     state.dt.escrow = bet;                         // 压在塔里的这笔钱，刷新页面时会原样退回
     dtRun = {
@@ -5959,6 +6206,7 @@
     run.done = true; run.win = true; run.paid = pay;
     run.openLv = (run.at + 1 < DT_LEVELS) ? (run.at + 1) : -1;   // 把没敢踩的那一层翻开给玩家看
     if (run.lucky) potTick('luck');
+    dbtClose('dt');
     dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
     if (run.at === DT_TOP) dtFlame(true);          // 登顶才喷火，放在重画之后，免得被 dtPaint 抹掉
   }
@@ -5977,6 +6225,7 @@
     if (run.lucky) potTick('luck');
     rewindArm('dt', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但塔得重新爬
     buzz(40);
+    dbtClose('dt');
     dtPaint(); dtStatus(); dtRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
     dtFlame(true);                                 // 踩爆了才喷火，放在重画之后，免得被 dtPaint 抹掉
   }
@@ -6004,7 +6253,7 @@
     $dtPayTable.innerHTML = s;
   })();
 
-  $dtBack.addEventListener('click', function () { setPage('free'); }, false);
+  $dtBack.addEventListener('click', backOut, false);
   $dtStart.addEventListener('click', function () { dtStart(); }, false);
   $dtCash.addEventListener('click', function () { dtCash(); }, false);
   $dtClaim.addEventListener('click', function () { doClaim(); }, false);
@@ -6015,12 +6264,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义本局下注
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.dt.bet), function (nv) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.dt.bet), function (nv) {
         state.dt.bet = nv; dtRenderCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.dt.bet = v;
     buzz(6); dtRenderCtl(); save();
   }, false);
@@ -6036,9 +6285,9 @@
   }, false);
 
   /* ================= 💣 扫雷（4.8） ================= */
-  // 5×5 = 25 格，开局先定雷数 m（1 ~ 24）。每翻开一个安全格，倍率乘上「剩余总格 ÷ 剩余安全格」，
+  // 5×5 = 25 格，开局先定雷数 m（1 ~ 13）。每翻开一个安全格，倍率乘上「剩余总格 ÷ 剩余安全格」，
   // 于是任何时刻提现的期望回报都恒等于光环值，而安全格全翻完的倍率正好是组合数 C(25, m) —— 雷越多越猛
-  var MN_N = 25, MN_MINE_MIN = 1, MN_MINE_MAX = 24;
+  var MN_N = 25, MN_MINE_MIN = 1, MN_MINE_MAX = 13;
 
   var mnRun = null;    // 进行中的这一局；null = 还没开局
 
@@ -6128,7 +6377,7 @@
       btns = $mnChips.getElementsByClassName('betBtn');
       for (i = 0; i < btns.length; i++) {
         b = parseInt(btns[i].getAttribute('data-bet'), 10);
-        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.mn.bet) < 0) : (b === state.mn.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].className = ((b === 0) ? (curBets().indexOf(state.mn.bet) < 0) : (b === state.mn.bet)) ? 'betBtn on' : 'betBtn';
         btns[i].disabled = live || (b > 0 && !afford(b));
       }
     }
@@ -6163,6 +6412,7 @@
     if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
     if (rewindTarget && rewindTarget.kind === 'mn') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
     state.mn.mines = m;
+    dbtArm('mn', bet);
     state.gold = clampGold(state.gold - bet);
     state.mn.escrow = bet;                         // 压在雷区里的这笔钱，刷新页面时会原样退回
     mnRun = {
@@ -6209,6 +6459,7 @@
     state.mn.escrow = 0;
     run.done = true; run.win = true; run.paid = pay;
     if (run.lucky) potTick('luck');
+    dbtClose('mn');
     mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6225,6 +6476,7 @@
     if (run.lucky) potTick('luck');
     rewindArm('mn', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但雷区得重新开
     buzz(40);
+    dbtClose('mn');
     mnPaint(); mnStatus(); mnRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6250,7 +6502,7 @@
     $mnPayTable.innerHTML = s;
   })();
 
-  $mnBack.addEventListener('click', function () { setPage('free'); }, false);
+  $mnBack.addEventListener('click', backOut, false);
   $mnStart.addEventListener('click', function () { mnStart(); }, false);
   $mnCash.addEventListener('click', function () { mnCash(); }, false);
   $mnClaim.addEventListener('click', function () { doClaim(); }, false);
@@ -6278,12 +6530,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义本局下注
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.mn.bet), function (nv) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.mn.bet), function (nv) {
         state.mn.bet = nv; mnRenderCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.mn.bet = v;
     buzz(6); mnRenderCtl(); save();
   }, false);
@@ -6372,7 +6624,7 @@
       btns = $pgChips.getElementsByClassName('betBtn');
       for (i = 0; i < btns.length; i++) {
         b = parseInt(btns[i].getAttribute('data-bet'), 10);
-        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.pg.bet) < 0) : (b === state.pg.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].className = ((b === 0) ? (curBets().indexOf(state.pg.bet) < 0) : (b === state.pg.bet)) ? 'betBtn on' : 'betBtn';
         btns[i].disabled = live || (b > 0 && !afford(b));
       }
     }
@@ -6395,6 +6647,7 @@
     if (pgRun && !pgRun.done) return;              // 这一局还在冰面上：先提现或者踩空，冰面才能重开
     if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
     if (rewindTarget && rewindTarget.kind === 'pg') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    dbtArm('pg', bet);
     state.gold = clampGold(state.gold - bet);
     state.pg.escrow = bet;                         // 踩在冰面里的这笔钱，刷新页面时会原样退回
     pgRun = {
@@ -6438,6 +6691,7 @@
     state.pg.escrow = 0;
     run.done = true; run.win = true; run.paid = pay;
     if (run.lucky) potTick('luck');
+    dbtClose('pg');
     pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6454,6 +6708,7 @@
     if (run.lucky) potTick('luck');
     rewindArm('pg', run.bet, 0, -1);               // ⏪ 能把这一局作废、下注退回，但冰面得重新过
     buzz(40);
+    dbtClose('pg');
     pgPaint(); pgStatus(); pgRenderCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6479,7 +6734,7 @@
     $pgPayTable.innerHTML = s;
   })();
 
-  $pgBack.addEventListener('click', function () { setPage('free'); }, false);
+  $pgBack.addEventListener('click', backOut, false);
   $pgStart.addEventListener('click', function () {
     if (pgRun && !pgRun.done) { pgStep(); return; }   // 已经在冰面上：这一下就是往前走一步
     pgStart();
@@ -6493,12 +6748,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义本局下注
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.pg.bet), function (nv) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.pg.bet), function (nv) {
         state.pg.bet = nv; pgRenderCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.pg.bet = v;
     buzz(6); pgRenderCtl(); save();
   }, false);
@@ -6684,7 +6939,7 @@
       btns = $mlChips.getElementsByClassName('betBtn');
       for (i = 0; i < btns.length; i++) {
         b = parseInt(btns[i].getAttribute('data-bet'), 10);
-        btns[i].className = ((b === 0) ? (BET_PRESETS.indexOf(state.ml.bet) < 0) : (b === state.ml.bet)) ? 'betBtn on' : 'betBtn';
+        btns[i].className = ((b === 0) ? (curBets().indexOf(state.ml.bet) < 0) : (b === state.ml.bet)) ? 'betBtn on' : 'betBtn';
         btns[i].disabled = busy || (b > 0 && !afford(b));
       }
     }
@@ -6706,6 +6961,7 @@
     if (run && !run.done && run.phase !== 'watch') return;   // 这一局还没飞完：要么提现，要么等它炸
     if (!afford(bet)) { toast('金币不够：本局下注 💰' + abbr(bet)); return; }
     if (rewindTarget && rewindTarget.kind === 'ml') rewindTarget = null;   // 上一局已经翻篇，⏪ 不能再回溯它
+    dbtArm('ml', bet);
     state.gold = clampGold(state.gold - bet);
     state.ml.escrow = bet;                         // 压在火箭里的这笔钱，刷新页面时会原样退回
     R = auraR();                                   // 光环 + 🍀 只在这一刻算一次，本局中途换光环也不改
@@ -6761,6 +7017,7 @@
       dur: Math.max(ML_WATCH_MIN, Math.min(ML_WATCH_MAX, left))
     };
     buzz(12);
+    dbtClose('ml');
     mlStatus(); mlCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6781,6 +7038,7 @@
     buzz(40);
     mlStopTimer();
     mlPaint(run.crash, null);
+    dbtClose('ml');
     mlStatus(); mlCtl(); renderStats(); renderClaim(); renderRewindBtn(); save();
   }
 
@@ -6824,7 +7082,7 @@
     $mlPayTable.innerHTML = s;
   })();
 
-  $mlBack.addEventListener('click', function () { setPage('free'); }, false);
+  $mlBack.addEventListener('click', backOut, false);
   $mlStart.addEventListener('click', function () { mlStart(); }, false);
   $mlCash.addEventListener('click', function () { mlCash(); }, false);
   $mlClaim.addEventListener('click', function () { doClaim(); }, false);
@@ -6835,12 +7093,12 @@
     v = parseInt(t.getAttribute('data-bet'), 10);
     if (isNaN(v)) return;
     if (v === 0) {                                 // 自定义本局下注
-      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(NUM_MAX) + '（不能超过当前金币）', String(state.ml.bet), function (nv) {
+      askNumber('自定义本局下注', '整数，1 ~ ' + abbr(numMax()) + '（不能超过当前金币）', String(state.ml.bet), function (nv) {
         state.ml.bet = nv; mlCtl(); save();
       });
       return;
     }
-    if (BET_PRESETS.indexOf(v) < 0) return;
+    if (curBets().indexOf(v) < 0) return;
     state.ml.bet = v;
     buzz(6); mlCtl(); save();
   }, false);
@@ -7951,7 +8209,7 @@
     toast('图鉴都记上了');
   }
 
-  $fishBack.addEventListener('click', function () { setPage('free'); }, false);
+  $fishBack.addEventListener('click', backOut, false);
   $fishSheetBtn.addEventListener('click', function () { renderFishSheet(); openSheet('fishSheet'); }, false);
   $castBtn.addEventListener('click', fishCastClick, false);
   $ccOk.addEventListener('click', dismissCatch, false);
@@ -8011,6 +8269,1270 @@
   refreshPots();
   renderFishPage(); renderFishSheet(); renderDuckPage(); renderDtPage(); renderMnPage(); renderPgPage(); renderMlPage();
   autoKick();                                     // ⏱️ 关掉页面那段时间欠下的抽奖，回来先补上
+  /* ================= 💸 欠债模式 ================= */
+  // 与自由模式完全隔离：独立存档（DKEY）、回报率固定 DBT_R = 1.00。
+  // 只借用现有 8 台机子的完整页面，用「每台机子一个下注上下限」当难度旋钮。
+
+  var DBT_DAYS = 11;                    // 11 天赚钱期，撑过第 11 天就去见庄家
+  var DBT_DAY_MS = 5 * 60 * 1000;       // 每天真实 5 分钟
+  var DBT_START = 1000;                 // 起本金
+  var DBT_K1 = 1.25;                    // 前六天：明天要还的数 = 今天结束的资金 × 1.25
+  var DBT_K2 = 1.5;                     // 第七天起：今天结束的资金 × 1.5
+  var DBT_KSW = 6;                      // 第几天开始换倍数
+  var DBT_QUOTA = [1200, 1600, 2400, 4100, 7800, 16000, 37000, 96000, 290000, 960000, 3500000];
+  var DBT_OPEN_N = 4;                   // 每天随机开 4 台机子（8 台里挑）
+  var DBT_REROLL_MAX = 2;               // 🔄 商店重摇：每天 2 次（Phase 2 用）
+  var DBT_REROLL_P = [0.05, 0.10];      // 🔄 重摇价格档：每天只用前两档
+  var DBT_COIN_WIN = 0.5;               // 结局抛硬币：50 / 50
+  var DBT_FLOOR_NM = ['一楼', '二楼', '三楼', '四楼'];
+
+  // 四层楼：区间（下限 lo ~ 上限基数 hi）与开放天数
+  var DBT_FLOORS = [
+    { d0: 1, d1: 3, lo: 1, hi: 750 },
+    { d0: 4, d1: 6, lo: 10, hi: 7500 },
+    { d0: 7, d1: 9, lo: 100, hi: 75000 },
+    { d0: 10, d1: 11, lo: 1000, hi: 750000 }
+  ];
+
+  // 8 台机子：s = 份额（上限基数 = 该层 hi × s），p = 占比（W = 手上金币 × p）
+  // 重要度排序：登月 > 火龙塔 > 扫雷 > 企鹅过河 > 赛鸭场 > 黑杰克 > 轮盘赌 > 老虎机
+  var DBT_MACHINES = [
+    { k: 'ML', nm: '登月', ico: '🚀', s: 1.0, p: 0.25 },
+    { k: 'DT', nm: '火龙塔', ico: '🐉', s: 0.8, p: 0.20 },
+    { k: 'MS', nm: '扫雷', ico: '💣', s: 0.6, p: 0.15 },
+    { k: 'PG', nm: '企鹅过河', ico: '🐧', s: 0.5, p: 0.125 },
+    { k: 'DK', nm: '赛鸭场', ico: '🦆', s: 0.4, p: 0.10 },
+    { k: 'BJ', nm: '黑杰克', ico: '🃏', s: 0.3, p: 0.075 },
+    { k: 'WH', nm: '轮盘赌', ico: '🎡', s: 0.2, p: 0.05 },
+    { k: 'SL', nm: '老虎机', ico: '🎰', s: 0.15, p: 0.04 }
+  ];
+  var DBT_PAGE = { SL: 'slot', BJ: 'bj', WH: 'wheel', DK: 'duck', DT: 'dt', MS: 'mn', PG: 'pg', ML: 'ml' };
+  // 各机子注码按钮组的容器 id（切页时按模式重画档位）
+  var BET_ROWS = {
+    slot: ['betRow', 'SL'], bj: ['bjBetRow', 'BJ'], wheel: ['whChips', 'WH'], duck: ['dkChips', 'DK'],
+    dt: ['dtChips', 'DT'], mn: ['mnChips', 'MS'], pg: ['pgChips', 'PG'], ml: ['mlChips', 'ML']
+  };
+  var DBT_GAMES = ['slot', 'bj', 'wheel', 'duck', 'dt', 'mn', 'pg', 'ml'];
+
+  var debt = null;                      // 整轮欠债状态（null = 还没开过）
+  var DBT_FREE_GOLD = null;             // 进欠债模式前自由模式的金币，办完事原样还回去
+  var DBT_RUN = null;                   // 正在进行的那一局 { k, bet, gold0 }（倒计时到点要没收本金 / Phase 2 道具要按局退款）
+  var dbtJob = null;                    // 倒计时心跳
+
+  function dbtNew() {
+    return {
+      v: 1,
+      stage: 'shop',        // shop = 先买道具（不走表）；play = 走时间；paused = 暂停；over = 这轮结束了
+      day: 1,
+      quota: DBT_QUOTA[0],
+      gold: DBT_START,
+      open: [],             // 今天开着的 4 台（机子 key）
+      dayEndAt: 0,          // 点了「开始今天」才起表
+      paLeft: 0,            // 暂停时剩下的毫秒
+      shop: [],             // 今天商店的 3 件道具
+      items: [],            // 手上道具（买了点一下才生效）
+      rerolls: 0,           // 今天已重摇次数
+      spent: {},            // 今天每台机子赌了几次
+      seen: {},             // 今天商店出过的道具（重摇不重复）
+      sold: {},             // 今天已经买过的道具
+      flags: {},            // 今天生效的道具效果
+      reserve: null,        // 📅 预约券：明天商店必出的那件
+      tank: 0,              // ⏰ 时间罐存下来的毫秒
+      pick: null,           // 正在等点目标：{ id, idx, kind }
+      mirror: null,         // 🪞 镜像卡加进来的那台（今天只能赌 3 次）
+      intro: 0,             // 这一轮的开场剧情播过没有
+      tally: 0,             // 这一轮的成绩记进统计了没有
+      coinAdd: 0,           // 🪙 抛硬币赢来的那笔（先记在欠债存档里，回自由模式时才落账）
+      log: []               // 每天的结算记录，摊在主页最下面
+    };
+  }
+
+  /* ---------- 存档：欠债模式自己一份，绝不碰自由模式 ---------- */
+  function dbtSave() {
+    if (!debt) return;
+    try { localStorage.setItem(DKEY, JSON.stringify(debt)); } catch (e) {}
+  }
+  function dbtLoad() {
+    var raw, d, i;
+    try { raw = localStorage.getItem(DKEY); } catch (e) { return null; }
+    if (!raw) return null;
+    try { d = JSON.parse(raw); } catch (e) { return null; }
+    if (!d || d.v !== 1) return null;
+    if (!d.open || !d.open.length) d.open = dbtPickOpen();
+    if (!d.shop) d.shop = [];
+    if (!d.items) d.items = [];
+    if (!d.spent) d.spent = {};
+    if (!d.seen) d.seen = {};
+    if (!d.sold) d.sold = {};
+    if (!d.flags) d.flags = {};
+    if (d.reserve === undefined) d.reserve = null;
+    if (typeof d.tank !== 'number') d.tank = 0;
+    if (d.pick === undefined) d.pick = null;
+    if (d.mirror === undefined) d.mirror = null;
+    if (typeof d.intro !== 'number') d.intro = 0;
+    if (typeof d.tally !== 'number') d.tally = 0;
+    if (typeof d.coinAdd !== 'number' || d.coinAdd < 0) d.coinAdd = 0;
+    if (!d.log) d.log = [];
+    if (typeof d.rerolls !== 'number') d.rerolls = 0;
+    if (typeof d.paLeft !== 'number') d.paLeft = 0;
+    if (typeof d.gold !== 'number' || !isFinite(d.gold)) d.gold = DBT_START;
+    if (typeof d.quota !== 'number' || !isFinite(d.quota)) d.quota = DBT_QUOTA[Math.max(0, Math.min(DBT_DAYS - 1, (d.day || 1) - 1))];
+    if (d.stage !== 'shop' && d.stage !== 'paused' && d.stage !== 'over') d.stage = 'play';
+    for (i = 0; i < d.open.length; i++) if (!dbtM(d.open[i])) d.open = dbtPickOpen();
+    return d;
+  }
+
+  /* ---------- 难度旋钮：楼层 / 上下限 ---------- */
+  function dbtM(k) {
+    k = dbtKey(k);
+    for (var i = 0; i < DBT_MACHINES.length; i++) if (DBT_MACHINES[i].k === k) return DBT_MACHINES[i];
+    return null;
+  }
+  function dbtFloorOf(day) {
+    for (var i = 0; i < DBT_FLOORS.length; i++) if (day >= DBT_FLOORS[i].d0 && day <= DBT_FLOORS[i].d1) return i + 1;
+    return DBT_FLOORS.length;
+  }
+  function dbtFloor() { return DBT_FLOORS[dbtFloorOf(debt ? debt.day : 1) - 1]; }
+  // 下限 = 楼层固定值；上限 = 楼层区间上限 × 份额 + 手上金币 × 占比
+  function dbtMin(k) { return dbtFloor().lo; }
+  function dbtMax(k) {
+    var f = dbtFloor(), m = dbtM(k);
+    if (!m) return NUM_MAX;
+    var v = f.hi * m.s + (debt ? debt.gold : DBT_START) * m.p;
+    if (debt && debt.flags && debt.flags.zap && debt.flags.zap[k]) v = v * 2;   // ⚡ 电击器：今天这台上限 ×2
+    return Math.max(f.lo, Math.floor(v));
+  }
+  // 今天开出来的 4 台：洗牌取前 4，按重要度排序（保证都是能玩的机器）
+  function dbtPickOpen() {
+    var pool = DBT_MACHINES.slice(0), out = [], i, j, t;
+    for (i = pool.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1)); t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    for (i = 0; i < DBT_OPEN_N && i < pool.length; i++) out.push(pool[i].k);
+    out.sort(function (a, b) { return dbtIdx(a) - dbtIdx(b); });
+    return out;
+  }
+  function dbtIdx(k) {
+    for (var i = 0; i < DBT_MACHINES.length; i++) if (DBT_MACHINES[i].k === k) return i;
+    return 99;
+  }
+
+  /* ---------- 当前机子 / 上限 / 档位 ---------- */
+  function curMachine() {
+    return page === 'slot' ? 'SL' : page === 'bj' ? 'BJ' : page === 'wheel' ? 'WH' : page === 'duck' ? 'DK'
+      : page === 'dt' ? 'DT' : page === 'mn' ? 'MS' : page === 'pg' ? 'PG' : page === 'ml' ? 'ML' : '';
+  }
+  // 自定义输入框的上限：欠债模式按机子夹，自由模式还是老规矩
+  function numMax(k) {
+    k = k || curMachine();
+    return (MODE === 'DEBT' && debt && k) ? dbtMax(k) : NUM_MAX;
+  }
+  // 欠债模式的档位：下限 / 下限×5 / ×25 / ×125 / 上限（去重、去掉越界的）
+  function dbtPresets(k) {
+    var lo = dbtMin(k), hi = dbtMax(k), cand = [lo, lo * 5, lo * 25, lo * 125, hi], out = [], i, v;
+    for (i = 0; i < cand.length; i++) {
+      v = Math.floor(cand[i]);
+      if (v >= lo && v <= hi && out.indexOf(v) < 0) out.push(v);
+    }
+    out.sort(function (a, b) { return a - b; });
+    return out;
+  }
+  function curBets(k) {
+    k = k || curMachine();
+    if (MODE !== 'DEBT' || !debt || !k || !dbtM(k)) return BET_PRESETS;
+    return dbtPresets(k);
+  }
+  // 重画一组注码按钮：档位跟着模式走（自定义那颗永远在最后，不动）
+  function paintBetRow(el, k) {
+    if (!el) return;
+    var bs = el.getElementsByClassName('betBtn'), vals = curBets(k), i, b, n = 0;
+    for (i = 0; i < bs.length; i++) {
+      b = parseInt(bs[i].getAttribute('data-bet'), 10);
+      if (b === 0) continue;
+      if (n < vals.length) {
+        bs[i].setAttribute('data-bet', String(vals[n]));
+        bs[i].setAttribute('data-slot', String(n + 1));    // 配色按第几档走，和数值无关
+        bs[i].textContent = abbr(vals[n]);
+        bs[i].style.display = '';
+        n++;
+      } else {
+        bs[i].style.display = 'none';
+      }
+    }
+  }
+  // 把 8 台机子的下注额夹进今天的上下限（进模式 / 跨天时调用）
+  function dbtClampVal(v, k) {
+    var lo = dbtMin(k), hi = dbtMax(k);
+    v = Math.floor(v);
+    if (!isFinite(v) || v < lo) v = lo;
+    if (v > hi) v = hi;
+    return v;
+  }
+  function dbtClampBets() {
+    if (MODE !== 'DEBT' || !debt) return;
+    state.bet = dbtClampVal(state.bet || 1, 'SL');
+    state.bjBet = dbtClampVal(state.bjBet || 1, 'BJ');
+    if (state.wheel) state.wheel.chip = dbtClampVal(state.wheel.chip || 1, 'WH');
+    if (state.duck) state.duck.bet = dbtClampVal(state.duck.bet || 1, 'DK');
+    if (state.dt) state.dt.bet = dbtClampVal(state.dt.bet || 1, 'DT');
+    if (state.mn) state.mn.bet = dbtClampVal(state.mn.bet || 1, 'MS');
+    if (state.pg) state.pg.bet = dbtClampVal(state.pg.bet || 1, 'PG');
+    if (state.ml) state.ml.bet = dbtClampVal(state.ml.bet || 1, 'ML');
+  }
+
+  /* ---------- 小工具 ---------- */
+  function dbtClockText(ms) {
+    if (ms < 0) ms = 0;
+    var s = Math.ceil(ms / 1000), m = Math.floor(s / 60);
+    return m + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function dbtLeft() {
+    if (!debt) return 0;
+    if (debt.stage === 'paused') return Math.max(0, debt.paLeft);
+    if (debt.stage !== 'play') return 0;
+    return Math.max(0, debt.dayEndAt - Date.now());
+  }
+  function dbtItem(id) {
+    if (!debt || !debt.items) return -1;
+    for (var i = 0; i < debt.items.length; i++) if (debt.items[i] && debt.items[i].id === id) return i;
+    return -1;
+  }
+  function dbtHas(id) { return dbtItem(id) >= 0; }
+
+  /* ---------- 进出模式 ---------- */
+  function dbtSync() { if (debt) { debt.gold = state.gold; dbtSave(); } }
+
+  function dbtEnter() {
+    if (MODE === 'DEBT') { setPage('debt'); return; }
+    var d = dbtLoad();
+    DBT_FREE_GOLD = state.gold;                 // 自由模式的钱先寄着，办完事原样还回去
+    if (d && d.stage !== 'over') {
+      debt = d;                                 // 接着上一轮欠债继续（倒计时按绝对时间走，关页面也躲不掉）
+    } else {
+      debt = dbtNew();                          // 开新一轮
+      debt.open = dbtPickOpen();
+      dbtShopGen();
+    }
+    MODE = 'DEBT';
+    state.gold = debt.gold;
+    dbtCatchUp();                               // 关页面期间欠下的天数，按「时间到 = 当天照常结算」补齐
+    dbtStartJob();
+    dbtClampBets();
+    dbtSync();
+    setPage('debt');
+    renderDebtPage();
+    if (debt.stage === 'over') { dbtShowEnd(debt.endKind || 'fail'); return; }
+    if (debt.intro !== 1) { debt.intro = 1; dbtSave(); dbtStoryPlay(DBT_INTRO, null); }
+  }
+
+  // 结局页的「回到大厅」：把自由模式的钱原样还回去（抛硬币赢的那半已经加进去了）
+  function dbtLeave() {
+    dbtSync();
+    dbtEndHide();
+    if (debt && debt.coinAdd) { DBT_FREE_GOLD = (DBT_FREE_GOLD || 0) + debt.coinAdd; debt.coinAdd = 0; dbtSave(); }
+    MODE = 'FREE';
+    if (DBT_FREE_GOLD != null) state.gold = DBT_FREE_GOLD;
+    DBT_FREE_GOLD = null;
+    DBT_RUN = null;
+    dbtStopJob();
+    save();
+    setPage('home');
+  }
+
+  // 所有「‹ 返回」按钮共用：欠债模式回欠债主页，自由模式回自由模式大厅
+  function backOut() {
+    if (MODE === 'DEBT') { dbtSync(); setPage('debt'); return; }
+    setPage('free');
+  }
+
+  // 🎰 All-in：进那台机子，直接把它今天最高的那一档注帮你摆好（这一局输了不扣钱、赢了全归你）
+  function dbtFillBet(k) {
+    var cap = Math.max(1, dbtMax(k)), wk;
+    if (k === 'SL') state.bet = cap;
+    else if (k === 'BJ') state.bjBet = cap;
+    else if (k === 'DK') state.duck.bet = cap;
+    else if (k === 'DT') state.dt.bet = cap;
+    else if (k === 'MN') state.mn.bet = cap;
+    else if (k === 'PG') state.pg.bet = cap;
+    else if (k === 'ML') state.ml.bet = cap;
+    else if (k === 'WH') { for (wk in whTable) delete whTable[wk]; whTable['R'] = cap; }   // 轮盘是台面注单：直接把「红」押满
+    dbtClampBets();
+    dbtSave();
+  }
+  function dbtEnterGame(g) {
+    if (!debt || debt.stage === 'over') return;
+    if (debt.stage === 'paused') { toast('暂停中，先点「继续」'); return; }
+    if (debt.stage === 'shop') { toast('先把道具买好，点「开始今天」'); return; }
+    if (debt.open.indexOf(g) < 0) { toast('今天这台机子没开'); return; }
+    if (debt.pick) return;
+    if (debt.mirror === g) {                    // 🪞 镜像卡加进来的那台
+      if ((debt.spent[g] || 0) >= 3) { toast('🪞 这张卡今天只能赌 3 次'); return; }
+      debt.spent[g] = (debt.spent[g] || 0) + 1;
+    }
+    if (debt.flags.allin === dbtKey(g)) dbtFillBet(dbtKey(g));   // 🎰 挑好的那台：进去就把注拉到今天的上限
+    var p = DBT_PAGE[g];
+    if (!p) return;
+    setPage(p);
+  }
+
+  /* ---------- 倒计时 ---------- */
+  function dbtStartJob() {
+    dbtStopJob();
+    dbtJob = setInterval(dbtTick, 250);
+  }
+  function dbtStopJob() { if (dbtJob) { clearInterval(dbtJob); dbtJob = null; } }
+
+  var dbtBeat = 0;
+  function dbtTick() {
+    if (MODE !== 'DEBT' || !debt) return;
+    dbtBeat++;
+    if (dbtBeat % 4 === 0) dbtSync();           // 金币每秒落一次盘
+    dbtPaintClock();
+    dbtBarSync();
+    if (debt.stage === 'play' && Date.now() >= debt.dayEndAt) dbtDayEnd();
+  }
+
+  function dbtPaintClock() {
+    if (!debt) return;
+    var left = dbtLeft(), txt, a, b, f;
+    if (debt.stage === 'shop') txt = '待开始';
+    else if (debt.stage === 'over') txt = '—';
+    else txt = dbtClockText(left);
+    a = document.getElementById('debtClock'); if (a) a.textContent = txt;
+    b = document.getElementById('debtTime'); if (b) b.textContent = txt;
+    f = document.getElementById('debtClockFill');
+    if (f) f.style.width = (debt.stage === 'shop' ? 100 : Math.max(0, Math.min(100, left / DBT_DAY_MS * 100))) + '%';
+  }
+
+  var DBT_WRAP = {
+    slot: 'gamePage', bj: 'bjPage', wheel: 'wheelPage', duck: 'duckPage',
+    dt: 'dtPage', mn: 'mnPage', pg: 'pgPage', ml: 'mlPage'
+  };
+  // 状态条插到当前机子页的最上面，跟页面一起滚（不 fixed、不遮任何东西）
+  var DBT_BACKS = ['backBtn', 'bjBack', 'fishBack', 'wheelBack', 'duckBack', 'dtBack', 'mnBack', 'pgBack', 'mlBack'];
+  // 机子页的返回键：欠债模式回欠债主页（自由模式回自由模式）
+  function dbtBackLabels() {
+    var t = (MODE === 'DEBT') ? '‹ 欠债模式' : '‹ 自由模式';
+    for (var i = 0; i < DBT_BACKS.length; i++) {
+      var b = document.getElementById(DBT_BACKS[i]);
+      if (b && b.textContent !== t) b.textContent = t;
+    }
+  }
+  function dbtBarPlace() {
+    dbtBackLabels();
+    if (!$debtBar) return;
+    var show = (MODE === 'DEBT' && debt && DBT_GAMES.indexOf(page) >= 0);
+    if (!show) { $debtBar.style.display = 'none'; return; }
+    var w = document.getElementById(DBT_WRAP[page] || '');
+    if (w && $debtBar.parentNode !== w) w.insertBefore($debtBar, w.firstChild);
+    $debtBar.style.display = '';
+    dbtBarFill();
+  }
+  // 机子页顶上的欠债状态条
+  function dbtBarFill() {
+    if (!$debtBar || $debtBar.style.display === 'none') return;
+    var left = dbtClockText(dbtLeft()), i, el;
+    var vals = {
+      dbDay: '第 ' + debt.day + ' 天', dbQuota: '配额 ' + abbr(debt.quota),
+      dbGold: '资金 ' + abbr(state.gold), dbTime: left
+    };
+    for (i in vals) if (Object.prototype.hasOwnProperty.call(vals, i)) {
+      el = document.getElementById(i);
+      if (el) el.textContent = vals[i];
+    }
+  }
+  function dbtBarSync() {
+    if (!$debtBar) return;
+    dbtBarPlace();
+  }
+
+  /* ---------- 每天的节奏：先把道具买好，再点「开始今天」 ---------- */
+  // 点了才开始跑 5 分钟；⏰ 时间罐存下来的时间在这一刻加进去
+  function dbtBeginDay() {
+    if (!debt || debt.stage !== 'shop') return;
+    var tank = debt.tank || 0;
+    debt.tank = 0;
+    debt.stage = 'play';
+    debt.dayEndAt = Date.now() + DBT_DAY_MS + tank;
+    dbtStartJob();
+    dbtSave();
+    renderDebtPage();
+    toast('第 ' + debt.day + ' 天开始 · 今天 ' + dbtClockText(DBT_DAY_MS + tank) + (tank ? '（含昨天存的 ' + dbtClockText(tank) + '）' : ''));
+  }
+
+  // 机子 key 统一成 DBT_MACHINES 里的大写写法（道具那边记的是大写，机子里传的是小写）
+  function dbtKey(k) {
+    var s = String(k == null ? '' : k).toLowerCase(), i;
+    for (i = 0; i < DBT_MACHINES.length; i++) if (DBT_MACHINES[i].k.toLowerCase() === s) return DBT_MACHINES[i].k;
+    return String(k == null ? '' : k);
+  }
+
+  /* ---------- 通关统计：跨轮记账，跟这一轮自己的存档分开 ---------- */
+  var DSTAT = 'solrng_debt_stat_v1';
+  var dbtStat = null;
+  function dbtStatLoad() {
+    if (dbtStat) return dbtStat;
+    dbtStat = { win: 0 };
+    try {
+      var raw = localStorage.getItem(DSTAT), o;
+      if (raw) {
+        o = JSON.parse(raw);
+        if (o && typeof o.win === 'number' && o.win >= 0) dbtStat.win = Math.floor(o.win);
+      }
+    } catch (e) {}
+    return dbtStat;
+  }
+  function dbtStatSave() { try { localStorage.setItem(DSTAT, JSON.stringify(dbtStatLoad())); } catch (e) {} }
+  // 获胜次数摆在大厅首页
+  function dbtStatPaint() {
+    var el = document.getElementById('homeStat');
+    if (el) el.innerHTML = '🏆 欠债模式 · 获胜 <b style="color:#f3d98b">' + dbtStatLoad().win + '</b> 次';
+  }
+  // 道具用掉也留一条结算记录
+  function dbtNote(msg) {
+    if (!debt || !msg) return;
+    debt.log.unshift('第 ' + debt.day + ' 天 · ' + msg);
+    if (debt.log.length > 12) debt.log.length = 12;
+  }
+  // 一轮只记一次：撑过十一天（走到庄家那一步）就算赢；死在天数里不算
+  function dbtTally(kind) {
+    if (!debt || debt.tally) return;
+    debt.tally = 1;
+    if (kind && kind !== 'fail') { dbtStatLoad().win++; dbtStatSave(); dbtStatPaint(); }
+    dbtSave();
+  }
+
+  /* ---------- 点十下「今天要还」的数字，直接翻到最后一页 ---------- */
+  var dbtTap = 0;
+  function dbtTapQuota() {
+    if (!debt || debt.stage === 'over') return;
+    dbtTap++;
+    if (dbtTap < 10) return;
+    dbtTap = 0;
+    debt.day = DBT_DAYS;
+    debt.quota = DBT_QUOTA[DBT_DAYS - 1];
+    debt.open = dbtPickOpen();
+    debt.rerolls = 0;
+    debt.spent = {};
+    debt.sold = {};
+    debt.seen = {};
+    debt.flags = {};
+    debt.mirror = null;
+    debt.pick = null;
+    debt.items = [];
+    debt.stage = 'shop';
+    debt.dayEndAt = 0;
+    dbtShopGen();
+    state.gold = debt.quota;
+    dbtSync();
+    renderDebtPage();
+  }
+
+  /* ---------- 点十下「所在楼层」，把手上的钱补到今天的数额 ---------- */
+  var dbtTapF = 0;
+  function dbtTapFloor() {
+    if (!debt || debt.stage === 'over') return;
+    dbtTapF++;
+    if (dbtTapF < 10) return;
+    dbtTapF = 0;
+    state.gold = debt.quota;
+    dbtSync();
+    renderDebtPage();
+  }
+
+  /* ---------- 每天走完 ---------- */
+  /* ---------- 跟机子的对局挂钩 ---------- */
+  // 开局前记一笔：这一局押了多少、开局时手上多少钱
+  function dbtArm(k, bet) {
+    if (MODE !== 'DEBT' || !debt || debt.stage !== 'play') { DBT_RUN = null; return; }
+    k = dbtKey(k);
+    bet = Math.max(0, Math.floor(bet) || 0);
+    var pad = 0;
+    // 🎰 All-in 筹码：这一局不花自己的钱。先把钱垫到够扣，收局时再按「本金没花」结算
+    if (debt.flags && debt.flags.allin === k && state.gold < bet) {
+      pad = bet - state.gold;
+      state.gold = bet;
+    }
+    DBT_RUN = { k: k, bet: bet, g0: state.gold - pad, pad: pad };
+  }
+
+  // 一局打完：用金币差值认出这一局的输赢，再把押在这一局上的道具结掉
+  function dbtClose(k) {
+    k = dbtKey(k);
+    var r = DBT_RUN, bet, net, f, add = 0, msg = '', half, pure;
+    if (MODE !== 'DEBT' || !debt || !r || r.k !== k) return;
+    DBT_RUN = null;
+    bet = r.bet;
+    net = state.gold - r.g0;
+    if (bet <= 0) return;
+    f = debt.flags;
+    if (f.allin === k) {                          // 🎰 All-in 筹码：这一局的本金不算你的
+      f.allin = null;
+      pure = Math.max(0, state.gold - r.g0 - r.pad + bet);   // 这一局净赚的派彩（输了就是 0）
+      state.gold = clampGold(r.g0 + pure);                   // 本金原样不动
+      net = pure - bet;
+      msg = '🎰 All-in 筹码：这一局的 💰' + abbr(bet) + ' 本金不收你的';
+    } else if (net < 0) {
+      if (f.guard) {                              // 🎫 免死金牌：输了全额退回（一次）
+        f.guard = 0;
+        add += bet;
+        msg = '🎫 免死金牌：输掉的 💰' + abbr(bet) + ' 退回来了';
+      } else if (f.insure > 0) {                  // 🧾 保险：接下来 3 局输了退一半
+        f.insure--;
+        half = Math.floor(bet / 2);
+        add += half;
+        msg = '🧾 保险：退回 💰' + abbr(half) + '（还剩 ' + f.insure + ' 局）';
+      }
+    }
+    if (f.devil && net > 0) {                     // 👿 恶魔转盘：把这一局赢的钱再赌一次
+      f.devil = 0;
+      if (Math.random() < 0.5) {
+        add += net * 2;
+        msg += (msg ? '　' : '') + '👿 恶魔转盘 ×3：+' + abbr(net * 2);
+      } else {
+        add -= net;
+        msg += (msg ? '　' : '') + '👿 恶魔转盘：这一局的盈利没了';
+      }
+    }
+    if (add) state.gold = clampGold(state.gold + add);
+    if (msg) {
+      toast(msg);
+      debt.log.unshift('第 ' + debt.day + ' 天 · ' + msg);
+      if (debt.log.length > 12) debt.log.length = 12;
+    }
+    dbtSync();
+  }
+
+  /* ---------- 每天走完 ---------- */
+  // 倒计时到点：正在进行的那一局判死，压在里面的下注一律没收
+  function dbtKillRun() {
+    if (MODE !== 'DEBT') return;
+    var bet = DBT_RUN ? (DBT_RUN.bet || 0) : 0;
+    if (DBT_RUN && DBT_RUN.pad) state.gold = clampGold(DBT_RUN.g0);   // 🎰 All-in 局：垫的钱不算，本金退回
+    DBT_RUN = null;
+    if (spinning) spinning = false;               // 🎰 老虎机：settle 不会再跑，这一把的注留在庄家那儿
+    if (BJ.phase !== 'idle') {                    // 🃏 黑杰克：这一手作废
+      BJ.phase = 'idle'; BJ.hole = false; BJ.player = []; BJ.dealer = [];
+      renderBj();
+    }
+    if (whBusy) { clearTimeout(whTimer); whBusy = false; }                                  // 🎡 轮盘
+    if (dkBusy) { clearTimeout(dkTimer); dkTimer = null; dkRace = null; dkBusy = false; }    // 🦆 赛鸭场
+    if (dtRun && !dtRun.done) { state.dt.escrow = 0; dtRun = null; }                         // 🐉💣🐧🚀 爬在半路的
+    if (mnRun && !mnRun.done) { state.mn.escrow = 0; mnRun = null; }
+    if (pgRun && !pgRun.done) { state.pg.escrow = 0; pgRun = null; }
+    if (mlRun && !mlRun.done) { state.ml.escrow = 0; mlRun = null; }
+    if (bet > 0) toast('时间到 · 这一局的 💰' + abbr(bet) + ' 没了');
+  }
+
+
+  function dbtDayEnd() {
+    if (!debt || debt.stage !== 'play') return;
+    debt.stage = 'over';                        // 先掐住，免得被重复触发
+    dbtKillRun();
+    var ok = (state.gold >= debt.quota);
+    debt.log.unshift('第 ' + debt.day + ' 天 · ' + (ok ? '✅ 达标' : '❌ 没达标') + '　' + abbr(state.gold) + ' / ' + abbr(debt.quota));
+    if (debt.log.length > 12) debt.log.length = 12;
+    dbtSync();
+    if (!ok && debt.flags && debt.flags.owe) {   // 🚫 赖账：今天不死，明天配额 +50%
+      debt.log[0] = debt.log[0] + '　🚫 赖账';
+      debt.stage = 'play';
+      dbtNextDay();
+      return;
+    }
+    if (!ok) { debt.endKind = 'fail'; debt.stage = 'over'; dbtSave(); renderDebtPage(); dbtShowEnd('fail'); return; }
+    if (debt.day >= DBT_DAYS) { debt.endKind = 'reach'; dbtSave(); renderDebtPage(); dbtShowEnd('reach'); return; }
+    dbtNextDay();
+  }
+
+  function dbtNextDay() {
+    var mult = 1;
+    if (debt.flags.owe) mult += 0.5;            // 🚫 赖账：明天配额 +50%
+    if (debt.flags.loan) mult += 0.25;          // 💸 高利贷：明天配额 +25%
+    var tank = debt.tank || 0;                  // ⏰ 时间罐：存着的那些时间，等明天点「开始今天」时再加进去
+    var keep = [], i;
+    for (i = 0; i < debt.items.length; i++) if (debt.items[i].keep) keep.push(debt.items[i]);   // 🧊 冷冻仓
+    debt.day = debt.day + 1;
+    debt.quota = Math.round(state.gold * (debt.day <= DBT_KSW ? DBT_K1 : DBT_K2) * mult);   // 明天要还的数跟着手上的钱走
+    debt.open = dbtPickOpen();                  // 每天重新随机开 4 台
+    debt.rerolls = 0;
+    debt.spent = {};
+    debt.sold = {};
+    debt.seen = {};
+    debt.items = keep;
+    debt.flags = {};
+    debt.mirror = null;
+    debt.pick = null;
+    dbtShopGen();                               // 新的一天的 3 件道具
+    debt.stage = 'shop';                        // 明天也先买道具，点了「开始今天」才起表
+    debt.dayEndAt = 0;
+    dbtClampBets();
+    dbtSave();
+    renderDebtPage();
+    toast('第 ' + debt.day + ' 天 · 要还 ' + abbr(debt.quota) + ' · 先买道具再开始' + (tank ? '（存着 ' + dbtClockText(tank) + '）' : ''));
+  }
+
+  // 关页面 / 刷新回来：欠下的天数按「时间到 = 当天照常结算」一天天补上
+  function dbtCatchUp() {
+    if (!debt) return;
+    var n = 0;
+    while (debt.stage === 'play' && Date.now() >= debt.dayEndAt && n < 60) { dbtDayEnd(); n++; }
+  }
+
+  /* ---------- 暂停 ---------- */
+  function dbtPauseToggle() {
+    if (!debt || (debt.stage !== 'play' && debt.stage !== 'paused')) return;
+    if (debt.stage === 'paused') {
+      debt.stage = 'play';
+      debt.dayEndAt = Date.now() + Math.max(0, debt.paLeft);
+      debt.paLeft = 0;
+      toast('继续 · 今天还剩 ' + dbtClockText(dbtLeft()));
+    } else {
+      debt.paLeft = Math.max(0, debt.dayEndAt - Date.now());
+      debt.stage = 'paused';
+      toast('已暂停 · 今天还剩 ' + dbtClockText(debt.paLeft));
+    }
+    dbtSave();
+    renderDebtPage();
+  }
+
+  /* ---------- 剧情演出：黑底、一个字一个字往外蹦、点一下走下一句 ---------- */
+  var DBT_INTRO = [
+    '醒醒。',
+    '你欠的那笔钱，到期了。',
+    '真是一大笔钱。',
+    '规矩简单：一天一个数。当天的数凑不齐，明天就不用来见我了。',
+    '撑满十一天，晚上我在这儿等你。',
+    '楼下那几台机子，今天开哪几台，看你的运气。',
+    '钱能滚。命不能。',
+    '开始吧。'
+  ];
+  var DBT_DEATH = [
+    '规矩就是规矩。',
+    '（有人从后面架住你的胳膊）',
+    '别看我。字是你自己签的。',
+    '……',
+    '（桌上的钱被扫走了。）'
+  ];
+  var DBT_STORY = {
+    fail: ['今天的数，差着。'].concat(DBT_DEATH),
+    reach: [
+      '十一天。你站到这儿了。',
+      '钱呢。',
+      '（你把手上的钱推过去）',
+      '够。一分不多，一分不少。',
+      '坐下。',
+      '给你两条路 —— 都在桌上，你自己挑。'
+    ],
+    pay: [
+      '（庄家把卡收进兜里）',
+      '账清了。',
+      '你欠的那笔，今天两清。',
+      '从这儿出去，别再走这条巷子。',
+    ],
+    coinwin: [
+      '（硬币在桌上转了三圈）',
+      '正面。',
+      '翻一倍。一半算你还的，一半归你。',
+      '拿着，走。',
+    ],
+    coinlose: ['（硬币在桌上转了三圈）', '反面'].concat(DBT_DEATH)
+  };
+  var dbtStL = null, dbtStI = 0, dbtStT = null, dbtStCb = null, dbtStFull = true;
+
+  function dbtStoryPlay(lines, cb) {
+    var o = document.getElementById('debtStory');
+    if (!o || !lines || !lines.length) { if (cb) cb(); return; }
+    dbtStL = lines; dbtStI = 0; dbtStCb = cb || null;
+    o.style.display = '';
+    dbtStoryLine();
+  }
+
+  function dbtStoryLine() {
+    var tx = document.getElementById('debtStoryTx'), s = dbtStL[dbtStI] || '', i = 0;
+    dbtStFull = false;
+    clearTimeout(dbtStT);
+    if (tx) tx.textContent = '';
+    if (!s.length) { dbtStFull = true; return; }
+    (function step() {
+      if (dbtStFull) return;
+      i++;
+      if (tx) tx.textContent = s.slice(0, i);
+      if (i >= s.length) { dbtStFull = true; return; }
+      dbtStT = setTimeout(step, 45);
+    })();
+  }
+
+  // 点一下：这一句先整个出完；再点一下：下一句
+  function dbtStoryNext() {
+    if (!dbtStL) return;
+    if (!dbtStFull) {
+      dbtStFull = true;
+      clearTimeout(dbtStT);
+      var tx = document.getElementById('debtStoryTx');
+      if (tx) tx.textContent = dbtStL[dbtStI];
+      return;
+    }
+    dbtStI++;
+    if (dbtStI >= dbtStL.length) { dbtStoryStop(); return; }
+    dbtStoryLine();
+  }
+
+  function dbtStoryStop() {
+    var o = document.getElementById('debtStory'), cb = dbtStCb;
+    clearTimeout(dbtStT);
+    if (o) o.style.display = 'none';
+    dbtStL = null; dbtStCb = null; dbtStFull = true;
+    if (cb) cb();
+  }
+
+  // 🪙 硬币先转几圈，再揭晓
+  function dbtCoinFlip(cb) {
+    var o = document.getElementById('debtCoin');
+    if (!o) { cb(); return; }
+    o.style.display = '';
+    setTimeout(function () {
+      o.style.display = 'none';
+      cb();
+    }, 1500);
+  }
+
+  // 结局：先走一小段剧情，再摊结算页
+  function dbtShowEnd(kind) {
+    dbtTally(kind);
+    var lines = DBT_STORY[kind];
+    if (lines && lines.length) { dbtStoryPlay(lines, function () { dbtEndPage(kind); }); return; }
+    dbtEndPage(kind);
+  }
+
+  /* ---------- 结局 ---------- */
+  function dbtEnd(kind, title, body, btns) {
+    var box = document.getElementById('debtEnd');
+    if (!box) return;
+    var t = document.getElementById('debtEndT'), x = document.getElementById('debtEndX'), b = document.getElementById('debtEndB');
+    if (t) t.innerHTML = title;
+    if (x) x.innerHTML = body;
+    if (b) {
+      b.innerHTML = '';
+      for (var i = 0; i < btns.length; i++) {
+        var el = document.createElement('button');
+        el.className = 'dbtBtn' + (btns[i].main ? ' main' : '');
+        el.textContent = btns[i].tx;
+        el.setAttribute('data-end', btns[i].k);
+        b.appendChild(el);
+      }
+    }
+    box.style.display = '';
+    box.setAttribute('data-kind', kind);
+  }
+  function dbtEndHide() {
+    var box = document.getElementById('debtEnd');
+    if (box) box.style.display = 'none';
+  }
+  function dbtEndPage(kind) {
+    if (kind === 'fail') {
+      dbtEnd('fail', '💀 这一轮到头了',
+        '第 ' + debt.day + ' 天要还 <b>' + abbr(debt.quota) + '</b>，你手上只有 <b>' + abbr(state.gold) + '</b>。<br>没有人替你说话。',
+        [{ k: 'wipe', tx: '从头再来', main: 1 }]);
+      return;
+    }
+    if (kind === 'reach') {
+      dbtEnd('reach', '🤝 庄家摊开两只手',
+        '11 天撑满了。你手上是 <b>' + abbr(state.gold) + '</b>。<br><br>'
+        + '🪙 <b>左手 · 硬币</b> —— 赌一把：赢了这笔钱翻一倍，输了全没。<br>'
+        + '💳 <b>右手 · 银行卡</b> —— 还债：把账清了，一分不带走。<br><br>挑一只。',
+        [{ k: 'coin', tx: '🪙 硬币 · 赌一把' }, { k: 'pay', tx: '💳 银行卡 · 还债' }]);
+      return;
+    }
+    if (kind === 'pay') {
+      dbtEnd('pay', '✅ 两清',
+        '你把钱推过去，庄家数完点了点头。<br>账清了 —— 自由模式里的金币一个没多、一个没少。',
+        [{ k: 'wipe', tx: '离开这条巷子', main: 1 }]);
+      return;
+    }
+    if (kind === 'coinwin') {
+      dbtEnd('coinwin', '🪙 正面',
+        '硬币落定，正面朝上。<br>这笔钱当场翻一倍：一半留下还债，另一半 <b>' + abbr((debt && debt.coinAdd) || DBT_COIN_ADD || 0) + '</b> 直接进了自由模式的金库。',
+        [{ k: 'wipe', tx: '拿着钱走', main: 1 }]);
+      return;
+    }
+    dbtEnd('coinlose', '🪙 反面',
+      '硬币转了几圈，反面朝上。<br>庄家把钱一收 —— 这一轮，你什么都没剩下。',
+      [{ k: 'wipe', tx: '从头再来', main: 1 }]);
+  }
+  var DBT_COIN_ADD = 0;
+  function dbtCoin() {
+    var win = Math.random() < DBT_COIN_WIN;      // 结果先定下来，动画期间不再摇
+    dbtCoinFlip(function () { dbtCoinDone(win); });
+  }
+  function dbtCoinDone(win) {
+    if (win) {
+      DBT_COIN_ADD = Math.max(0, Math.floor(state.gold));       // 翻倍后一半还债、一半归你 = 原数进自由模式
+      debt.coinAdd = DBT_COIN_ADD;                              // 先落进欠债存档：刷新 / 关页面回来照样带得走
+      dbtSave();
+      debt.endKind = 'coinwin';
+      dbtSave();
+      dbtShowEnd('coinwin');
+    } else {
+      debt.endKind = 'coinlose';
+      dbtSave();
+      dbtShowEnd('coinlose');
+    }
+  }
+  function dbtReset() {
+    try { localStorage.removeItem(DKEY); } catch (e) {}
+    DBT_COIN_ADD = 0;
+    debt = dbtNew();
+    debt.open = dbtPickOpen();
+    dbtShopGen();
+    state.gold = debt.gold;
+    dbtEndHide();
+    dbtClampBets();
+    dbtSave();
+    renderDebtPage();
+    dbtStartJob();
+  }
+
+  // 结局页的按钮：这一轮彻底清掉，回首页重新选模式（赢的那一半照样带得走）
+  function dbtWipe() {
+    dbtSync();
+    dbtEndHide();
+    if (debt && debt.coinAdd) { DBT_FREE_GOLD = (DBT_FREE_GOLD || 0) + debt.coinAdd; debt.coinAdd = 0; }
+    try { localStorage.removeItem(DKEY); } catch (e) {}
+    MODE = 'FREE';
+    if (DBT_FREE_GOLD != null) state.gold = DBT_FREE_GOLD;
+    DBT_FREE_GOLD = null;
+    DBT_RUN = null;
+    DBT_COIN_ADD = 0;
+    debt = null;
+    dbtStopJob();
+    save();
+    setPage('home');
+    toast('本轮结束！· 重新挑个模式');
+  }
+
+  /* ---------- 🛒 道具 ---------- */
+  // 18 件道具：价格 = 当前资金百分比；每天随机 3 件、只当天有效、买了点一下才生效
+  // pick：'m' 要再点一台机子 / 'i' 要再点手上一件道具 / 'p' 要再点池子里一件道具
+  var DBT_ITEMS = [
+    { id: 'allin', ico: '🎰', nm: 'All-in 筹码', pct: 0.10, pick: 'm', ds: '点一台机子：直接用它今天最高的那一档注免费赌一局，输了不扣钱、赢了全归你' },
+    { id: 'guard', ico: '🎫', nm: '免死金牌', pct: 0.08, ds: '这一局要是输掉，下注额原样退给你（就一次）' },
+    { id: 'quota', ico: '🔫', nm: '配额枪', pct: 0.08, ds: '立刻补上今天要还的数的 1/3（不封顶），代价：今天少 2 分钟' },
+    { id: 'stay', ico: '🩹', nm: '缓刑令', pct: 0.08, ds: '今天多 1 分钟（跟配额枪互斥）' },
+    { id: 'owe', ico: '🚫', nm: '赖账', pct: 0.08, ds: '今天没达标也不死，代价：明天配额 +50%' },
+    { id: 'mirror', ico: '🪞', nm: '镜像卡', pct: 0.08, pick: 'm', ds: '点一台机子把它加进来：按当前楼层算上下限，今天只能赌 3 次' },
+    { id: 'tank', ico: '⏰', nm: '时间罐', pct: 0.06, ds: '今天没用完的时间存到明天接着用' },
+    { id: 'zap', ico: '⚡', nm: '电击器', pct: 0.05, pick: 'm', ds: '点一台机子：今天它的下注上限 ×2' },
+    { id: 'insure', ico: '🧾', nm: '保险', pct: 0.05, ds: '接下来 3 局输了各退一半下注额' },
+    { id: 'devil', ico: '👿', nm: '恶魔转盘', pct: 0.05, ds: '把上一局赢来的钱再赌一次：一半拿 3 倍盈利，一半清空' },
+    { id: 'amp', ico: '💪', nm: '增幅器', pct: 0.05, ds: '今天手上其他道具效果 ×1.5（不增幅自己）' },
+    { id: 'box', ico: '📦', nm: '神秘盒子', pct: 0.05, ds: '随机再给你一件今天的道具（盒子里开不出盒子）' },
+    { id: 'loan', ico: '💸', nm: '高利贷借条', pct: 0.05, ds: '立刻拿到当前资金的 50%，代价：明天配额 +25%' },
+    { id: 'sale', ico: '🛒', nm: '打折券', pct: 0.05, ds: '今天的商店道具 5 折' },
+    { id: 'freeze', ico: '🧊', nm: '冷冻仓', pct: 0.05, pick: 'i', ds: '点手上一件道具：它明天不会过期' },
+    { id: 'book', ico: '📅', nm: '预约券', pct: 0.04, pick: 'p', ds: '点一件道具：明天商店必出它' },
+    { id: 'demo', ico: '🧨', nm: '拆迁', pct: 0.03, pick: 'm', ds: '点一台机子：把它换成今天没开的随机另一台' },
+    { id: 'dice', ico: '🎲', nm: '庄家的骰子', pct: 0.02, ds: '当前资金 ×0.5 ~ 1.5 随机一次（长期期望不变）' }
+  ];
+  var DBT_TIMED = ['quota', 'stay', 'owe', 'tank'];      // 动目标或动时间的四件，同一天只出一个
+
+  function dbtDef(id) {
+    for (var i = 0; i < DBT_ITEMS.length; i++) if (DBT_ITEMS[i].id === id) return DBT_ITEMS[i];
+    return null;
+  }
+  function dbtFlag(name) { return (debt && debt.flags && debt.flags[name]) ? debt.flags[name] : 0; }
+  function dbtAmp() { return dbtFlag('amp') ? 1.5 : 1; }   // 💪 增幅器
+  function dbtPrice(di) {
+    var p = (di && di.pct) || 0;
+    if (dbtFlag('sale')) p = p * 0.5;                      // 🛒 打折券
+    return Math.max(1, Math.floor((debt ? debt.gold : 0) * p));
+  }
+  function dbtDrop(idx, id) {
+    if (!debt) return;
+    if (debt.items[idx] && debt.items[idx].id === id) { debt.items.splice(idx, 1); return; }
+    for (var i = 0; i < debt.items.length; i++) if (debt.items[i].id === id) { debt.items.splice(i, 1); return; }
+  }
+
+  // 今天的 3 件：互斥的四件只放一个；重摇不会出已经出过的；预约券指定的必出
+  function dbtShopGen() {
+    if (!debt) return;
+    var i, k, out = [], cand = [], ban = {};
+    var cp = DBT_TIMED[Math.floor(Math.random() * DBT_TIMED.length)];
+    for (i = 0; i < DBT_TIMED.length; i++) ban[DBT_TIMED[i]] = 1;
+    ban[cp] = 0;
+    if (debt.reserve && dbtDef(debt.reserve) && !debt.seen[debt.reserve]) {
+      out.push(debt.reserve);
+      ban[debt.reserve] = 1;
+    }
+    debt.reserve = null;                                   // 📅 预约券用掉了
+    for (i = 0; i < DBT_ITEMS.length; i++) {
+      k = DBT_ITEMS[i].id;
+      if (ban[k] || debt.seen[k] || debt.sold[k]) continue;
+      cand.push(k);
+    }
+    if (cand.indexOf(cp) >= 0) { out.push(cp); cand.splice(cand.indexOf(cp), 1); }
+    while (out.length < 3 && cand.length) out.push(cand.splice(Math.floor(Math.random() * cand.length), 1)[0]);
+    for (i = 0; i < out.length; i++) debt.seen[out[i]] = 1;
+    debt.shop = [];
+    for (i = 0; i < out.length; i++) debt.shop.push({ id: out[i], sold: false });
+  }
+
+  function dbtBuy(id) {
+    if (!debt || debt.stage === 'over' || debt.pick) return;
+    var i, g = null, di = dbtDef(id);
+    for (i = 0; i < debt.shop.length; i++) if (debt.shop[i].id === id) g = debt.shop[i];
+    if (!g || g.sold || !di) return;
+    if (debt.stage === 'paused') { toast('暂停中，先点「继续」'); return; }
+    if (debt.stage !== 'shop') { toast('今天已经开始了'); return; }
+    var px = dbtPrice(di);
+    if (state.gold < px) { toast('钱不够 · 要 💰' + abbr(px)); return; }
+    state.gold -= px;
+    g.sold = true;
+    debt.sold[id] = 1;
+    debt.items.push({ id: id });
+    dbtSync();
+    renderDebtPage();
+    toast(di.ico + ' ' + di.nm + ' 到手 · 在「手上道具」里点一下才生效');
+  }
+
+  function dbtReroll() {
+    if (!debt || debt.stage === 'over') return;
+    if (debt.stage === 'paused') { toast('暂停中，先点「继续」'); return; }
+    if (debt.rerolls >= DBT_REROLL_MAX) { toast('今天摇完了'); return; }
+    var px = Math.max(1, Math.floor(debt.gold * DBT_REROLL_P[debt.rerolls]));
+    if (state.gold < px) { toast('钱不够 · 要 💰' + abbr(px)); return; }
+    state.gold -= px;
+    debt.rerolls++;
+    dbtShopGen();
+    dbtSync();
+    renderDebtPage();
+    toast('🔄 换了一批 · 花了 💰' + abbr(px));
+  }
+
+  function dbtUse(idx) {
+    if (!debt || debt.stage === 'over' || debt.pick) return;
+    var it = debt.items[idx];
+    if (!it) return;
+    var di = dbtDef(it.id);
+    if (!di) { dbtDrop(idx, it.id); renderDebtPage(); return; }
+    if (debt.stage === 'paused') { toast('暂停中，先点「继续」'); return; }
+    if (debt.stage === 'shop' && (DBT_TIMED.indexOf(it.id) >= 0 || dbtDef(it.id).pick === 'm')) { toast('这件等今天开始以后再用'); return; }
+    if (di.pick) {
+      debt.pick = { id: it.id, idx: idx, kind: di.pick };
+      renderDebtPage();
+      toast(di.pick === 'm' ? '点一台机子' : '点一件道具');
+      return;
+    }
+    dbtApply(it.id, idx);
+  }
+
+  // 使用道具（不需要点目标的那些直接在这里生效）
+  function dbtApply(id, idx) {
+    if (!debt) return;
+    var amp = dbtAmp(), g = state.gold, msg = '', i;
+    if (id === 'quota') {
+      var add = Math.ceil(debt.quota / 3 * amp);      // 按「今天要还的数」的三分之一补，不看眼下差多少
+      state.gold = clampGold(state.gold + add);
+      debt.dayEndAt -= 120000;                        // 代价：今天少 2 分钟
+      msg = '🔫 补了 💰' + abbr(add) + ' · 今天少 2 分钟';
+      dbtDrop(idx, id); dbtSync(); renderDebtPage();
+      if (debt.stage === 'play' && dbtLeft() <= 0) dbtDayEnd();
+      dbtNote(msg); toast(msg);
+      return;
+    } else if (id === 'stay') {
+      debt.dayEndAt += Math.round(60000 * amp);
+      msg = '🩹 今天多了 ' + (amp > 1 ? '1.5' : '1') + ' 分钟';
+    } else if (id === 'owe') {
+      debt.flags.owe = 1;
+      msg = '🚫 今天没达标也不死 · 明天配额 +50%';
+    } else if (id === 'tank') {
+      debt.tank = Math.max(debt.tank || 0, dbtLeft());
+      msg = '⏰ 把 ' + dbtClockText(debt.tank) + ' 存到明天';
+    } else if (id === 'loan') {
+      var got = Math.floor(g * 0.5);
+      state.gold += got;
+      debt.flags.loan = 1;
+      msg = '💸 拿到 💰' + abbr(got) + ' · 明天配额 +25%';
+    } else if (id === 'sale') {
+      debt.flags.sale = 1;
+      msg = '🛒 今天的道具 5 折';
+    } else if (id === 'amp') {
+      debt.flags.amp = 1;
+      msg = '💪 手上其他道具效果 ×1.5';
+    } else if (id === 'box') {
+      var pool = [], di2;
+      for (i = 0; i < DBT_ITEMS.length; i++) { di2 = DBT_ITEMS[i]; if (di2.id !== 'box') pool.push(di2.id); }
+      var got2 = pool[Math.floor(Math.random() * pool.length)];
+      debt.items.push({ id: got2 });
+      msg = '📦 开出了 ' + dbtDef(got2).ico + ' ' + dbtDef(got2).nm;
+    } else if (id === 'dice') {
+      var mul = 0.5 + Math.random();
+      state.gold = Math.max(0, Math.floor(state.gold * mul));
+      msg = '🎲 ×' + mul.toFixed(2) + ' · 现在 💰' + abbr(state.gold);
+    } else if (id === 'insure') {
+      debt.flags.insure = 3;
+      msg = '🧾 接下来 3 局输了各退一半';
+    } else if (id === 'guard') {
+      debt.flags.guard = 1;
+      msg = '🎫 下一局输了全额退（一次）';
+    } else if (id === 'devil') {
+      debt.flags.devil = 1;
+      msg = '👿 下一局赢了之后，盈利再赌一次';
+    } else {
+      msg = '';
+    }
+    dbtDrop(idx, id);
+    dbtSync();
+    renderDebtPage();
+    if (msg) { dbtNote(msg); toast(msg); }
+  }
+
+  // 点完目标（机子 / 道具）
+  function dbtPickDone(k) {
+    if (!debt || !debt.pick) return;
+    var pk = debt.pick, kk = dbtKey(k), msg = '';
+    debt.pick = null;
+    if (pk.id === 'zap') {
+      if (!debt.flags.zap) debt.flags.zap = {};
+      debt.flags.zap[kk] = 1;
+      msg = '⚡ 今天 ' + dbtM(kk).nm + ' 的下注上限 ×2';
+    } else if (pk.id === 'mirror') {
+      if (debt.open.indexOf(kk) < 0) {
+        debt.open.push(kk);
+        debt.open.sort(function (a, b) { return dbtIdx(a) - dbtIdx(b); });
+      }
+      debt.mirror = kk;
+      msg = '🪞 ' + dbtM(kk).nm + ' 加进来了 · 今天最多赌 3 次';
+    } else if (pk.id === 'demo') {
+      var pool = [], i;
+      for (i = 0; i < DBT_MACHINES.length; i++) if (debt.open.indexOf(DBT_MACHINES[i].k) < 0) pool.push(DBT_MACHINES[i].k);
+      if (!pool.length) { msg = '今天八台都开着，没什么可换的'; }
+      else {
+        var nk = pool[Math.floor(Math.random() * pool.length)];
+        debt.open[debt.open.indexOf(kk)] = nk;
+        debt.open.sort(function (a, b) { return dbtIdx(a) - dbtIdx(b); });
+        if (debt.mirror === kk) debt.mirror = nk;
+        msg = '🧨 ' + dbtM(kk).nm + ' 换成了 ' + dbtM(nk).nm;
+      }
+    } else if (pk.id === 'allin') {
+      debt.flags.allin = kk;
+      msg = '🎰 ' + dbtM(kk).nm + ' · 这一局用最高的那一档注，本金不收你的';
+    } else if (pk.id === 'freeze') {
+      var fi = dbtItem(kk);
+      if (fi >= 0) debt.items[fi].keep = true;
+      msg = '🧊 ' + dbtDef(kk).nm + ' 明天不过期';
+    } else if (pk.id === 'book') {
+      debt.reserve = kk;
+      msg = '📅 明天商店必出 ' + dbtDef(kk).nm;
+    }
+    dbtDrop(pk.idx, pk.id);
+    dbtSync();
+    renderDebtPage();
+    if (msg) { dbtNote(msg); toast(msg); }
+    // 🎰 / ⚡ 挑完机子直接进去，省得再点一次
+    if ((pk.id === 'allin' || pk.id === 'zap') && debt.stage === 'play' && debt.open.indexOf(kk) >= 0) dbtEnterGame(dbtKey(kk));
+  }
+  /* ---------- 欠债主页 ---------- */
+  function renderDebtPage() {
+    if (!debt) return;
+    var i, el, k, m, h, cls, di, g, px, on, can, pk = debt.pick;
+    var shopNow = (debt.stage === 'shop');        // 还在买道具，没开始跑表
+    // 采买与开赌是两个界面：没点「开始今天」之前，今天开哪几台机子一个字都不露
+    var sw = document.getElementById('debtShopWrap'); if (sw) sw.style.display = shopNow ? '' : 'none';
+    var pw = document.getElementById('debtPlayWrap'); if (pw) pw.style.display = shopNow ? 'none' : '';
+    el = document.getElementById('debtName');
+    if (el) el.textContent = shopNow ? ('💸 采买 · 第 ' + debt.day + ' 天') : ('🎲 第 ' + debt.day + ' 天 · 开赌');
+    var days = document.getElementById('debtDays');
+    if (days) {
+      h = '';
+      for (i = 1; i <= DBT_DAYS; i++) {
+        cls = (i < debt.day) ? 'done' : (i === debt.day ? 'now' : 'todo');
+        h += '<span class="dbtD ' + cls + '">' + i + '</span>';
+      }
+      days.innerHTML = h;
+    }
+    el = document.getElementById('debtDay'); if (el) el.textContent = String(debt.day);
+    el = document.getElementById('debtQuota'); if (el) el.textContent = abbr(debt.quota);
+    el = document.getElementById('debtGold'); if (el) el.textContent = abbr(state.gold);
+    el = document.getElementById('debtFloor'); if (el) el.textContent = DBT_FLOOR_NM[dbtFloorOf(debt.day) - 1] || '';
+    el = document.getElementById('debtOpenN'); if (el) el.textContent = String(debt.open.length);
+    // 机子：正常只列今天开的 4 台；正在等点目标时八台都列出来（没开的暗一点）
+    var gs = document.getElementById('debtGames');
+    if (gs) {
+      h = '';
+      if (shopNow && !(pk && pk.kind === 'm')) {
+        h = '<span class="dbtHint">机子等「开始今天」之后再亮出来</span>';
+      } else if (pk && pk.kind === 'm') {
+        for (i = 0; i < DBT_MACHINES.length; i++) {
+          m = DBT_MACHINES[i];
+          on = debt.open.indexOf(m.k) >= 0;
+          // 🪞 镜像卡本来就是要把没开的加进来，其余道具只能挑今天开着的
+          can = on || pk.id === 'mirror';
+          h += '<button class="dbtCard pick' + (on ? '' : ' dim') + '"' + (can ? '' : ' disabled') + ' data-dbt="' + m.k + '">'
+            + '<span class="ico">' + m.ico + '</span>'
+            + '<span class="nm">' + m.nm + '</span>'
+            + '<span class="lim">下注 ' + abbr(dbtMin(m.k)) + ' ~ ' + abbr(dbtMax(m.k)) + '</span>'
+            + '<span class="go">' + (on ? '今天开着' : '今天没开') + '</span></button>';
+        }
+      } else {
+        for (i = 0; i < debt.open.length; i++) {
+          k = debt.open[i]; m = dbtM(k);
+          if (!m) continue;
+          h += '<button class="dbtCard" data-dbt="' + k + '">'
+            + '<span class="ico">' + m.ico + '</span>'
+            + '<span class="nm">' + m.nm + '</span>'
+            + '<span class="lim">下注 ' + abbr(dbtMin(k)) + ' ~ ' + abbr(dbtMax(k)) + '</span>'
+            + '<span class="go">' + (shopNow ? '先开始今天' : '进 ›') + '</span></button>';
+        }
+      }
+      gs.innerHTML = h;
+    }
+    var gt = document.getElementById('debtGamesTitle');
+    if (gt) gt.textContent = '今天开着的机子';
+    // 今日商店的 3 件：只在「开始今天」之前能买，开始以后只能用手上的
+    var sp = document.getElementById('debtShop');
+    if (sp) {
+      h = '';
+      for (i = 0; i < debt.shop.length; i++) {
+        g = debt.shop[i]; di = dbtDef(g.id);
+        if (!di) continue;
+        px = dbtPrice(di);
+        can = (shopNow && !g.sold && state.gold >= px && !pk);
+        h += '<button class="dbtGood' + (g.sold ? ' sold' : '') + '"' + (can ? '' : ' disabled') + ' data-buy="' + g.id + '">'
+          + '<span class="ico">' + di.ico + '</span>'
+          + '<span class="nm">' + di.nm + '</span>'
+          + '<span class="ds">' + di.ds + '</span>'
+          + '<span class="px">' + (g.sold ? '今天买过了' : (shopNow ? '💰' + abbr(px) + (dbtFlag('sale') ? ' ·5折' : '') : '不卖了')) + '</span></button>';
+      }
+      sp.innerHTML = h || '<span class="empty">今天的道具都买完了</span>';
+    }
+    var spt = document.getElementById('debtShopTitle');
+    if (spt) spt.textContent = shopNow ? '今日道具 · 一天三件，只当天有效' : '今日道具 · 今天已经开始，只能用手上的';
+    var rb = document.getElementById('debtReroll');
+    if (rb) {
+      if (pk) { rb.textContent = '✕ 取消选择'; rb.disabled = false; }
+      else if (!shopNow) { rb.textContent = '🔄 开始今天之后就不能摇了'; rb.disabled = true; }
+      else {
+        rb.textContent = debt.rerolls >= DBT_REROLL_MAX ? '🔄 今天摇完了'
+          : '🔄 重摇 · 💰' + abbr(Math.max(1, Math.floor(debt.gold * DBT_REROLL_P[debt.rerolls])));
+        rb.disabled = (debt.rerolls >= DBT_REROLL_MAX);
+      }
+    }
+    var hint = document.getElementById('debtHint');
+    if (hint) hint.textContent = pk ? '点目标' : (shopNow ? ('今天摇过 ' + debt.rerolls + ' / ' + DBT_REROLL_MAX + ' 次') : '');
+    var bt = document.getElementById('debtBagTitle');
+    if (bt) bt.textContent = (pk && pk.kind === 'p') ? '📅 明天想让商店必出哪件？点它' : '手上道具（点一下就用）';
+    var bg = document.getElementById('debtBag');
+    if (bg) {
+      h = '';
+      if (pk && pk.kind === 'p') {
+        for (i = 0; i < DBT_ITEMS.length; i++) {
+          di = DBT_ITEMS[i];
+          h += '<button class="dbtGood" data-book="' + di.id + '">'
+            + '<span class="ico">' + di.ico + '</span>'
+            + '<span class="nm">' + di.nm + '</span>'
+            + '<span class="ds">' + di.ds + '</span>'
+            + '<span class="px">' + Math.round(di.pct * 100) + '%</span></button>';
+        }
+      } else {
+        for (i = 0; i < debt.items.length; i++) {
+          di = dbtDef(debt.items[i].id);
+          if (!di) continue;
+          h += '<button class="dbtGood use" data-use="' + i + '">'
+            + '<span class="ico">' + di.ico + '</span>'
+            + '<span class="nm">' + di.nm + (debt.items[i].keep ? ' 🧊' : '') + '</span>'
+            + '<span class="ds">' + di.ds + '</span>'
+            + '<span class="px">用 ›</span></button>';
+        }
+      }
+      bg.innerHTML = h || '<span class="empty">还没有道具</span>';
+    }
+    // ▶ 开始今天 / ✅ 今天就够了
+    el = document.getElementById('debtBegin');
+    if (el) el.style.display = shopNow ? '' : 'none';
+    el = document.getElementById('debtNext');
+    if (el) {
+      var enough = (state.gold >= debt.quota);
+      el.style.display = shopNow ? 'none' : '';
+      el.disabled = (!enough || debt.stage !== 'play');
+      el.textContent = enough ? '✅ 今天就够了 · 进明天' : ('还差 💰' + abbr(Math.max(0, debt.quota - state.gold)));
+    }
+    el = document.getElementById('debtPause');
+    if (el) {
+      el.style.display = shopNow ? 'none' : '';
+      el.textContent = debt.stage === 'paused' ? '▶ 继续' : '⏸ 暂停';
+      el.disabled = (debt.stage === 'over');
+    }
+    var lg = document.getElementById('debtLog');
+    if (lg) lg.innerHTML = debt.log.length ? debt.log.join('<br>') : '<span class="empty">还没有结算记录</span>';
+    dbtPaintClock();
+  }
+
+  /* ---------- 事件 ---------- */
+  (function () {
+    var back = document.getElementById('debtBack');
+    if (back) back.addEventListener('click', function () { dbtLeave(); }, false);
+    var pa = document.getElementById('debtPause');
+    if (pa) pa.addEventListener('click', function () { dbtPauseToggle(); }, false);
+    var rs = document.getElementById('debtRestart');
+    if (rs) rs.addEventListener('click', function () { dbtReset(); }, false);
+    var bgn = document.getElementById('debtBegin');
+    if (bgn) bgn.addEventListener('click', function () { dbtBeginDay(); }, false);
+    var nx = document.getElementById('debtNext');
+    if (nx) nx.addEventListener('click', function () {
+      if (debt && debt.stage === 'play' && state.gold >= debt.quota) dbtDayEnd();
+    }, false);
+    var qb = document.getElementById('debtQuota');
+    if (qb) qb.addEventListener('click', function () { dbtTapQuota(); }, false);
+    var fb = document.getElementById('debtFloor');
+    if (fb) fb.addEventListener('click', function () { dbtTapFloor(); }, false);
+    var rr = document.getElementById('debtReroll');
+    if (rr) rr.addEventListener('click', function () {
+      if (debt && debt.pick) { debt.pick = null; renderDebtPage(); return; }
+      dbtReroll();
+    }, false);
+    var gs = document.getElementById('debtGames');
+    if (gs) gs.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== gs && !(t.getAttribute && t.getAttribute('data-dbt'))) t = t.parentNode;
+      if (!t || t === gs) return;
+      var k = t.getAttribute('data-dbt');
+      if (debt && debt.pick && debt.pick.kind === 'm') { dbtPickDone(k); return; }
+      dbtEnterGame(k);
+    }, false);
+    var sp = document.getElementById('debtShop');
+    if (sp) sp.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== sp && !(t.getAttribute && t.getAttribute('data-buy'))) t = t.parentNode;
+      if (!t || t === sp) return;
+      dbtBuy(t.getAttribute('data-buy'));
+    }, false);
+    var bg = document.getElementById('debtBag');
+    if (bg) bg.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== bg && !(t.getAttribute && (t.getAttribute('data-use') != null || t.getAttribute('data-book')))) t = t.parentNode;
+      if (!t || t === bg) return;
+      var bk = t.getAttribute('data-book');
+      if (bk) { dbtPickDone(bk); return; }
+      dbtUse(parseInt(t.getAttribute('data-use'), 10));
+    }, false);
+    var endB = document.getElementById('debtEndB');
+    if (endB) endB.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.getAttribute) return;
+      var k = t.getAttribute('data-end');
+      if (k === 'home') dbtLeave();
+      else if (k === 'coin') dbtCoin();
+      else if (k === 'pay') dbtShowEnd('pay');
+      else dbtWipe();
+    }, false);
+    var st = document.getElementById('debtStory');
+    if (st) st.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.id === 'debtStorySkip') { dbtStoryStop(); return; }
+      dbtStoryNext();
+    }, false);
+  })();
+
   setPage('home');
   setInterval(renderClaim, 1000);
   setInterval(autoTick, 1000);
